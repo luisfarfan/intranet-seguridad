@@ -1,0 +1,106 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="panel panel-primary panel-bordered">
+        <div class="panel-heading">
+            <h5 class="panel-title">SISTEMAS</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li>
+                        <a data-action="collapse"></a>
+                    </li>
+                    <li>
+                        <a data-action="close"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <button id="btn_agregar_sistema" type="button"
+                            class="btn btn-danger btn-raised legitRipple"><i
+                            class="icon-plus-circle2 position-left"></i> Agregar Sistema
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table id="tbl_sistemas" class="table table-bordered">
+                            <thead>
+                            <tr class="bg-blue-400">
+                                <th>ID</th>
+                                <th>CODIGO</th>
+                                <th>DESCRIPCIÓN</th>
+                                <th>NOMBRE</th>
+                                <th>ESTADO</th>
+                                <th>ACCION</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_sistemas" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 id="titulo_accion" class="modal-title"></h5>
+                </div>
+
+                <form action="#" id="form_save" class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Código</label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Sigla" name="codigo" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Descripción</label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Descripcion" name="descripcion" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Nombre</label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Nombre" name="nombre" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Estado</label>
+                            <input type="checkbox" name="estado">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btn_save_sistema" class="btn btn-info legitRipple">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static "assets/js/plugins/notifications/sweet_alert.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "src/helpers.js" %}"></script>
+    <script type="text/javascript" src="{% static "src/seguridad/sistemas.js" %}"></script>
+{% endblock %}

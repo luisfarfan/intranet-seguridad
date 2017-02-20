@@ -1,0 +1,195 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="panel panel-primary panel-bordered">
+        <div class="panel-heading">
+            <h5 class="panel-title">PROYECTOS SIGA</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li>
+                        <a data-action="collapse"></a>
+                    </li>
+                    <li>
+                        <a data-action="close"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <select id="proyectos_siga" class="select form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <button id="btn_agregar_proyecto" type="button" disabled
+                            class="btn btn-danger btn-raised legitRipple"><i
+                            class="icon-plus-circle2 position-left"></i> Agregar Proyecto
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="tbl_proyecto_siga_selected" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>ID PROYECTO</th>
+                            <th>DESRIPCION</th>
+                            <th>CODIGO META</th>
+                            <th>CODIGO DEPENDENCIA</th>
+                            <th>AÑO META</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary panel-bordered">
+        <div class="panel-heading">
+            <h5 class="panel-title">GESTIÓN DE PROYECTOS</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li>
+                        <a data-action="collapse"></a>
+                    </li>
+                    <li>
+                        <a data-action="close"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="tbl_proyectos_seguridad" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>SIGLA</th>
+                            <th>AÑO</th>
+                            <th>DESCRIPCIÓN</th>
+                            <th>CODIGO META</th>
+                            <th>ESTADO</th>
+                            <th>OPCIONES</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_editar_proyecto" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Editar Proyecto</h5>
+                </div>
+
+                <form action="#" class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Sigla</label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Sigla" name="sigla" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Descripción</label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Descripcion" name="descripcion" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Estado</label>
+                            <input type="checkbox" name="estado">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btn_save_proyecto_seguridad" class="btn btn-info legitRipple">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_asignacion" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content modal-lg">
+                <div class="modal-header bg-info">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Asignación de Sistema</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <table id="tbl_sistemas_asignados" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>SISTEMA</th>
+                                    <th>ACCIÓN</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Sistemas por Asignar</label>
+                                <div class="multi-select-full">
+                                    <select id="select_sistemas_no_asignados" class="multiselect" multiple="multiple">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button id="btn_asignar_sistemas" type="button"
+                                    class="btn btn-danger btn-raised legitRipple"><i
+                                    class="icon-plus-circle2 position-left"></i> Asignar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btn_save_proyecto_seguridad" class="btn btn-info legitRipple">
+                        Guardar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/selects/select2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/notifications/sweet_alert.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/forms/selects/bootstrap_multiselect.js" %}"></script>
+    <script type="text/javascript" src="{% static "src/helpers.js" %}"></script>
+    <script type="text/javascript" src="{% static "src/seguridad/proyectos.js" %}"></script>
+{% endblock %}

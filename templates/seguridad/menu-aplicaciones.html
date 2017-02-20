@@ -1,0 +1,136 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="col-md-6">
+        <div class="panel panel-primary panel-bordered">
+            <div class="panel-heading">
+                <h6 class="panel-title">Proyectos<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="table_proyectos" class="table table-bordered">
+                        <thead>
+                        <tr class="bg-blue">
+                            <th>Sigla</th>
+                            <th>Año</th>
+                            <th>Nombre</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary panel-bordered">
+            <div class="panel-heading">
+                <h6 class="panel-title">Sistemas por Proyecto<a class="heading-elements-toggle"><i
+                        class="icon-more"></i></a></h6>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="table_sistemas" class="table table-bordered">
+                        <thead>
+                        <tr class="bg-blue">
+                            <th>N°</th>
+                            <th>Nombre</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title">Detalle<a class="heading-elements-toggle"><i
+                        class="icon-more"></i></a>
+                </h5>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div id="tree_modulos" class="tree-persistence well border-left-danger border-left-lg"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal_rol" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h6 class="modal-title">Agregar Rol</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form_rol" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Nombre Rol</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="nombre" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Password</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="descripcion" class="form-control">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btn_submit_form" class="btn btn-primary legitRipple">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/selects/select2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/forms/selects/bootstrap_multiselect.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/core.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/effects.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/interactions.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/extensions/cookie.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/switchery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/trees/fancytree_all.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/trees/fancytree_childcounter.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/prueba.view.js" %}"></script>
+{% endblock %}
