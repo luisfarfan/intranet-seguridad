@@ -9,4 +9,5 @@ router_usuario = routers.DefaultRouter()
 urlpatterns = [
     url(r'authentication', UserApi.authenticate),
     url(r'usuario_modulos/(?P<usuario_id>.+)/$', ModulosUsuarioViewSet.as_view()),
+    url(r'proyecto/(?P<slug>.+)/$', DemoView.as_view()),
 ]

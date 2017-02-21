@@ -16,7 +16,7 @@ class UserApi(object):
             user = Usuario.objects.filter(usuario=usuario, clave=clave)
 
             if user:
-                user_data = list(user.values()[:1])
+                user_data = user.values()
                 for i in user_data:
                     i['fecha_nacimiento'] = i['fecha_nacimiento'].strftime("%d/%m/%Y")
                     i['fecha_contrato_inicio'] = i['fecha_contrato_inicio'].strftime("%d/%m/%Y")
@@ -34,16 +34,15 @@ class UserApi(object):
                 menu = ModuloSerializer(instance=Modulo.objects.exclude(proyectosistema__isnull=True).distinct(),
                                         many=True).data
 
-                request.session['user_data'] = user_data
+                request.session['user_data'] = user_data[0]
                 request.session['routes'] = list(routes)
-                request.session['menu'] = menu
                 if not request.session.session_key:
                     request.session.save()
                 session_id = request.session.session_key
                 session = Session.objects.get(pk=session_id)
                 session_return = session.get_decoded()
                 session_return['session_key'] = session_id
-                return JsonResponse(session_return, safe=False)
+                return JsonResponse({'id_user': 1}, safe=False)
 
             return JsonResponse({}, safe=False)
 
@@ -56,3 +55,19 @@ class ModulosUsuarioViewSet(generics.ListAPIView):
         usuario_id = self.kwargs['usuario_id']
         return Modulo.objects.exclude(proyectosistema__isnull=True).filter(
             modulorol__modulorolpermisos__modulorolpermisosusuario__usuario__pk=usuario_id).distinct()
+
+
+from django.views.generic import TemplateView
+
+
+class DemoView(TemplateView):
+    def get_template_names(self):
+        try:
+            routers = self.request.session['routes']
+            slug = self.kwargs.get('slug')
+            for router in routers:
+                if router['slug'] == slug:
+                    return router['template_html']
+            return 'demo.html'
+        except:
+            return 'demo.html'

@@ -1,4 +1,4 @@
-define(["require", "exports", '../core/helper.inei', '../core/utils'], function (require, exports, helper_inei_1, utils_1) {
+define(["require", "exports", "../core/helper.inei", "../core/utils"], function (require, exports, helper_inei_1, utils_1) {
     "use strict";
     var sessionHelper = new helper_inei_1.SessionHelper();
     var objectHelper = new helper_inei_1.ObjectHelper();
@@ -19,6 +19,7 @@ define(["require", "exports", '../core/helper.inei', '../core/utils'], function 
                     $('#div_error_message').html(utils_1.showDivAlert('Bienvenido!', 'success'));
                     $('#iniciar_sesion').addClass('disabled');
                     setTimeout(function () {
+                        console.log(response);
                         sessionHelper.setSession('usuario', response);
                         var session = sessionHelper.getSession();
                         window.location.href = BASEURL + "/" + session.routes[2].slug;

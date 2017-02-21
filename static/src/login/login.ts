@@ -22,7 +22,8 @@ $('#iniciar_sesion').on('click', event => {
             } else {
                 $('#div_error_message').html(showDivAlert('Bienvenido!', 'success'));
                 $('#iniciar_sesion').addClass('disabled');
-                setTimeout(()=> {
+                setTimeout(() => {
+                    console.log(response);
                     sessionHelper.setSession('usuario', response);
                     let session = sessionHelper.getSession();
                     window.location.href = `${BASEURL}/${session.routes[2].slug}`;

@@ -9,8 +9,16 @@ def recursive_menu(request):
         scheme = 'http://'
 
     base_url = scheme + request.get_host()
+    menu = None
+    modulo_id = None
+    if 'menu' in request.session:
+        menu = request.session['menu']
+    else:
+        menu = None
+    if 'MODULO_ID' in request.session:
+        modulo_id = request.session['MODULO_ID']
     context = {
-        "menu": Menu.drawSidebar(request.session['menu'], base_url, request.session['MODULO_ID'])
+        "menu": Menu.drawSidebar(menu, base_url, modulo_id)
     }
 
     return {'CLIENT_MENU': context}
