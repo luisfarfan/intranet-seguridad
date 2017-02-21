@@ -4,35 +4,40 @@
 declare var BASEURL: string;
 interface UrlProyectos {
     proyectos: string;
+    sistemas_proyecto: string;
 }
 
 export class ProyectosService {
     private url: UrlProyectos = {
         proyectos: `${BASEURL}/rest_proyectos/proyecto/`,
+        sistemas_proyecto: `${BASEURL}/rest_proyectos/sistemas_proyecto/`,
     }
 
-    getProyectos(pk:any = null):JQueryXHR{
+    getProyectos(pk: any = null): JQueryXHR {
         return $.ajax({
-            url: pk == null ? this.url.proyectos : `${this.url.proyectos}${pk}/`,
+            url: pk == null ? this.url.sistemas_proyecto : `${this.url.sistemas_proyecto}${pk}/`,
             type: 'GET'
         });
     }
-    addProyecto(objectData:Object):JQueryAjaxSettings{
-       return $.ajax({
+
+    addProyecto(objectData: Object): JQueryXHR {
+        return $.ajax({
             url: `${this.url.proyectos}`,
             type: 'POST',
             data: objectData,
         });
     }
-    updateProyecto(pk:number,objectData:Object):JQueryAjaxSettings{
-       return $.ajax({
+
+    updateProyecto(pk: number, objectData: Object): JQueryXHR {
+        return $.ajax({
             url: `${this.url.proyectos}/${pk}`,
             type: 'PATCH',
             data: objectData,
         });
     }
-    deleteProyecto(pk:number):JQueryAjaxSettings{
-       return $.ajax({
+
+    deleteProyecto(pk: number): JQueryXHR {
+        return $.ajax({
             url: `${this.url.proyectos}/${pk}`,
             type: 'DELETE',
         });
@@ -41,7 +46,7 @@ export class ProyectosService {
 
 interface UrlSistema {
     sistemas: string;
-    sistemas_menu:string;
+    sistemas_menu: string;
 }
 export class SistemasService {
     private url: UrlSistema = {
@@ -49,30 +54,49 @@ export class SistemasService {
         sistemas_menu: `${BASEURL}/rest_sistemas/sistema/`,
     }
 
-    getSistema(pk:number):JQueryAjaxSettings{
+    getSistemas(pk: any = null): JQueryXHR {
         return $.ajax({
             url: pk == null ? this.url.sistemas : `${this.url.sistemas}${pk}/`,
             type: 'GET'
         });
     }
-    addSistema(objectData:Object):JQueryAjaxSettings{
-       return $.ajax({
+
+    addSistema(objectData: Object): JQueryXHR {
+        return $.ajax({
             url: `${this.url.sistemas}`,
             type: 'POST',
             data: objectData,
         });
     }
-    updateSistema(pk:number,objectData:Object):JQueryAjaxSettings{
-       return $.ajax({
+
+    updateSistema(pk: any, objectData: Object): JQueryXHR {
+        return $.ajax({
             url: `${this.url.sistemas}/${pk}`,
             type: 'PATCH',
             data: objectData,
         });
     }
-    deleteSistema(pk:number):JQueryAjaxSettings{
-       return $.ajax({
+
+    deleteSistema(pk: any): JQueryXHR {
+        return $.ajax({
             url: `${this.url.sistemas}/${pk}`,
             type: 'DELETE',
+        });
+    }
+}
+
+interface UrlModulo {
+    proyecto_sistema_modulos: string;
+}
+export class ModuloService {
+    private url: UrlModulo = {
+        proyecto_sistema_modulos: `${BASEURL}/rest_modulousuario/proyecto_sistema_modulos/`,
+    }
+
+    getModulosRecursive(id_proyecto: number, id_sistema: number) {
+        return $.ajax({
+            url: `${this.url.proyecto_sistema_modulos}${id_proyecto}/${id_sistema}/`,
+            type: 'GET'
         });
     }
 }

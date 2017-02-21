@@ -18,3 +18,13 @@ class ModuloRolViewSet(viewsets.ModelViewSet):
 class PermisoViewSet(viewsets.ModelViewSet):
     serializer_class = PermisoSerializer
     queryset = Permiso.objects.all()
+
+
+class ModuloSerializerRecursive(generics.ListAPIView):
+    serializer_class = ModuloSerializer
+
+    def get_queryset(self):
+        id_sistema = self.kwargs['id_sistema']
+        id_proyecto = self.kwargs['id_proyecto']
+        return Modulo.objects.filter(proyectosistema__proyectos_id=id_proyecto,
+                                     proyectosistema__sistemas_id=id_sistema)

@@ -42,7 +42,7 @@ class UserApi(object):
                 session = Session.objects.get(pk=session_id)
                 session_return = session.get_decoded()
                 session_return['session_key'] = session_id
-                return JsonResponse({'id_user': 1}, safe=False)
+                return JsonResponse(session_return, safe=False)
 
             return JsonResponse({}, safe=False)
 

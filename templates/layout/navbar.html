@@ -26,8 +26,8 @@
 
             <li class="dropdown dropdown-user">
                 <a class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="assets/images/image.png" alt="">
-                    <span>Victoria</span>
+                    <img src='{% static "assets/images/image.png" %}' alt="">
+                    <span>{{ request.session.user_data.nombre }}</span>
                     <i class="caret"></i>
                 </a>
 

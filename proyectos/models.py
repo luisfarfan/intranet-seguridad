@@ -1,6 +1,7 @@
 from django.db import models
 from sistemas.models import Sistema
 from django.contrib import admin
+from django.utils.text import slugify
 
 
 class Proyecto(models.Model):
@@ -41,6 +42,14 @@ class ProyectoSistema(models.Model):
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
     fec_edicion = models.DateTimeField(blank=True, null=True)
 
+    # def save(self, *args, **kwargs):
+    #     if self.pk is None:
+    #         super(ProyectoSistema, self).save(*args, **kwargs)
+    #         modulo = Modulo(proyectosistema=self, nombre=self.sistemas.nombre, descripcion=self.sistemas.descripcion,
+    #                         slug=slugify(self.sistemas.nombre), codigo=slugify(self.sistemas.nombre), is_padre=1)
+    #         modulo.save()
+    #     return self
+
     def __str__(self):
         return '%s , %s' % (self.proyectos, self.sistemas)
 
@@ -70,4 +79,4 @@ class ProyectosSiga(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'V_PROYECTOS_SIGA'
+        db_table = 'proyectos_siga'

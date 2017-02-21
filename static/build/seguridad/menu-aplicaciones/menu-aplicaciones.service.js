@@ -3,13 +3,14 @@ define(["require", "exports"], function (require, exports) {
     var ProyectosService = (function () {
         function ProyectosService() {
             this.url = {
-                proyectos: BASEURL + "/rest_proyectos/proyecto/"
+                proyectos: BASEURL + "/rest_proyectos/proyecto/",
+                sistemas_proyecto: BASEURL + "/rest_proyectos/sistemas_proyecto/"
             };
         }
         ProyectosService.prototype.getProyectos = function (pk) {
             if (pk === void 0) { pk = null; }
             return $.ajax({
-                url: pk == null ? this.url.proyectos : "" + this.url.proyectos + pk + "/",
+                url: pk == null ? this.url.sistemas_proyecto : "" + this.url.sistemas_proyecto + pk + "/",
                 type: 'GET'
             });
         };
@@ -43,7 +44,8 @@ define(["require", "exports"], function (require, exports) {
                 sistemas_menu: BASEURL + "/rest_sistemas/sistema/"
             };
         }
-        SistemasService.prototype.getSistema = function (pk) {
+        SistemasService.prototype.getSistemas = function (pk) {
+            if (pk === void 0) { pk = null; }
             return $.ajax({
                 url: pk == null ? this.url.sistemas : "" + this.url.sistemas + pk + "/",
                 type: 'GET'
@@ -72,5 +74,20 @@ define(["require", "exports"], function (require, exports) {
         return SistemasService;
     }());
     exports.SistemasService = SistemasService;
+    var ModuloService = (function () {
+        function ModuloService() {
+            this.url = {
+                proyecto_sistema_modulos: BASEURL + "/rest_modulousuario/proyecto_sistema_modulos/"
+            };
+        }
+        ModuloService.prototype.getModulosRecursive = function (id_proyecto, id_sistema) {
+            return $.ajax({
+                url: "" + this.url.proyecto_sistema_modulos + id_proyecto + "/" + id_sistema + "/",
+                type: 'GET'
+            });
+        };
+        return ModuloService;
+    }());
+    exports.ModuloService = ModuloService;
 });
 //# sourceMappingURL=menu-aplicaciones.service.js.map

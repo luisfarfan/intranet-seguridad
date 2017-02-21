@@ -21,7 +21,7 @@ $.getJSON(`${BASEURL}/rest_sistemas/sistema/`, response => sistemas = response);
 
 function getProyectosSiga() {
     "use strict";
-    /**$.ajax({
+    $.ajax({
         url: `${BASE_URL}/rest_proyectos/getProyectosSiga/`,
         type: 'GET',
         success: response => {
@@ -29,7 +29,7 @@ function getProyectosSiga() {
             setSelect_v2('proyectos_siga', proyectos_siga, ['id', 'desc_proyecto'], true);
             $('#proyectos_siga').trigger('change');
         }
-    });*/
+    });
 }
 
 $('#proyectos_siga').on('change', event => {
@@ -113,7 +113,7 @@ function setModal_asignarSistemas() {
         }
     });
 
-    $(".styled, .multiselect-container input").uniform({ radioClass: 'choice' });
+    $(".styled, .multiselect-container input").uniform({radioClass: 'choice'});
 
     let _html = '';
     $('#tbl_sistemas_asignados').find('tbody').empty();

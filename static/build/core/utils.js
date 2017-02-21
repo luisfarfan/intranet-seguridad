@@ -49,14 +49,14 @@ define(["require", "exports"], function (require, exports) {
                 treejson.push(interface_node);
             }
             else {
-                interface_node['folder'] = false;
+                interface_node['folder'] = true;
                 treejson.push(interface_node);
             }
         });
         return treejson;
     }
     exports.jsonFormatFancyTree = jsonFormatFancyTree;
-    function validateForm(id_form, rules) {
+    function validateForm(rules) {
         var setOptions = {
             ignore: 'input[type=hidden], .select2-search__field',
             errorClass: 'validation-error-label',

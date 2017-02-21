@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^usuario/', include('usuario.urls', namespace='usuario')),
     url(r'^rest_proyectos/', include('proyectos.urls', namespace='proyectos')),
+    url(r'^rest_modulousuario/', include('usuario_modulo.urls', namespace='usuario_modulo')),
     url(r'^login/', ensure_csrf_cookie(TemplateView.as_view(template_name='login.html')))
 ]
 

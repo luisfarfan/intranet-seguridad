@@ -19,8 +19,7 @@ class ModuloSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Modulo
-        fields = (
-            'id', 'nombre', 'descripcion', 'slug', 'icon', 'codigo', 'modulo_padre', 'modulos_hijos', 'template_html')
+        fields = ('__all__')
 
 
 class PermisoSerializer(serializers.ModelSerializer):

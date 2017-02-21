@@ -31,7 +31,7 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
      * **/
     let treejson: Array<any> = [];
     let interface_node: any = {};
-    menu_json.map((value: any, key: any)=> {
+    menu_json.map((value: any, key: any) => {
         interface_node = {};
         interface_node['title'] = value.descripcion;
         interface_node['key'] = value.id;
@@ -39,7 +39,7 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
             interface_node['folder'] = true;
             interface_node['children'] = [];
             let children: Array<any> = [];
-            value.modulos_hijos.map((node_value: any, node_order: any)=> {
+            value.modulos_hijos.map((node_value: any, node_order: any) => {
                 children.push({
                     'title': node_value.descripcion,
                     'key': node_value.id,
@@ -52,7 +52,7 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
             interface_node['children'] = children;
             treejson.push(interface_node);
         } else {
-            interface_node['folder'] = false;
+            interface_node['folder'] = true;
             treejson.push(interface_node);
         }
     });
@@ -60,7 +60,7 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
 
 }
 
-export function validateForm(id_form: string, rules: Object) {
+export function validateForm(rules: Object) {
     let setOptions = {
         ignore: 'input[type=hidden], .select2-search__field', // ignore hidden fields
         errorClass: 'validation-error-label',
@@ -124,10 +124,11 @@ export function serializeForm(id_form: string) {
     let objectForm: Array<Object> = $(`#${id_form}`).serializeArray();
     let checkboxes = $('input:checkbox');
     if (checkboxes.length) {
-        checkboxes.map((value: any, key: any)=> {
+        checkboxes.map((value: any, key: any) => {
             objectForm.push({value: $(key).is(':checked') ? 1 : 0, name: key.name})
         });
     }
 
     return objectForm;
 }
+

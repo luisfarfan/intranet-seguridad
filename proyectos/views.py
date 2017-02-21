@@ -3,6 +3,7 @@ from .serializer import *
 from rest_framework.views import APIView
 from rest_framework import generics, viewsets
 from .models import ProyectosSiga
+from usuario_modulo.models import Modulo
 
 
 # Create your views here.
@@ -33,9 +34,17 @@ class ProyectosApi:
         id_sistemas = request.POST.getlist('id_sistemas[]')
         bulk = []
         for i in id_sistemas:
-            bulk.append(
-                ProyectoSistema(sistemas=Sistema.objects.get(pk=i), proyectos=Proyecto.objects.get(pk=id_proyecto)))
-
+            proyecto_sistema = ProyectoSistema(sistemas=Sistema.objects.get(pk=i),
+                                               proyectos=Proyecto.objects.get(pk=id_proyecto))
+            bulk.append(proyecto_sistema)
         ProyectoSistema.objects.bulk_create(bulk)
+        for i in id_sistemas:
+            proyecto_sistema = ProyectoSistema.objects.get(sistemas=Sistema.objects.get(pk=i),
+                                                           proyectos=Proyecto.objects.get(pk=id_proyecto))
+            modulo = Modulo(proyectosistema=proyecto_sistema, nombre=proyecto_sistema.sistemas.nombre,
+                            descripcion=proyecto_sistema.sistemas.descripcion,
+                            slug=slugify(proyecto_sistema.sistemas.nombre),
+                            codigo=slugify(proyecto_sistema.sistemas.nombre), is_padre=1)
+            modulo.save()
 
         return JsonResponse({'msg': True}, safe=False)

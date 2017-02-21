@@ -105,8 +105,6 @@
     <script type="text/javascript" src="{% static "assets/js/plugins/trees/fancytree_all.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/trees/fancytree_childcounter.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "assets/js/require.js" %}"></script>
-    <script>
-        require(['{% static "dist/seguridad/usuarios.roles/roles.view.js" %}']);
-    </script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/seguridad/usuarios.roles/roles.view" %}"></script>
 {% endblock %}
