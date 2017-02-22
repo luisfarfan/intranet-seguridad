@@ -12,6 +12,27 @@ define(["require", "exports"], function (require, exports) {
         });
     }
     exports.showSwalAlert = showSwalAlert;
+    function alert_confirm(callback, title, type) {
+        if (title === void 0) { title = 'Está seguro de Guardar?'; }
+        if (type === void 0) { type = 'success'; }
+        swal({
+            title: title,
+            text: '',
+            type: type,
+            showCancelButton: true,
+            confirmButtonColor: "#EF5350",
+            confirmButtonText: "Si!",
+            cancelButtonText: "No!",
+            closeOnConfirm: true,
+            closeOnCancel: true,
+            showLoaderOnConfirm: true
+        }, function (confirm) {
+            if (confirm) {
+                callback();
+            }
+        });
+    }
+    exports.alert_confirm = alert_confirm;
     function jsonFormatFancyTree(menu_json, rol_id_array) {
         if (rol_id_array === void 0) { rol_id_array = []; }
         /**

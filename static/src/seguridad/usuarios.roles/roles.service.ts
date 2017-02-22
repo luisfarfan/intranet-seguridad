@@ -37,3 +37,43 @@ export default class RolesService {
         });
     }
 }
+
+interface UrlPermisos {
+    permisos: string
+}
+
+export class PermisosService {
+    private url: UrlPermisos = {
+        permisos: `${BASEURL}/rest_modulousuario/permiso/`
+    };
+
+    get(pk: number = null): JQueryXHR {
+        return $.ajax({
+            url: pk == null ? this.url.permisos : `${this.url.permisos}${pk}/`,
+            type: 'GET'
+        });
+    }
+
+    update(pk: number, obj: Array<Object>): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.permisos}${pk}/`,
+            type: 'PUT',
+            data: obj
+        });
+    }
+
+    add(obj: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.permisos}`,
+            type: 'POST',
+            data: obj,
+        });
+    }
+
+    delete(pk: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.permisos}${pk}/`,
+            type: 'DELETE',
+        });
+    }
+}

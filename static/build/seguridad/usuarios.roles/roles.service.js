@@ -26,7 +26,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        RolesService.prototype.delete = function (pk) {
+        RolesService.prototype["delete"] = function (pk) {
             return $.ajax({
                 url: "" + this.url + pk + "/",
                 type: 'DELETE'
@@ -36,5 +36,41 @@ define(["require", "exports"], function (require, exports) {
     }());
     exports.__esModule = true;
     exports["default"] = RolesService;
+    var PermisosService = (function () {
+        function PermisosService() {
+            this.url = {
+                permisos: BASEURL + "/rest_modulousuario/permiso/"
+            };
+        }
+        PermisosService.prototype.get = function (pk) {
+            if (pk === void 0) { pk = null; }
+            return $.ajax({
+                url: pk == null ? this.url.permisos : "" + this.url.permisos + pk + "/",
+                type: 'GET'
+            });
+        };
+        PermisosService.prototype.update = function (pk, obj) {
+            return $.ajax({
+                url: "" + this.url.permisos + pk + "/",
+                type: 'PUT',
+                data: obj
+            });
+        };
+        PermisosService.prototype.add = function (obj) {
+            return $.ajax({
+                url: "" + this.url.permisos,
+                type: 'POST',
+                data: obj
+            });
+        };
+        PermisosService.prototype["delete"] = function (pk) {
+            return $.ajax({
+                url: "" + this.url.permisos + pk + "/",
+                type: 'DELETE'
+            });
+        };
+        return PermisosService;
+    }());
+    exports.PermisosService = PermisosService;
 });
 //# sourceMappingURL=roles.service.js.map

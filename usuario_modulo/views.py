@@ -25,6 +25,11 @@ class CrudModuloViewSet(viewsets.ModelViewSet):
     queryset = Modulo.objects.all()
 
 
+class CrudModuloRolViewset(viewsets.ModelViewSet):
+    serializer_class = CrudModuloRolSerializer
+    queryset = ModuloRol.objects.all()
+
+
 class ReadModuloSerializerRecursive(generics.ListAPIView):
     serializer_class = ReadModuloSerializer
 
@@ -33,3 +38,16 @@ class ReadModuloSerializerRecursive(generics.ListAPIView):
         id_proyecto = self.kwargs['id_proyecto']
         return Modulo.objects.filter(proyectosistema__proyectos_id=id_proyecto,
                                      proyectosistema__sistemas_id=id_sistema)
+
+
+class ModuloRol:
+    def addModulostoRol(self, request):
+        id_rol = request.POST['id_rol']
+        id_modulos = request.POST.getlist('modulos[]')
+
+        bulk = []
+        for i in id_modulos:
+            proyecto_sistema = ProyectoSistema(sistemas=Sistema.objects.get(pk=i),
+                                               proyectos=Proyecto.objects.get(pk=id_proyecto))
+            bulk.append(proyecto_sistema)
+        ProyectoSistema.objects.bulk_create(bulk)

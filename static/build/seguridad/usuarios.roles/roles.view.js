@@ -1,4 +1,4 @@
-define(["require", "exports", './roles.service', '../../core/helper.inei', '../../core/utils'], function (require, exports, roles_service_1, helper_inei_1, util) {
+define(["require", "exports", "./roles.service", "../../core/helper.inei", "../../core/utils"], function (require, exports, roles_service_1, helper_inei_1, util) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();
@@ -95,6 +95,9 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
                     util.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
                 });
             }
+        },
+        "delete": function () {
+            rolesModel["delete"](rol_selected.id);
         }
     };
     var RolJsonRules = {
@@ -117,5 +120,32 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
     $('#btn_submit_form').on('click', function (event) {
         RolesCrud.add();
     });
+    var permisosService = new roles_service_1.PermisosService();
+    var permiso_selected;
+    var permisos;
+    var PermisosController = {
+        getPermisos: function () {
+            permisosService.get().done((function (data) {
+                var html = '';
+                permisos = data;
+                permisos.map(function (value, key) {
+                    html += "<tr><td>" + (key + 1) + "</td><td>" + value.nombre + "</td><td>" + value.descripcion + "</td><td>" + value.codigo + "</td><td>" + value.dom_name_sufijo + "</td>\n                        <td><ul class=\"icons-list\">\n                            <li name=\"li_permiso_update\" data-value=" + value.id + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>\n                            <li name=\"li_permiso_delete\" data-value=" + value.id + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>\n\t\t\t\t\t\t</ul></td></tr>";
+                });
+                $('#table_permisos').find('tbody').html(html);
+                $('li[name="li_permiso_update"]').on('click', function (event) {
+                    // getRolSelected($(event.currentTarget).data('value'));
+                });
+                $('li[name="li_permiso_delete"]').on('click', function (event) {
+                    // getRolSelected($(event.currentTarget).data('value'));
+                });
+            }));
+        }
+    };
+    var AppPermisos = {
+        init: function () {
+            PermisosController.getPermisos();
+        }
+    };
+    AppPermisos.init();
 });
 //# sourceMappingURL=roles.view.js.map

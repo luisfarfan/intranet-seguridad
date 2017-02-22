@@ -15,7 +15,7 @@ var sistemas: ISistemas;
 var sistema_selected: ISistema;
 var proyecto_selected: IProyecto;
 var modulosRecursive: any;
-var modulo_selected: IModulo;
+var modulo_selected: any;
 var key_tree_node_selected: number = null;
 var jsonRulesModuloForm: Object = {
     nombre: {
@@ -37,6 +37,8 @@ var jsonRulesModuloForm: Object = {
         maxlength: 100
     },
 }
+var addModulo: boolean = false;
+var updateModulo: boolean = false;
 
 var MenuAplicacionesController: any = {
     getProyectos: (byPk: string) => {
@@ -65,9 +67,7 @@ var MenuAplicacionesController: any = {
         $('#table_sistemas').find('tbody').html(html);
         $('#table_sistemas').find('tr').on('click', (event: any) => {
             sistema_selected = objectHelper.findInArrayObject(sistemas, $(event.currentTarget).data('value'), 'id');
-            console.log($(event.currentTarget).data('value'));
-            console.log(sistema_selected);
-            MenuAplicacionesController.getModuloRecursive(proyecto_selected.id, sistema_selected.id);
+            MenuAplicacionesController.getModuloRecursive();
         });
 
     },
@@ -78,8 +78,8 @@ var MenuAplicacionesController: any = {
             utils.showSwalAlert('Ocurrio un error!', 'Error', 'error');
         })
     },
-    getModuloRecursive: (id_proyecto: number, id_sistema: number) => {
-        moduloService.getModulosRecursive(id_proyecto, id_sistema).done(data => {
+    getModuloRecursive: () => {
+        moduloService.getModulosRecursive(proyecto_selected.id, sistema_selected.id).done(data => {
             modulosRecursive = data;
             let treeFormat = utils.jsonFormatFancyTree(data);
             let options_tree = {
@@ -98,13 +98,18 @@ var MenuAplicacionesController: any = {
                     selNodes.length == 0 ? key_tree_node_selected = null : '';
                     var selKeys = $.map(selNodes, function (node: any) {
                         key_tree_node_selected = parseInt(node.key);
-                        modulo_selected = objectHelper.findInArrayObjectRecursive(modulosRecursive, key_tree_node_selected, 'id', 'modulos_hijos');
-                        console.log(key_tree_node_selected,modulo_selected);
                     });
-                    if (key_tree_node_selected) {
-                        $('#btn_edit_modulo').prop('disabled', false)
-                        $('#btn_add_modulo').prop('disabled', false)
-                        $('#btn_delete_modulo').prop('disabled', false)
+                    if (key_tree_node_selected != null) {
+                        moduloService.getModulos(key_tree_node_selected).done(data => {
+                            modulo_selected = data;
+                            $('#btn_edit_modulo').prop('disabled', false)
+                            $('#btn_add_modulo').prop('disabled', false)
+                            $('#btn_delete_modulo').prop('disabled', false)
+                        }).fail((error: any) => {
+                            $('#btn_edit_modulo').prop('disabled', true)
+                            $('#btn_add_modulo').prop('disabled', true)
+                            $('#btn_delete_modulo').prop('disabled', true)
+                        })
                     } else {
                         $('#btn_edit_modulo').prop('disabled', true)
                         $('#btn_add_modulo').prop('disabled', true)
@@ -134,8 +139,40 @@ var MenuAplicacionesController: any = {
             $('#tree_modulos').fancytree(options_tree);
         })
     },
-    getJsonRulesModulo: ()=> {
-        return {}
+    addModulo: () => {
+        if (form_modulo_validate.valid()) {
+            let valid_form: IModulo = objectHelper.formToObject(utils.serializeForm('form_modulo'));
+            valid_form.modulo_padre = modulo_selected.id;
+            moduloService.addModulo(valid_form).done((response) => {
+                utils.showSwalAlert('Se ha agregado el Modulo correctamente', 'Exito!', 'success');
+                $('#modal_modulo_form').modal('hide');
+                form_modulo_validate.resetForm();
+                MenuAplicacionesController.getModuloRecursive();
+            }).fail((error: any) => {
+                utils.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
+            })
+        }
+    },
+    updateModulo: () => {
+        if (form_modulo_validate.valid()) {
+            let valid_form: IModulo = objectHelper.formToObject(utils.serializeForm('form_modulo'));
+            moduloService.updateModulo(modulo_selected.id, valid_form).done((response) => {
+                utils.showSwalAlert('Se ha editado el Modulo correctamente', 'Exito!', 'success');
+                $('#modal_modulo_form').modal('hide');
+                form_modulo_validate.resetForm();
+                MenuAplicacionesController.getModuloRecursive();
+            }).fail((error: any) => {
+                utils.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
+            })
+        }
+    },
+    deleteModulo: () => {
+        moduloService.deleteModulo(modulo_selected.id).done(() => {
+            utils.showSwalAlert('El Modulo se ha eliminado exitosamente', 'Exito!', 'success');
+            MenuAplicacionesController.getModuloRecursive();
+        }).fail((error: any) => {
+            utils.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
+        })
     }
 }
 var appMenuAplicaciones: any = {
@@ -144,10 +181,18 @@ var appMenuAplicaciones: any = {
         MenuAplicacionesController.getSistemas();
         form_modulo_validate = $('#form_modulo').validate(utils.validateForm(jsonRulesModuloForm));
     },
-    setModal: (modal_title: string)=> {
+    setModal: (modal_title: string, modulo_selected_form: any) => {
         $('#modal_title_modulo_form').text(modal_title);
-        if (modulo_selected) {
-
+        if (modulo_selected_form != null) {
+            for (let i in modulo_selected_form) {
+                if ($(`[name=${i}]`).length) {
+                    if (i == 'is_padre') {
+                        modulo_selected_form.is_padre == 1 ? $('[name="is_padre"]').prop('checked', true) : $('[name="is_padre"]').prop('checked', false);
+                    } else {
+                        $(`[name=${i}]`).val(modulo_selected_form[i]);
+                    }
+                }
+            }
         } else {
             form_modulo_validate.resetForm();
         }
@@ -157,14 +202,37 @@ var appMenuAplicaciones: any = {
 
 appMenuAplicaciones.init();
 
-$('#btn_edit_modulo').on('click', ()=> {
-    appMenuAplicaciones.setModal('Editar Modulo',);
+$('#btn_edit_modulo').on('click', () => {
+    addModulo = false;
+    updateModulo = true;
+    appMenuAplicaciones.setModal('Editar Modulo', modulo_selected);
 });
 
-$('#btn_add_modulo').on('click', ()=> {
-    appMenuAplicaciones.setModal('Agregar Modulo');
+$('#btn_add_modulo').on('click', () => {
+    addModulo = true;
+    updateModulo = false;
+    appMenuAplicaciones.setModal('Agregar Modulo', null);
+    $('#form_modulo')[0].reset();
 });
 
+$('#btn_submit_form').on('click', () => {
+    if (addModulo === true || updateModulo == false) {
+        MenuAplicacionesController.addModulo();
+    } else if (updateModulo === true || addModulo === false) {
+        MenuAplicacionesController.updateModulo();
+    }
+
+});
+
+$('#btn_delete_modulo').on('click', () => {
+    // if(modulo_selected.modulo_hijos.length){
+    //     utils.alert_confirm(MenuAplicacionesController.deleteModulo, 'Este modulo contiene mas hijos, aun asi lo desea borrar?');
+    // }else{
+    //     utils.alert_confirm(MenuAplicacionesController.deleteModulo, 'Esta usted seguro de eliminar este Modulo?');
+    // }
+    utils.alert_confirm(MenuAplicacionesController.deleteModulo, 'Esta usted seguro de eliminar este Modulo?');
+
+});
 
 
 

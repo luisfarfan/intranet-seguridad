@@ -1,12 +1,14 @@
 /**
  * Created by Administrador on 21/02/2017.
  */
-import RolesModel from './roles.service';
+import RolesModel, {PermisosService} from './roles.service';
 import {ObjectHelper, SessionHelper} from '../../core/helper.inei';
+import {IPermiso, IPermisos} from './roles_permisos.interface'
 import * as util from '../../core/utils';
 
 declare var $: any;
 interface RolSelected {
+    id: number;
     modulo_rol: Array<any>;
 }
 
@@ -115,7 +117,12 @@ var RolesCrud = {
                 util.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
             })
         }
+    },
+    delete: () => {
+        rolesModel.delete(rol_selected.id)
     }
+
+
 }
 
 
@@ -143,3 +150,40 @@ Roles.initRoles();
 $('#btn_submit_form').on('click', (event: any) => {
     RolesCrud.add();
 })
+
+
+var permisosService = new PermisosService();
+var permiso_selected: IPermiso;
+var permisos: IPermisos;
+var PermisosController: any = {
+    getPermisos: () => {
+        permisosService.get().done((data => {
+            let html = '';
+            permisos = data;
+            permisos.map((value, key) => {
+                html += `<tr><td>${key + 1}</td><td>${value.nombre}</td><td>${value.descripcion}</td><td>${value.codigo}</td><td>${value.dom_name_sufijo}</td>
+                        <td><ul class="icons-list">
+                            <li name="li_permiso_update" data-value=${value.id} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>
+                            <li name="li_permiso_delete" data-value=${value.id} class="text-danger-600"><a><i class="icon-trash"></i></a></li>
+						</ul></td></tr>`
+            })
+            $('#table_permisos').find('tbody').html(html);
+
+            $('li[name="li_permiso_update"]').on('click', (event: any) => {
+                // getRolSelected($(event.currentTarget).data('value'));
+            });
+
+            $('li[name="li_permiso_delete"]').on('click', (event: any) => {
+                // getRolSelected($(event.currentTarget).data('value'));
+            });
+
+        }))
+    }
+}
+var AppPermisos: any = {
+    init: () => {
+        PermisosController.getPermisos();
+    }
+}
+
+AppPermisos.init();

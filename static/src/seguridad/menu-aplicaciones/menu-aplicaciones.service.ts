@@ -91,7 +91,7 @@ interface UrlModulo {
 }
 export class ModuloService {
     private url: UrlModulo = {
-        modulo: `${BASEURL}/rest_modulousuario/modulos/`,
+        modulo: `${BASEURL}/rest_modulousuario/modulo/`,
         proyecto_sistema_modulos: `${BASEURL}/rest_modulousuario/proyecto_sistema_modulos/`,
     }
 
@@ -99,6 +99,29 @@ export class ModuloService {
         return $.ajax({
             url: pk == null ? this.url.modulo : `${this.url.modulo}${pk}/`,
             type: 'GET'
+        });
+    }
+
+    addModulo(objectData: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.modulo}`,
+            type: 'POST',
+            data: objectData,
+        });
+    }
+
+    updateModulo(pk: number, objectData: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.modulo}${pk}/`,
+            type: 'PATCH',
+            data: objectData,
+        });
+    }
+
+    deleteModulo(pk: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.modulo}${pk}/`,
+            type: 'DELETE',
         });
     }
 

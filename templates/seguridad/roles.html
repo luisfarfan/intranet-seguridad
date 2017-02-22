@@ -9,7 +9,7 @@
                 <h6 class="panel-title">Roles<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
                 <div class="heading-elements">
                     <button type="button" data-toggle="modal" data-target="#modal_rol"
-                            class="btn btn-danger btn-icon heading-btn legitRipple"><i
+                            class="btn btn-success btn-icon heading-btn legitRipple"><i
                             class="icon-plus3"></i></button>
                 </div>
             </div>
@@ -21,7 +21,39 @@
                         <tr class="bg-blue">
                             <th>N°</th>
                             <th>Rol</th>
-                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary panel-bordered">
+            <div class="panel-heading">
+                <h6 class="panel-title">Permisos<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
+                <div class="heading-elements">
+                    <div class="heading-btn">
+                        <button type="button" id="btn_add_permiso" data-toggle="modal"
+                                data-target="#modal_permiso"
+                                class="btn btn-success btn-icon heading-btn legitRipple"><i
+                                class="icon-plus3"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="table_permisos" class="table table-bordered">
+                        <thead>
+                        <tr class="bg-blue">
+                            <th>N°</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Código</th>
+                            <th>Sufijo DOM</th>
+                            <th>Acción</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -38,11 +70,19 @@
                         class="icon-more"></i></a>
                 </h5>
                 <div class="heading-elements">
-                    <ul class="icons-list">
-                        <li><a data-action="collapse"></a></li>
-                        <li><a data-action="reload"></a></li>
-                        <li><a data-action="close"></a></li>
-                    </ul>
+                    <div class="heading-btn">
+                        <button type="button" id="btn_edit_permiso" disabled data-toggle="modal"
+                                data-target="#modal_permiso_form"
+                                class="btn btn-primary btn-icon heading-btn legitRipple"><i
+                                class="icon-pen6"></i></button>
+                        <button type="button" id="btn_add_permiso" disabled data-toggle="modal"
+                                data-target="#modal_permiso_form"
+                                class="btn btn-success btn-icon heading-btn legitRipple"><i
+                                class="icon-plus3"></i></button>
+                        <button type="button" id="btn_delete_permiso" disabled data-toggle="modal"
+                                class="btn btn-danger btn-icon heading-btn legitRipple"><i
+                                class="icon-trash-alt"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -75,6 +115,53 @@
                             <label class="control-label col-lg-2">Password</label>
                             <div class="col-lg-10">
                                 <input type="text" required name="descripcion" class="form-control">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btn_submit_form" class="btn btn-primary legitRipple">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_permiso" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h6 class="modal-title">Agregar Rol</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form_permiso" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Nombre</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="nombre" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Descripción</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="descripcion" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Código</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="codigo" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Sufijo DOM</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="dom_name_sufijo" class="form-control">
                             </div>
                         </div>
 

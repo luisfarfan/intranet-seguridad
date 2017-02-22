@@ -64,3 +64,9 @@ class CrudModuloRolPermisosSerializer(serializers.ModelSerializer):
     class Meta:
         model = ModuloRolPermisos
         fields = ('__all__')
+
+
+class CrudModuloRolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ModuloRol
+        fields = ('__all__')

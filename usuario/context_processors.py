@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from usuario.utils import Menu
+from usuario.utils import *
 
 
 def recursive_menu(request):
@@ -18,7 +18,7 @@ def recursive_menu(request):
     if 'MODULO_ID' in request.session:
         modulo_id = request.session['MODULO_ID']
     context = {
-        "menu": Menu.drawSidebar(menu, base_url, modulo_id)
+        "menu": drawSidebar(menu, base_url, modulo_id)
     }
 
     return {'CLIENT_MENU': context}

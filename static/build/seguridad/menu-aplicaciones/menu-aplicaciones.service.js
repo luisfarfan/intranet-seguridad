@@ -77,7 +77,7 @@ define(["require", "exports"], function (require, exports) {
     var ModuloService = (function () {
         function ModuloService() {
             this.url = {
-                modulo: BASEURL + "/rest_modulousuario/modulos/",
+                modulo: BASEURL + "/rest_modulousuario/modulo/",
                 proyecto_sistema_modulos: BASEURL + "/rest_modulousuario/proyecto_sistema_modulos/"
             };
         }
@@ -86,6 +86,26 @@ define(["require", "exports"], function (require, exports) {
             return $.ajax({
                 url: pk == null ? this.url.modulo : "" + this.url.modulo + pk + "/",
                 type: 'GET'
+            });
+        };
+        ModuloService.prototype.addModulo = function (objectData) {
+            return $.ajax({
+                url: "" + this.url.modulo,
+                type: 'POST',
+                data: objectData
+            });
+        };
+        ModuloService.prototype.updateModulo = function (pk, objectData) {
+            return $.ajax({
+                url: "" + this.url.modulo + pk + "/",
+                type: 'PATCH',
+                data: objectData
+            });
+        };
+        ModuloService.prototype.deleteModulo = function (pk) {
+            return $.ajax({
+                url: "" + this.url.modulo + pk + "/",
+                type: 'DELETE'
             });
         };
         ModuloService.prototype.getModulosRecursive = function (id_proyecto, id_sistema) {

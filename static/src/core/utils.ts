@@ -2,6 +2,7 @@
  * Created by lfarfan on 19/02/2017.
  */
 declare var PNotify: any;
+declare var swal: any;
 export function showDivAlert(message: string, type: string): string {
     return `<div class="alert bg-${type} alert-styled-left">
                 <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
@@ -14,6 +15,24 @@ export function showSwalAlert(message: string, title: string, type: string) {
         title: title,
         text: message,
         type: type
+    });
+}
+export function alert_confirm(callback: any, title = 'Está seguro de Guardar?', type = 'success') {
+    swal({
+        title: title,
+        text: '',
+        type: type,
+        showCancelButton: true,
+        confirmButtonColor: "#EF5350",
+        confirmButtonText: "Si!",
+        cancelButtonText: "No!",
+        closeOnConfirm: true,
+        closeOnCancel: true,
+        showLoaderOnConfirm: true
+    }, (confirm: any) => {
+        if (confirm) {
+            callback()
+        }
     });
 }
 

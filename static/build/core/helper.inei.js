@@ -70,13 +70,13 @@ define(["require", "exports"], function (require, exports) {
                 if (value.modulos_hijos.length) {
                     html += "<li><a href=\"#\"><i class=\"" + value.icon + "\"></i> <span>" + value.descripcion + "</span></a><ul>";
                     value.modulos_hijos.map(function (child1, k) {
-                        html += "<li " + (child1.id == MODULO_ID ? 'class="active"' : '') + "><a href=\"" + BASEURL + "/" + child1.slug + "\"><i class=\"" + child1.icon + "\"></i>" + child1.descripcion + "</a></li>";
+                        html += "<li " + (child1.id == MODULO_ID ? 'class="active"' : '') + "><a href=\"" + BASEURL + "/" + child1.slug + "\">\n                    <i class=\"" + child1.icon + "\"></i>" + child1.descripcion + "</a></li>";
                         html += _this.recursiveHTMLSideBar(child1.modulos_hijos);
                     });
                     html += "</ul>";
                 }
                 else {
-                    html += "<li " + (value.id == MODULO_ID ? 'class="active"' : '') + "><a href=\"" + BASEURL + "/" + value.slug + "\"><i class=\"" + value.icon + "\"></i> <span>" + value.descripcion + "</span></a></li>";
+                    html += "<li " + (value.id == MODULO_ID ? 'class="active"' : '') + "><a href=\"" + BASEURL + "/" + value.slug + "\">\n                <i class=\"" + value.icon + "\"></i> <span>" + value.descripcion + "</span></a></li>";
                 }
             });
             return html;
