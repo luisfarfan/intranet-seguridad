@@ -36,6 +36,7 @@ class UserApi(object):
 
                 request.session['user_data'] = user_data[0]
                 request.session['routes'] = list(routes)
+                request.session['menu'] = menu
                 if not request.session.session_key:
                     request.session.save()
                 session_id = request.session.session_key

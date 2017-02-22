@@ -12,17 +12,15 @@ define(["require", "exports", "../core/helper.inei", "../core/utils"], function 
             data: data,
             success: function (response) {
                 if (objectHelper.isEmpty(response)) {
-                    //mostrar div error
                     $('#div_error_message').html(utils_1.showDivAlert('Usuario o contraseña no validos', 'danger'));
                 }
                 else {
                     $('#div_error_message').html(utils_1.showDivAlert('Bienvenido!', 'success'));
                     $('#iniciar_sesion').addClass('disabled');
                     setTimeout(function () {
-                        console.log(response);
                         sessionHelper.setSession('usuario', response);
                         var session = sessionHelper.getSession();
-                        window.location.href = BASEURL + "/" + session.routes[2].slug;
+                        window.location.href = BASEURL + "/" + session.routes[1].slug;
                     }, 1000);
                 }
             }

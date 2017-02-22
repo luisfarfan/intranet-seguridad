@@ -16,17 +16,14 @@ $('#iniciar_sesion').on('click', event => {
         data: data,
         success: response => {
             if (objectHelper.isEmpty(response)) {
-                //mostrar div error
                 $('#div_error_message').html(showDivAlert('Usuario o contraseña no validos', 'danger'))
-
             } else {
                 $('#div_error_message').html(showDivAlert('Bienvenido!', 'success'));
                 $('#iniciar_sesion').addClass('disabled');
                 setTimeout(() => {
-                    console.log(response);
                     sessionHelper.setSession('usuario', response);
                     let session = sessionHelper.getSession();
-                    window.location.href = `${BASEURL}/${session.routes[2].slug}`;
+                    window.location.href = `${BASEURL}/${session.routes[1].slug}`;
                 }, 1000)
             }
         }

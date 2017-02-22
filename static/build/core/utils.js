@@ -31,6 +31,7 @@ define(["require", "exports"], function (require, exports) {
             interface_node = {};
             interface_node['title'] = value.descripcion;
             interface_node['key'] = value.id;
+            interface_node['icon'] = value.icon;
             if (value.modulos_hijos.length) {
                 interface_node['folder'] = true;
                 interface_node['children'] = [];
@@ -42,7 +43,8 @@ define(["require", "exports"], function (require, exports) {
                         'folder': node_value.modulos_hijos.length == 0 ? false : true,
                         'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTree(node_value.modulos_hijos),
                         'selected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
-                        'preselected': rol_id_array.indexOf(node_value.id) != -1 ? true : false
+                        'preselected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
+                        'icon': node_value.icon
                     });
                 });
                 interface_node['children'] = children_1;
@@ -50,6 +52,7 @@ define(["require", "exports"], function (require, exports) {
             }
             else {
                 interface_node['folder'] = true;
+                interface_node['icon'] = value.icon;
                 treejson.push(interface_node);
             }
         });
