@@ -1,6 +1,6 @@
 from .models import *
 from rest_framework import serializers
-from usuario_modulo.serializer import ModuloRolPermisosSerializer
+from usuario_modulo.serializer import ReadModuloRolPermisosSerializer
 
 
 class ModuloRolPermisosUsuarioSerializer(serializers.ModelSerializer):
@@ -10,7 +10,7 @@ class ModuloRolPermisosUsuarioSerializer(serializers.ModelSerializer):
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
-    modulorolpermisousuario = ModuloRolPermisosSerializer(many=True,read_only=True)
+    modulorolpermisousuario = ReadModuloRolPermisosSerializer(many=True, read_only=True)
 
     class Meta:
         model = Usuario

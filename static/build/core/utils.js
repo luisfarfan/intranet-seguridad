@@ -33,14 +33,14 @@ define(["require", "exports"], function (require, exports) {
             interface_node['key'] = value.id;
             interface_node['icon'] = value.icon;
             if (value.modulos_hijos.length) {
-                interface_node['folder'] = true;
+                //interface_node['folder'] = true;
                 interface_node['children'] = [];
                 var children_1 = [];
                 value.modulos_hijos.map(function (node_value, node_order) {
                     children_1.push({
                         'title': node_value.descripcion,
                         'key': node_value.id,
-                        'folder': node_value.modulos_hijos.length == 0 ? false : true,
+                        //'folder': node_value.modulos_hijos.length == 0 ? false : true,
                         'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTree(node_value.modulos_hijos),
                         'selected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
                         'preselected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
@@ -51,7 +51,7 @@ define(["require", "exports"], function (require, exports) {
                 treejson.push(interface_node);
             }
             else {
-                interface_node['folder'] = true;
+                //interface_node['folder'] = true;
                 interface_node['icon'] = value.icon;
                 treejson.push(interface_node);
             }

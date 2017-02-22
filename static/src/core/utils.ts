@@ -37,14 +37,14 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
         interface_node['key'] = value.id;
         interface_node['icon'] = value.icon;
         if (value.modulos_hijos.length) {
-            interface_node['folder'] = true;
+            //interface_node['folder'] = true;
             interface_node['children'] = [];
             let children: Array<any> = [];
             value.modulos_hijos.map((node_value: any, node_order: any) => {
                 children.push({
                     'title': node_value.descripcion,
                     'key': node_value.id,
-                    'folder': node_value.modulos_hijos.length == 0 ? false : true,
+                    //'folder': node_value.modulos_hijos.length == 0 ? false : true,
                     'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTree(node_value.modulos_hijos),
                     'selected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
                     'preselected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
@@ -54,7 +54,7 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
             interface_node['children'] = children;
             treejson.push(interface_node);
         } else {
-            interface_node['folder'] = true;
+            //interface_node['folder'] = true;
             interface_node['icon'] = value.icon;
             treejson.push(interface_node);
         }

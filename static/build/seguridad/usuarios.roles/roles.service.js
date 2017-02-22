@@ -26,7 +26,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        RolesService.prototype["delete"] = function (pk) {
+        RolesService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url + pk + "/",
                 type: 'DELETE'

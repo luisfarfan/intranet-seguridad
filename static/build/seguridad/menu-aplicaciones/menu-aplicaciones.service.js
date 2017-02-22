@@ -77,9 +77,17 @@ define(["require", "exports"], function (require, exports) {
     var ModuloService = (function () {
         function ModuloService() {
             this.url = {
+                modulo: BASEURL + "/rest_modulousuario/modulos/",
                 proyecto_sistema_modulos: BASEURL + "/rest_modulousuario/proyecto_sistema_modulos/"
             };
         }
+        ModuloService.prototype.getModulos = function (pk) {
+            if (pk === void 0) { pk = null; }
+            return $.ajax({
+                url: pk == null ? this.url.modulo : "" + this.url.modulo + pk + "/",
+                type: 'GET'
+            });
+        };
         ModuloService.prototype.getModulosRecursive = function (id_proyecto, id_sistema) {
             return $.ajax({
                 url: "" + this.url.proyecto_sistema_modulos + id_proyecto + "/" + id_sistema + "/",

@@ -1,14 +1,37 @@
-define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils", "../../core/helper.inei"], function (require, exports, menu_aplicaciones_service_1, utils, helper_inei_1) {
+define(["require", "exports", './menu-aplicaciones.service', '../../core/utils', '../../core/helper.inei'], function (require, exports, menu_aplicaciones_service_1, utils, helper_inei_1) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var proyectosService = new menu_aplicaciones_service_1.ProyectosService();
     var sistemasService = new menu_aplicaciones_service_1.SistemasService();
     var moduloService = new menu_aplicaciones_service_1.ModuloService();
+    var form_modulo_validate;
     var proyectos;
     var sistemas;
     var sistema_selected;
     var proyecto_selected;
-    var key_tree_node_selected;
+    var modulosRecursive;
+    var modulo_selected;
+    var key_tree_node_selected = null;
+    var jsonRulesModuloForm = {
+        nombre: {
+            maxlength: 100
+        },
+        descripcion: {
+            maxlength: 255
+        },
+        slug: {
+            maxlength: 50
+        },
+        codigo: {
+            maxlength: 8
+        },
+        template_html: {
+            maxlength: 255
+        },
+        icon: {
+            maxlength: 100
+        }
+    };
     var MenuAplicacionesController = {
         getProyectos: function (byPk) {
             proyectosService.getProyectos(byPk).done(function (data) {
@@ -48,8 +71,8 @@ define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils",
             });
         },
         getModuloRecursive: function (id_proyecto, id_sistema) {
-            console.log(id_proyecto, id_sistema);
             moduloService.getModulosRecursive(id_proyecto, id_sistema).done(function (data) {
+                modulosRecursive = data;
                 var treeFormat = utils.jsonFormatFancyTree(data);
                 var options_tree = {
                     checkbox: false,
@@ -64,9 +87,22 @@ define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils",
                         // Display list of selected nodes
                         var selNodes = data.tree.getSelectedNodes();
                         // convert to title/key array
+                        selNodes.length == 0 ? key_tree_node_selected = null : '';
                         var selKeys = $.map(selNodes, function (node) {
-                            key_tree_node_selected = node.key;
+                            key_tree_node_selected = parseInt(node.key);
+                            modulo_selected = objectHelper.findInArrayObjectRecursive(modulosRecursive, key_tree_node_selected, 'id', 'modulos_hijos');
+                            console.log(key_tree_node_selected, modulo_selected);
                         });
+                        if (key_tree_node_selected) {
+                            $('#btn_edit_modulo').prop('disabled', false);
+                            $('#btn_add_modulo').prop('disabled', false);
+                            $('#btn_delete_modulo').prop('disabled', false);
+                        }
+                        else {
+                            $('#btn_edit_modulo').prop('disabled', true);
+                            $('#btn_add_modulo').prop('disabled', true);
+                            $('#btn_delete_modulo').prop('disabled', true);
+                        }
                     },
                     click: function (event, data) {
                         if (!data.node.folder) {
@@ -89,14 +125,32 @@ define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils",
                 $('#tree_modulos').fancytree("destroy");
                 $('#tree_modulos').fancytree(options_tree);
             });
+        },
+        getJsonRulesModulo: function () {
+            return {};
         }
     };
     var appMenuAplicaciones = {
         init: function () {
             MenuAplicacionesController.getProyectos();
             MenuAplicacionesController.getSistemas();
+            form_modulo_validate = $('#form_modulo').validate(utils.validateForm(jsonRulesModuloForm));
+        },
+        setModal: function (modal_title) {
+            $('#modal_title_modulo_form').text(modal_title);
+            if (modulo_selected) {
+            }
+            else {
+                form_modulo_validate.resetForm();
+            }
         }
     };
     appMenuAplicaciones.init();
+    $('#btn_edit_modulo').on('click', function () {
+        appMenuAplicaciones.setModal('Editar Modulo');
+    });
+    $('#btn_add_modulo').on('click', function () {
+        appMenuAplicaciones.setModal('Agregar Modulo');
+    });
 });
 //# sourceMappingURL=menu-aplicaciones.view.js.map

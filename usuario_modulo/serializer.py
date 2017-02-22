@@ -8,13 +8,13 @@ class RecursiveSerializer(serializers.Serializer):
         return serializer.data
 
 
-class _ModuloSerializer(serializers.ModelSerializer):
+class CrudModuloSerializer(serializers.ModelSerializer):
     class Meta:
         model = Modulo
         fields = ('__all__')
 
 
-class ModuloSerializer(serializers.ModelSerializer):
+class ReadModuloSerializer(serializers.ModelSerializer):
     modulos_hijos = RecursiveSerializer(many=True, read_only=True)
 
     class Meta:
@@ -22,39 +22,45 @@ class ModuloSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
-class PermisoSerializer(serializers.ModelSerializer):
+class CrudPermisoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permiso
         fields = ('__all__')
 
 
-class ModuloRolSerializer(serializers.ModelSerializer):
-    permisos = PermisoSerializer(many=True, read_only=True)
-    modulo = _ModuloSerializer()
+class ReadModuloRolSerializer(serializers.ModelSerializer):
+    permisos = CrudPermisoSerializer(many=True, read_only=True)
+    modulo = ReadModuloSerializer()
 
     class Meta:
         model = ModuloRol
         fields = ('__all__')
 
 
-class ModelRolSerializer(serializers.ModelSerializer):
+class CrudRolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
         fields = ('__all__')
 
 
-class RolSerializer(serializers.ModelSerializer):
+class ReadRolSerializer(serializers.ModelSerializer):
     # modulo_rol = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
-    modulo_rol = ModuloRolSerializer(many=True)
+    modulo_rol = ReadModuloRolSerializer(many=True)
 
     class Meta:
         model = Rol
         fields = ('__all__')
 
 
-class ModuloRolPermisosSerializer(serializers.ModelSerializer):
-    modulorol = ModuloRolSerializer()
+class ReadModuloRolPermisosSerializer(serializers.ModelSerializer):
+    modulorol = ReadModuloRolSerializer()
 
+    class Meta:
+        model = ModuloRolPermisos
+        fields = ('__all__')
+
+
+class CrudModuloRolPermisosSerializer(serializers.ModelSerializer):
     class Meta:
         model = ModuloRolPermisos
         fields = ('__all__')

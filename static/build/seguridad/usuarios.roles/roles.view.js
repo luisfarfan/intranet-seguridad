@@ -1,4 +1,4 @@
-define(["require", "exports", "./roles.service", "../../core/helper.inei", "../../core/utils"], function (require, exports, roles_service_1, helper_inei_1, util) {
+define(["require", "exports", './roles.service', '../../core/helper.inei', '../../core/utils'], function (require, exports, roles_service_1, helper_inei_1, util) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();

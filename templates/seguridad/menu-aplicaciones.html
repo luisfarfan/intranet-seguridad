@@ -62,14 +62,23 @@
     <div class="col-md-6">
         <div class="panel panel-flat">
             <div class="panel-heading">
-                <h5 class="panel-title">Detalle<a class="heading-elements-toggle"><i
+                <h5 class="panel-title">Menu<a class="heading-elements-toggle"><i
                         class="icon-more"></i></a>
                 </h5>
                 <div class="heading-elements">
-                    <ul class="icons-list">
-                        <li><a data-action="collapse"></a></li>
-                        <li><a data-action="reload"></a></li>
-                    </ul>
+                    <div class="heading-btn">
+                        <button type="button" id="btn_edit_modulo" disabled data-toggle="modal"
+                                data-target="#modal_modulo_form"
+                                class="btn btn-primary btn-icon heading-btn legitRipple"><i
+                                class="icon-pen6"></i></button>
+                        <button type="button" id="btn_add_modulo" disabled data-toggle="modal"
+                                data-target="#modal_modulo_form"
+                                class="btn btn-success btn-icon heading-btn legitRipple"><i
+                                class="icon-plus3"></i></button>
+                        <button type="button" id="btn_delete_modulo" disabled data-toggle="modal"
+                                class="btn btn-danger btn-icon heading-btn legitRipple"><i
+                                class="icon-trash-alt"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -77,6 +86,76 @@
                 <div id="tree_modulos" class="tree-persistence well border-left-danger border-left-lg"></div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal_modulo_form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h6 id="modal_title_modulo_form" class="modal-title"></h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form_modulo" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Nombre</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="nombre" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Descripcion</label>
+                            <div class="col-lg-10">
+                                <textarea required name="descripcion"
+                                          class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Slug</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="slug" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Codigo</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="codigo" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Template Html</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="template_html" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="is_padre">
+                                    Es Modulo Padre?
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Icono</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="icon" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btn_submit_form" class="btn btn-primary legitRipple">Guardar</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -116,6 +195,7 @@
         </div>
     </div>
 
+
 {% endblock %}
 
 {% block js %}
@@ -132,5 +212,5 @@
     <script type="text/javascript" src="{% static "assets/js/plugins/trees/fancytree_childcounter.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/require.js" %}"
-        data-main="{% static "build/seguridad/menu-aplicaciones/menu-aplicaciones.view.js" %}"></script>
+            data-main="{% static "build/seguridad/menu-aplicaciones/menu-aplicaciones.view.js" %}"></script>
 {% endblock %}

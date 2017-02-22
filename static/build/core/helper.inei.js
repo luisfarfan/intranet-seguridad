@@ -32,6 +32,25 @@ define(["require", "exports"], function (require, exports) {
             });
             return formObject;
         };
+        ObjectHelper.prototype.findInArrayObjectRecursive = function (obj, value_search, key_search, key_where_recursive) {
+            var _this = this;
+            var res = [];
+            if (!this.isEmpty(obj)) {
+                obj.map(function (value, key) {
+                    if (key_search in value) {
+                        if (value[key_search] == value_search) {
+                            debugger;
+                            res.push(value);
+                            return false;
+                        }
+                        else {
+                            _this.findInArrayObjectRecursive(value[key_where_recursive], value_search, key_search, key_where_recursive);
+                        }
+                    }
+                });
+            }
+            return res;
+        };
         return ObjectHelper;
     }());
     exports.ObjectHelper = ObjectHelper;

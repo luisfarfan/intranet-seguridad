@@ -86,11 +86,20 @@ export class SistemasService {
 }
 
 interface UrlModulo {
+    modulo: string;
     proyecto_sistema_modulos: string;
 }
 export class ModuloService {
     private url: UrlModulo = {
+        modulo: `${BASEURL}/rest_modulousuario/modulos/`,
         proyecto_sistema_modulos: `${BASEURL}/rest_modulousuario/proyecto_sistema_modulos/`,
+    }
+
+    getModulos(pk: number = null): JQueryXHR {
+        return $.ajax({
+            url: pk == null ? this.url.modulo : `${this.url.modulo}${pk}/`,
+            type: 'GET'
+        });
     }
 
     getModulosRecursive(id_proyecto: number, id_sistema: number) {
