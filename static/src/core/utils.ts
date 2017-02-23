@@ -35,19 +35,18 @@ export function alert_confirm(callback: any, title = 'Está seguro de Guardar?',
         }
     });
 }
-
-export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
-    /**
-     * sample structure
-     * [
-     *  {title: "node1"},{title: "node2"},{title:"node3", folder:true,key:"__node3"},
-     *      children: [
-     *          {title: "sub_node1",
+/**
+ * sample structure
+ * [
+ *  {title: "node1"},{title: "node2"},{title:"node3", folder:true,key:"__node3"},
+ *      children: [
+ *          {title: "sub_node1",
      *              children: [
      *                  {title: "sub_node2"},{title: "sub_node3"},{title: "sub_node4"}]}]]
-     *
-     *
-     * **/
+ *
+ *
+ **/
+export function jsonFormatFancyTree(menu_json: any, rol_id_array: Array<number> = []) {
     let treejson: Array<any> = [];
     let interface_node: any = {};
     menu_json.map((value: any, key: any) => {
@@ -56,30 +55,28 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: any = []) {
         interface_node['key'] = value.id;
         interface_node['icon'] = value.icon;
         if (value.modulos_hijos.length) {
-            //interface_node['folder'] = true;
             interface_node['children'] = [];
             let children: Array<any> = [];
             value.modulos_hijos.map((node_value: any, node_order: any) => {
                 children.push({
                     'title': node_value.descripcion,
                     'key': node_value.id,
-                    //'folder': node_value.modulos_hijos.length == 0 ? false : true,
-                    'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTree(node_value.modulos_hijos),
+                    'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTree(node_value.modulos_hijos, rol_id_array),
                     'selected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
                     'preselected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
-                    'icon': node_value.icon
+                    'icon': node_value.icon,
                 });
             });
             interface_node['children'] = children;
             treejson.push(interface_node);
         } else {
-            //interface_node['folder'] = true;
-            interface_node['icon'] = value.icon;
+            interface_node['children'] = [];
+            interface_node['selected'] = rol_id_array.indexOf(value.id) != -1 ? true : false;
+            interface_node['preselected'] = rol_id_array.indexOf(value.id) != -1 ? true : false;
             treejson.push(interface_node);
         }
     });
     return treejson;
-
 }
 
 export function validateForm(rules: Object) {
