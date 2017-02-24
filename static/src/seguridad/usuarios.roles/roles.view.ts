@@ -2,7 +2,7 @@
  * Created by Administrador on 21/02/2017.
  */
 
-import RolesModel, {PermisosService} from './roles.service';
+import RolesModel, {PermisosService, ModulosRolService} from './roles.service';
 import {ObjectHelper, SessionHelper} from '../../core/helper.inei';
 import {IPermiso, IPermisos} from './roles_permisos.interface'
 import * as util from '../../core/utils';
@@ -21,7 +21,7 @@ var objectHelper = new ObjectHelper();
 var sessionHelper = new SessionHelper();
 var rolesModel = new RolesModel();
 var roles: Array<Object> = [];
-var rol_selected: RolSelected;
+var rol_selected: RolSelected = null;
 var session = sessionHelper.getSession();
 var tree_menu_format: Array<Object> = [];
 var node_keys_selected: Array<number> = [];
@@ -45,7 +45,7 @@ var form_rol_validate = $('#form_rol').validate(util.validateForm(RolJsonRules.f
 
 var utils: any = {
     enabledDisabledButtonModuloRol: () => {
-        if (node_keys_selected.length) {
+        if (rol_selected) {
             $('#btn_edit_modulo_rol_permiso').prop('disabled', false);
             $('#btn_save_modulo_rol').prop('disabled', false);
         } else {
@@ -55,14 +55,16 @@ var utils: any = {
     },
     diffDeletedAndEdited: () => {
         keys_modulos_deleted = keys_modulos_by_rol.filter(item => node_keys_selected.indexOf(item) < 0);
+        keys_modulos_added_edited = node_keys_selected.filter(item => keys_modulos_deleted.indexOf(item) < 0);
     }
 }
 
 var RolesController: any = {
-    getRoles: (pk: number = null) => {
+    getRoles: (pk: number = null, rol_id_selected: number = null) => {
         rolesModel.get().done((data) => {
             roles = data;
             RolesController.drawRoles();
+            rol_id_selected ? RolesController.getRolSelected(rol_selected.id) : '';
         })
     },
     drawRoles: () => {
@@ -118,6 +120,7 @@ var RolesController: any = {
                     return node.key;
                 });
                 node_keys_selected = selKeys;
+                utils.enabledDisabledButtonModuloRol();
             },
             dblclick: function (event: any, data: any) {
                 data.node.toggleSelected();
@@ -153,6 +156,24 @@ var RolesController: any = {
 
 }
 
+class ModuloRolController {
+    private modulorolService = new ModulosRolService();
+    private rolesController = RolesController;
+
+    constructor() {
+
+    }
+
+    editModulosRol(objectData: Object) {
+        this.modulorolService.editModulosRol(objectData).done(() => {
+            this.rolesController.getRoles(null, rol_selected.id);
+            util.showSwalAlert('Se ha editado con éxito!', 'Exito!', 'success');
+        }).fail((error: any) => {
+            console.log(error);
+        });
+    }
+}
+
 
 var permisosService = new PermisosService();
 var permiso_selected: IPermiso;
@@ -181,12 +202,22 @@ var PermisosController: any = {
         }))
     }
 }
-
+var moduloRolController = new ModuloRolController()
 var App: any = {
     init: () => {
         $('#btn_submit_form').on('click', (event: any) => {
             RolesController.addRol();
         });
+        $('#btn_save_modulo_rol').on('click', (event: any) => {
+            util.alert_confirm(() => {
+                utils.diffDeletedAndEdited();
+                moduloRolController.editModulosRol({
+                    id_rol: rol_selected.id,
+                    delete: keys_modulos_deleted,
+                    edited: keys_modulos_added_edited
+                })
+            }, 'Esta seguro de guardar?', 'info')
+        })
         RolesController.getRoles();
         PermisosController.getPermisos();
         utils.enabledDisabledButtonModuloRol();

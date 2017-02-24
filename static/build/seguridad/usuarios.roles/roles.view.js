@@ -7,7 +7,7 @@ define(["require", "exports", "./roles.service", "../../core/helper.inei", "../.
     var sessionHelper = new helper_inei_1.SessionHelper();
     var rolesModel = new roles_service_1["default"]();
     var roles = [];
-    var rol_selected;
+    var rol_selected = null;
     var session = sessionHelper.getSession();
     var tree_menu_format = [];
     var node_keys_selected = [];
@@ -27,7 +27,7 @@ define(["require", "exports", "./roles.service", "../../core/helper.inei", "../.
     var form_rol_validate = $('#form_rol').validate(util.validateForm(RolJsonRules.form_rol));
     var utils = {
         enabledDisabledButtonModuloRol: function () {
-            if (node_keys_selected.length) {
+            if (rol_selected) {
                 $('#btn_edit_modulo_rol_permiso').prop('disabled', false);
                 $('#btn_save_modulo_rol').prop('disabled', false);
             }
@@ -38,14 +38,17 @@ define(["require", "exports", "./roles.service", "../../core/helper.inei", "../.
         },
         diffDeletedAndEdited: function () {
             keys_modulos_deleted = keys_modulos_by_rol.filter(function (item) { return node_keys_selected.indexOf(item) < 0; });
+            keys_modulos_added_edited = node_keys_selected.filter(function (item) { return keys_modulos_deleted.indexOf(item) < 0; });
         }
     };
     var RolesController = {
-        getRoles: function (pk) {
+        getRoles: function (pk, rol_id_selected) {
             if (pk === void 0) { pk = null; }
+            if (rol_id_selected === void 0) { rol_id_selected = null; }
             rolesModel.get().done(function (data) {
                 roles = data;
                 RolesController.drawRoles();
+                rol_id_selected ? RolesController.getRolSelected(rol_selected.id) : '';
             });
         },
         drawRoles: function () {
@@ -95,6 +98,7 @@ define(["require", "exports", "./roles.service", "../../core/helper.inei", "../.
                         return node.key;
                     });
                     node_keys_selected = selKeys;
+                    utils.enabledDisabledButtonModuloRol();
                 },
                 dblclick: function (event, data) {
                     data.node.toggleSelected();
@@ -128,6 +132,22 @@ define(["require", "exports", "./roles.service", "../../core/helper.inei", "../.
             }
         }
     };
+    var ModuloRolController = (function () {
+        function ModuloRolController() {
+            this.modulorolService = new roles_service_1.ModulosRolService();
+            this.rolesController = RolesController;
+        }
+        ModuloRolController.prototype.editModulosRol = function (objectData) {
+            var _this = this;
+            this.modulorolService.editModulosRol(objectData).done(function () {
+                _this.rolesController.getRoles(null, rol_selected.id);
+                util.showSwalAlert('Se ha editado con éxito!', 'Exito!', 'success');
+            }).fail(function (error) {
+                console.log(error);
+            });
+        };
+        return ModuloRolController;
+    }());
     var permisosService = new roles_service_1.PermisosService();
     var permiso_selected;
     var permisos;
@@ -149,10 +169,21 @@ define(["require", "exports", "./roles.service", "../../core/helper.inei", "../.
             }));
         }
     };
+    var moduloRolController = new ModuloRolController();
     var App = {
         init: function () {
             $('#btn_submit_form').on('click', function (event) {
                 RolesController.addRol();
+            });
+            $('#btn_save_modulo_rol').on('click', function (event) {
+                util.alert_confirm(function () {
+                    utils.diffDeletedAndEdited();
+                    moduloRolController.editModulosRol({
+                        id_rol: rol_selected.id,
+                        "delete": keys_modulos_deleted,
+                        edited: keys_modulos_added_edited
+                    });
+                }, 'Esta seguro de guardar?', 'info');
             });
             RolesController.getRoles();
             PermisosController.getPermisos();

@@ -10,4 +10,5 @@ router_modulo_usuario.register(r'permiso', CrudPermisoViewSet)
 
 urlpatterns = [
     url(r'proyecto_sistema_modulos/(?P<id_proyecto>.+)/(?P<id_sistema>.+)/$', ReadModuloSerializerRecursive.as_view()),
+    url(r'edit_modulorol/$', apiModuloRol.editModulosRol),
 ]

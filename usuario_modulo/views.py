@@ -40,14 +40,20 @@ class ReadModuloSerializerRecursive(generics.ListAPIView):
                                      proyectosistema__sistemas_id=id_sistema)
 
 
-class ModuloRol:
-    def addModulostoRol(self, request):
+class apiModuloRol:
+    def editModulosRol(request):
         id_rol = request.POST['id_rol']
-        id_modulos = request.POST.getlist('modulos[]')
+        delete = request.POST.getlist('delete[]')
+        edited = request.POST.getlist('edited[]')
 
-        bulk = []
-        for i in id_modulos:
-            proyecto_sistema = ProyectoSistema(sistemas=Sistema.objects.get(pk=i),
-                                               proyectos=Proyecto.objects.get(pk=id_proyecto))
-            bulk.append(proyecto_sistema)
-        ProyectoSistema.objects.bulk_create(bulk)
+        for i in delete:
+            ModuloRol.objects.get(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i)).delete()
+
+        for i in edited:
+            print(i)
+            modulorol_edited = ModuloRol.objects.filter(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i))
+            if modulorol_edited.count() == 0:
+                modulorol_added = ModuloRol(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i))
+                modulorol_added.save()
+
+        return JsonResponse({'msg': 'Editado exitosamente'})

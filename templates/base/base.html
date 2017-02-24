@@ -72,8 +72,13 @@
     BASE_URL = protocol + '//' + host;
 
     var MODULO_ID = '{{ modulo_id }}'
-
 </script>
+
+<!-- Utils Js files -->
+<script type="text/javascript" src="{% static "assets/js/plugins/forms/selects/select2.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/notifications/sweet_alert.min.js" %}"></script>
 
 <!-- /core JS files -->
 {% block js %}

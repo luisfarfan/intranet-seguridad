@@ -72,5 +72,21 @@ define(["require", "exports"], function (require, exports) {
         return PermisosService;
     }());
     exports.PermisosService = PermisosService;
+    var ModulosRolService = (function () {
+        function ModulosRolService() {
+            this.url = {
+                modulosrol: BASEURL + "/rest_modulousuario/edit_modulorol/"
+            };
+        }
+        ModulosRolService.prototype.editModulosRol = function (objectData) {
+            return $.ajax({
+                url: "" + this.url.modulosrol,
+                type: 'POST',
+                data: objectData
+            });
+        };
+        return ModulosRolService;
+    }());
+    exports.ModulosRolService = ModulosRolService;
 });
 //# sourceMappingURL=roles.service.js.map

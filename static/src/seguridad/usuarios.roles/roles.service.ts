@@ -77,3 +77,20 @@ export class PermisosService {
         });
     }
 }
+
+interface UrlModulosRol {
+    modulosrol: string;
+}
+export class ModulosRolService {
+    private url: UrlModulosRol = {
+        modulosrol: `${BASEURL}/rest_modulousuario/edit_modulorol/`,
+    }
+
+    editModulosRol(objectData: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.modulosrol}`,
+            type: 'POST',
+            data: objectData,
+        });
+    }
+}
