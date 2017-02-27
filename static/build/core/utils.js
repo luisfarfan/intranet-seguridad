@@ -79,6 +79,57 @@ define(["require", "exports"], function (require, exports) {
         return treejson;
     }
     exports.jsonFormatFancyTree = jsonFormatFancyTree;
+    function jsonFormatFancyTreeSelecteds(menu_json, rol_id_array) {
+        if (rol_id_array === void 0) { rol_id_array = []; }
+        var treejson = [];
+        var interface_node = {};
+        menu_json.map(function (value, key) {
+            if (findChilds(value, rol_id_array)) {
+                interface_node = {};
+                interface_node['title'] = value.descripcion;
+                interface_node['key'] = value.id;
+                interface_node['icon'] = value.icon;
+                interface_node['children'] = [];
+                var children_2 = [];
+                value.modulos_hijos.map(function (node_value, node_order) {
+                    if (findChilds(node_value, rol_id_array)) {
+                        children_2.push({
+                            'title': node_value.descripcion,
+                            'key': node_value.id,
+                            'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTreeSelecteds(node_value.modulos_hijos, rol_id_array),
+                            'selected': false,
+                            'preselected': false,
+                            'icon': node_value.icon
+                        });
+                    }
+                });
+                interface_node['children'] = children_2;
+                treejson.push(interface_node);
+            }
+        });
+        return treejson;
+    }
+    exports.jsonFormatFancyTreeSelecteds = jsonFormatFancyTreeSelecteds;
+    function findChilds(menu, rol_id_array) {
+        var has_child = false;
+        var count = 0;
+        if (rol_id_array.indexOf(menu.id) != -1) {
+            count++;
+        }
+        else {
+            if (menu.modulos_hijos.length) {
+                menu.modulos_hijos.map(function (value, key) {
+                    if (rol_id_array.indexOf(value.id) != -1) {
+                        count++;
+                    }
+                    else {
+                        findChilds(value, rol_id_array);
+                    }
+                });
+            }
+        }
+        return has_child = count > 0;
+    }
     function validateForm(rules) {
         var setOptions = {
             ignore: 'input[type=hidden], .select2-search__field',

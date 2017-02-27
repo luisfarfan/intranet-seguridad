@@ -31,39 +31,6 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-primary panel-bordered">
-            <div class="panel-heading">
-                <h6 class="panel-title">Permisos<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
-                <div class="heading-elements">
-                    <div class="heading-btn">
-                        <button type="button" id="btn_add_permiso" data-popup="tooltip" title="Agregar Permiso"
-                                data-toggle="modal"
-                                data-target="#modal_permiso"
-                                class="btn btn-success btn-icon heading-btn legitRipple"><i
-                                class="icon-plus3"></i></button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table id="table_permisos" class="table table-bordered">
-                        <thead>
-                        <tr class="bg-blue">
-                            <th>N°</th>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Código</th>
-                            <th>Sufijo DOM</th>
-                            <th>Acción</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="col-md-6">
         <div class="panel panel-flat">
@@ -88,7 +55,26 @@
             </div>
 
             <div class="panel-body">
-                <div id="tree_menu_rol" class="tree-persistence well border-left-danger border-left-lg"></div>
+                <div class="tabbable tab-content-bordered">
+                    <ul class="nav nav-tabs bg-primary-400 nav-tabs-component nav-justified">
+                        <li id="tab_modulos_rol" class="active"><a href="#colored-tab1" data-toggle="tab">Asignación y/o
+                            Edición de Modulos</a></li>
+                        <li id="tab_modulos_rol_permisos"><a href="#colored-tab2" data-toggle="tab">Asignación y/o
+                            Edición de Modulos Permiso</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane has-padding active" id="colored-tab1">
+                            <div id="tree_menu_rol"
+                                 class="tree-persistence well border-left-danger border-left-lg"></div>
+                        </div>
+
+                        <div class="tab-pane has-padding" id="colored-tab2">
+                            <div id="tree_modulo_rol_permiso"
+                                 class="tree-persistence well border-left-danger border-left-lg"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -130,58 +116,60 @@
         </div>
     </div>
 
-    <div id="modal_permiso" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h6 class="modal-title">Agregar Rol</h6>
-                </div>
-
-                <div class="modal-body">
-                    <form id="form_permiso" class="form-horizontal">
-                        <div class="form-group">
-                            <label class="control-label col-lg-2">Nombre</label>
-                            <div class="col-lg-10">
-                                <input type="text" required name="nombre" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-lg-2">Descripción</label>
-                            <div class="col-lg-10">
-                                <input type="text" required name="descripcion" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-lg-2">Código</label>
-                            <div class="col-lg-10">
-                                <input type="text" required name="codigo" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-lg-2">Sufijo DOM</label>
-                            <div class="col-lg-10">
-                                <input type="text" required name="dom_name_sufijo" class="form-control">
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
-                    <button type="button" id="btn_submit_form" class="btn btn-primary legitRipple">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {#    <div id="modal_permiso" class="modal fade">#}
+    {#        <div class="modal-dialog">#}
+    {#            <div class="modal-content">#}
+    {#                <div class="modal-header bg-primary">#}
+    {#                    <button type="button" class="close" data-dismiss="modal">×</button>#}
+    {#                    <h6 class="modal-title">Agregar Rol</h6>#}
+    {#                </div>#}
+    {##}
+    {#                <div class="modal-body">#}
+    {#                    <form id="form_permiso" class="form-horizontal">#}
+    {#                        <div class="form-group">#}
+    {#                            <label class="control-label col-lg-2">Nombre</label>#}
+    {#                            <div class="col-lg-10">#}
+    {#                                <input type="text" required name="nombre" class="form-control">#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {##}
+    {#                        <div class="form-group">#}
+    {#                            <label class="control-label col-lg-2">Descripción</label>#}
+    {#                            <div class="col-lg-10">#}
+    {#                                <input type="text" required name="descripcion" class="form-control">#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="form-group">#}
+    {#                            <label class="control-label col-lg-2">Código</label>#}
+    {#                            <div class="col-lg-10">#}
+    {#                                <input type="text" required name="codigo" class="form-control">#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                        <div class="form-group">#}
+    {#                            <label class="control-label col-lg-2">Sufijo DOM</label>#}
+    {#                            <div class="col-lg-10">#}
+    {#                                <input type="text" required name="dom_name_sufijo" class="form-control">#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {##}
+    {#                    </form>#}
+    {#                </div>#}
+    {##}
+    {#                <div class="modal-footer">#}
+    {#                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>#}
+    {#                    <button type="button" id="btn_submit_form" class="btn btn-primary legitRipple">Guardar</button>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
 
 {% endblock %}
 
 {% block js %}
     <script type="text/javascript"
             src="{% static "assets/js/plugins/forms/selects/bootstrap_multiselect.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/core.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/effects.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/interactions.min.js" %}"></script>

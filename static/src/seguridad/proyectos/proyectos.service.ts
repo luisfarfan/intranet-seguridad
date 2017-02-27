@@ -12,7 +12,7 @@ export class ProyectosService {
     private url: UrlProyectos = {
         proyectos: `${BASEURL}/rest_proyectos/proyecto/`,
         sistemas_proyecto: `${BASEURL}/rest_proyectos/sistemas_proyecto/`,
-        proyecto_sistema: `${BASEURL}/rest_proyectos/proyecto_sistema/`
+        proyecto_sistema: `${BASEURL}/rest_proyectos/get_proyecto_sistema/`
     };
 
     getSistemasProyecto(): JQueryXHR {

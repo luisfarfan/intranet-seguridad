@@ -79,6 +79,62 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: Array<number> 
     return treejson;
 }
 
+interface MenuTree {
+    id: number,
+    descripcion: string,
+    icon: string,
+    modulos_hijos: MenuTree[],
+}
+export function jsonFormatFancyTreeSelecteds(menu_json: MenuTree[], rol_id_array: Array<number> = []) {
+    let treejson: Array<any> = [];
+    let interface_node: any = {};
+    menu_json.map((value: MenuTree, key: any) => {
+        if (findChilds(value, rol_id_array)) {
+            interface_node = {};
+            interface_node['title'] = value.descripcion;
+            interface_node['key'] = value.id;
+            interface_node['icon'] = value.icon;
+            interface_node['children'] = [];
+            let children: Array<any> = [];
+            value.modulos_hijos.map((node_value: MenuTree, node_order: any) => {
+                if (findChilds(node_value, rol_id_array)) {
+                    children.push({
+                        'title': node_value.descripcion,
+                        'key': node_value.id,
+                        'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTreeSelecteds(node_value.modulos_hijos, rol_id_array),
+                        'selected': false,
+                        'preselected': false,
+                        'icon': node_value.icon,
+                    });
+                }
+            });
+            interface_node['children'] = children;
+            treejson.push(interface_node);
+        }
+    });
+    return treejson;
+}
+
+function findChilds(menu: MenuTree, rol_id_array: Array<number>): boolean {
+    let has_child: boolean = false;
+    let count: number = 0;
+    if (rol_id_array.indexOf(menu.id) != -1) {
+        count++;
+    } else {
+        if (menu.modulos_hijos.length) {
+            menu.modulos_hijos.map((value: MenuTree, key: number) => {
+                if (rol_id_array.indexOf(value.id) != -1) {
+                    count++;
+                } else {
+                    findChilds(value, rol_id_array);
+                }
+            });
+        }
+    }
+
+    return has_child = count > 0;
+}
+
 export function validateForm(rules: Object) {
     let setOptions = {
         ignore: 'input[type=hidden], .select2-search__field', // ignore hidden fields
@@ -158,11 +214,11 @@ interface optionsTable {
 }
 export function drawTable(data: Array<Object>, campos: Array<string>, pk: string = null, options: optionsTable = null) {
     let html: string = '';
-    data.map((value: any, key: number)=> {
+    data.map((value: any, key: number) => {
         html += `<tr>`;
 
         html += options.enumerar ? `<td>${key + 1}</td>` : '';
-        campos.map((val: any, pos: any)=> {
+        campos.map((val: any, pos: any) => {
             html += `<td>${value[val]}</td>`;
         })
         if (options !== null) {

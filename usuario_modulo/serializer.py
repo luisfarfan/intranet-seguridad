@@ -29,7 +29,7 @@ class CrudPermisoSerializer(serializers.ModelSerializer):
 
 
 class ReadModuloRolSerializer(serializers.ModelSerializer):
-    permisos = CrudPermisoSerializer(many=True, read_only=True)
+    # permisos = CrudPermisoSerializer(many=True, read_only=True)
     modulo = ReadModuloSerializer()
 
     class Meta:

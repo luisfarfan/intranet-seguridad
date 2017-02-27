@@ -4,13 +4,20 @@ define(["require", "exports"], function (require, exports) {
         function PermisosService() {
             this.url = {
                 permisos: BASEURL + "/rest_modulousuario/permiso/",
-                permisos_proyecto_sistemas: BASEURL + "/rest_modulousuario/proyecto_sistema_permisos/"
+                permisos_proyecto_sistemas: BASEURL + "/rest_modulousuario/proyecto_sistema_permisos/",
+                permisos_genericos: BASEURL + "/rest_modulousuario/permisos_genericos/"
             };
         }
         PermisosService.prototype.get = function (pk) {
             if (pk === void 0) { pk = null; }
             return $.ajax({
                 url: pk == null ? this.url.permisos : "" + this.url.permisos + pk + "/",
+                type: 'GET'
+            });
+        };
+        PermisosService.prototype.getGenericos = function () {
+            return $.ajax({
+                url: this.url.permisos_genericos,
                 type: 'GET'
             });
         };
@@ -34,7 +41,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        PermisosService.prototype.delete = function (pk) {
+        PermisosService.prototype["delete"] = function (pk) {
             return $.ajax({
                 url: "" + this.url.permisos + pk + "/",
                 type: 'DELETE'

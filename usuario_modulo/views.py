@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from .serializer import *
 from .models import Rol, Permiso, Modulo
-from rest_framework.views import APIView
 from rest_framework import generics, viewsets
 
 
@@ -18,6 +17,13 @@ class ReadModulosRolViewSet(viewsets.ModelViewSet):
 class CrudPermisoViewSet(viewsets.ModelViewSet):
     serializer_class = CrudPermisoSerializer
     queryset = Permiso.objects.all()
+
+
+class ReadPermisoGenericosViewSet(generics.ListAPIView):
+    serializer_class = CrudPermisoSerializer
+
+    def get_queryset(self):
+        return Permiso.objects.filter(proyectosistema__isnull=True)
 
 
 class ReadPermisobyProyectoSistemaViewSet(generics.ListAPIView):
@@ -40,6 +46,11 @@ class CrudModuloRolViewset(viewsets.ModelViewSet):
     queryset = ModuloRol.objects.all()
 
 
+class ReadModuloRolSerializer(viewsets.ModelViewSet):
+    serializer_class = ReadModuloRolSerializer
+    queryset = ModuloRol.objects.all()
+
+
 class ReadModuloSerializerRecursive(generics.ListAPIView):
     serializer_class = ReadModuloSerializer
 
@@ -48,6 +59,14 @@ class ReadModuloSerializerRecursive(generics.ListAPIView):
         id_proyecto = self.kwargs['id_proyecto']
         return Modulo.objects.filter(proyectosistema__proyectos_id=id_proyecto,
                                      proyectosistema__sistemas_id=id_sistema)
+
+
+class apiPermiso:
+    def getPermisosProyectoSistema(proyectosistema):
+        generics_permiso = Permiso.objects.filter(proyectosistema__isnull=True).values()
+        proyectosistema_permiso = Permiso.objects.filter(proyectosistema=proyectosistema).values()
+
+        return JsonResponse(list(generics_permiso | proyectosistema_permiso), safe=False)
 
 
 class apiModuloRol:

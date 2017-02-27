@@ -5,7 +5,7 @@ define(["require", "exports"], function (require, exports) {
             this.url = {
                 proyectos: BASEURL + "/rest_proyectos/proyecto/",
                 sistemas_proyecto: BASEURL + "/rest_proyectos/sistemas_proyecto/",
-                proyecto_sistema: BASEURL + "/rest_proyectos/proyecto_sistema/"
+                proyecto_sistema: BASEURL + "/rest_proyectos/get_proyecto_sistema/"
             };
         }
         ProyectosService.prototype.getSistemasProyecto = function () {

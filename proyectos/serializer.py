@@ -23,6 +23,8 @@ class SistemasxProyectoSerializer(serializers.ModelSerializer):
 
 
 class ProyectosSistemasSerializer(serializers.ModelSerializer):
+    sistemas = SistemaSerializer(many=True, read_only=True)
+
     class Meta:
         model = ProyectoSistema
         fields = ('__all__')

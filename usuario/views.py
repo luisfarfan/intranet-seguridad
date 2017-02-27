@@ -3,8 +3,8 @@ from .serializer import *
 from rest_framework.views import APIView
 from rest_framework import generics, viewsets
 from .models import Usuario
-from usuario_modulo.models import Modulo, ModuloRolPermisos
-from usuario_modulo.serializer import ReadModuloSerializer
+from usuario_modulo.models import Modulo, ModuloRolPermisos, ModuloRol
+from usuario_modulo.serializer import ReadModuloSerializer, ReadModuloRolSerializer
 from django.contrib.sessions.models import Session
 
 
@@ -31,8 +31,9 @@ class UserApi(object):
                 # menu = ModuloSerializer(instance=Modulo.objects.exclude(proyectosistema__isnull=True).filter(
                 #   modulorol__modulorolpermisos__modulorolpermisosusuario__usuario__pk=user[0].id).distinct(),
                 #                      many=True).data
-                menu = ReadModuloSerializer(instance=Modulo.objects.exclude(proyectosistema__isnull=True).distinct(),
-                                            many=True).data
+                menu = ReadModuloSerializer(
+                    instance=Modulo.objects.exclude(proyectosistema__isnull=True).distinct(),
+                    many=True).data
 
                 request.session['user_data'] = user_data[0]
                 request.session['routes'] = list(routes)

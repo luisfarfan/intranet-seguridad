@@ -17,6 +17,11 @@ class ProyectoSistemaViewSet(viewsets.ModelViewSet):
     queryset = ProyectoSistema.objects.all()
 
 
+class DetailProyectoSistemaViewSet(viewsets.ModelViewSet):
+    serializer_class = ProyectosSistemasSerializer
+    queryset = ProyectoSistema.objects.all()
+
+
 class ReadProyectoSistemaViewSet(generics.ListAPIView):
     serializer_class = ProyectosSistemasSerializer
 

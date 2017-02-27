@@ -1,7 +1,7 @@
 /**
  * Created by Administrador on 21/02/2017.
  */
-define(["require", "exports", './roles.service', '../../core/helper.inei', '../../core/utils'], function (require, exports, roles_service_1, helper_inei_1, util) {
+define(["require", "exports", "./roles.service", "../permisos/permisos.service", "../../core/helper.inei", "../../core/utils"], function (require, exports, roles_service_1, permisos_service_1, helper_inei_1, util) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();
@@ -10,8 +10,10 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
     var rol_selected = null;
     var session = sessionHelper.getSession();
     var tree_menu_format = [];
+    var tree_menu_format_selecteds = [];
     var node_keys_selected = [];
     var keys_modulos_by_rol = [];
+    var key_tree_node_selected = null;
     var keys_modulos_deleted = [];
     var keys_modulos_added_edited = [];
     var RolJsonRules = {
@@ -27,9 +29,35 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
     var form_rol_validate = $('#form_rol').validate(util.validateForm(RolJsonRules.form_rol));
     var utils = {
         enabledDisabledButtonModuloRol: function () {
+            $('#tab_modulos_rol').click(function () {
+                if (rol_selected) {
+                    $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
+                    $('#btn_save_modulo_rol').prop('disabled', false);
+                }
+                else {
+                    $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
+                    $('#btn_save_modulo_rol').prop('disabled', true);
+                }
+            });
+            $('#tab_modulos_rol_permisos').click(function () {
+                if (rol_selected) {
+                    $('#btn_edit_modulo_rol_permiso').prop('disabled', false);
+                    $('#btn_save_modulo_rol').prop('disabled', true);
+                }
+                else {
+                    $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
+                    $('#btn_save_modulo_rol').prop('disabled', true);
+                }
+            });
             if (rol_selected) {
-                $('#btn_edit_modulo_rol_permiso').prop('disabled', false);
-                $('#btn_save_modulo_rol').prop('disabled', false);
+                if ($('#tab_modulos_rol').hasClass('active')) {
+                    $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
+                    $('#btn_save_modulo_rol').prop('disabled', false);
+                }
+                else if ($('#tab_modulos_rol_permisos').hasClass('active')) {
+                    $('#btn_edit_modulo_rol_permiso').prop('disabled', false);
+                    $('#btn_save_modulo_rol').prop('disabled', true);
+                }
             }
             else {
                 $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
@@ -69,10 +97,12 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
                     keys_modulos_by_rol.push(value.modulo.id);
                 });
                 tree_menu_format = util.jsonFormatFancyTree(session.menu, keys_modulos_by_rol);
+                tree_menu_format_selecteds = util.jsonFormatFancyTreeSelecteds(session.menu, keys_modulos_by_rol);
             }
             else {
                 tree_menu_format = util.jsonFormatFancyTree(session.menu);
             }
+            utils.enabledDisabledButtonModuloRol();
             var options_tree = {
                 checkbox: true,
                 selectMode: 3,
@@ -98,7 +128,7 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
                         return node.key;
                     });
                     node_keys_selected = selKeys;
-                    utils.enabledDisabledButtonModuloRol();
+                    //utils.enabledDisabledButtonModuloRol();
                 },
                 dblclick: function (event, data) {
                     data.node.toggleSelected();
@@ -114,9 +144,47 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
                 cookieId: "fancytree-Cb3",
                 idPrefix: "fancytree-Cb3-"
             };
+            var options_tree_selecteds = {
+                checkbox: false,
+                selectMode: 1,
+                source: tree_menu_format_selecteds,
+                beforeSelect: function (event, data) {
+                    if (data.node.folder) {
+                        return false;
+                    }
+                },
+                select: function (event, data) {
+                    // Display list of selected nodes
+                    var selNodes = data.tree.getSelectedNodes();
+                    // convert to title/key array
+                    selNodes.length == 0 ? key_tree_node_selected = null : '';
+                    var selKeys = $.map(selNodes, function (node) {
+                        key_tree_node_selected = parseInt(node.key);
+                    });
+                },
+                click: function (event, data) {
+                    if (!data.node.folder) {
+                        data.node.toggleSelected();
+                    }
+                },
+                dblclick: function (event, data) {
+                    data.node.toggleExpanded();
+                },
+                keydown: function (event, data) {
+                    if (event.which === 32) {
+                        data.node.toggleSelected();
+                        return false;
+                    }
+                },
+                cookieId: "fancytree-Cb3",
+                idPrefix: "fancytree-Cb3-"
+            };
             $('#tree_menu_rol').fancytree(options_tree);
             $('#tree_menu_rol').fancytree("destroy");
             $('#tree_menu_rol').fancytree(options_tree);
+            $('#tree_modulo_rol_permiso').fancytree(options_tree_selecteds);
+            $('#tree_modulo_rol_permiso').fancytree("destroy");
+            $('#tree_modulo_rol_permiso').fancytree(options_tree_selecteds);
         },
         addRol: function () {
             if (form_rol_validate.valid()) {
@@ -148,7 +216,7 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
         };
         return ModuloRolController;
     }());
-    var permisosService = new roles_service_1.PermisosService();
+    var permisosService = new permisos_service_1.PermisosService();
     var permiso_selected;
     var permisos;
     var PermisosController = {
@@ -156,16 +224,22 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
             permisosService.get().done((function (data) {
                 var html = '';
                 permisos = data;
-                permisos.map(function (value, key) {
-                    html += "<tr><td>" + (key + 1) + "</td><td>" + value.nombre + "</td><td>" + value.descripcion + "</td><td>" + value.codigo + "</td><td>" + value.dom_name_sufijo + "</td>\n                        <td><ul class=\"icons-list\">\n                            <li name=\"li_permiso_update\" data-value=" + value.id + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>\n                            <li name=\"li_permiso_delete\" data-value=" + value.id + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>\n\t\t\t\t\t\t</ul></td></tr>";
-                });
-                $('#table_permisos').find('tbody').html(html);
-                $('li[name="li_permiso_update"]').on('click', function (event) {
-                    // getRolSelected($(event.currentTarget).data('value'));
-                });
-                $('li[name="li_permiso_delete"]').on('click', function (event) {
-                    // getRolSelected($(event.currentTarget).data('value'));
-                });
+                // permisos.map((value, key) => {
+                //     html += `<tr><td>${key + 1}</td><td>${value.nombre}</td><td>${value.descripcion}</td><td>${value.codigo}</td><td>${value.dom_name_sufijo}</td>
+                //             <td><ul class="icons-list">
+                //                 <li name="li_permiso_update" data-value=${value.id} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>
+                //                 <li name="li_permiso_delete" data-value=${value.id} class="text-danger-600"><a><i class="icon-trash"></i></a></li>
+                // 		</ul></td></tr>`
+                // })
+                // $('#table_permisos').find('tbody').html(html);
+                //
+                // $('li[name="li_permiso_update"]').on('click', (event: any) => {
+                //     // getRolSelected($(event.currentTarget).data('value'));
+                // });
+                //
+                // $('li[name="li_permiso_delete"]').on('click', (event: any) => {
+                //     // getRolSelected($(event.currentTarget).data('value'));
+                // });
             }));
         }
     };
@@ -180,7 +254,7 @@ define(["require", "exports", './roles.service', '../../core/helper.inei', '../.
                     utils.diffDeletedAndEdited();
                     moduloRolController.editModulosRol({
                         id_rol: rol_selected.id,
-                        delete: keys_modulos_deleted,
+                        "delete": keys_modulos_deleted,
                         edited: keys_modulos_added_edited
                     });
                 }, 'Esta seguro de guardar?', 'info');

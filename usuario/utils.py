@@ -13,7 +13,6 @@ def recursiveMenu(menu, base_url, module_id):
     html = ''
     css_class = ''
     for i in menu:
-
         if len(i['modulos_hijos']):
             if module_id == i['id']:
                 css_class = """class='active'"""
