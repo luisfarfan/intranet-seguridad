@@ -20,6 +20,16 @@ class CrudPermisoViewSet(viewsets.ModelViewSet):
     queryset = Permiso.objects.all()
 
 
+class ReadPermisobyProyectoSistemaViewSet(generics.ListAPIView):
+    serializer_class = CrudPermisoSerializer
+
+    def get_queryset(self):
+        id_sistema = self.kwargs['id_sistema']
+        id_proyecto = self.kwargs['id_proyecto']
+        return Permiso.objects.filter(proyectosistema__proyectos_id=id_proyecto,
+                                      proyectosistema__sistemas_id=id_sistema)
+
+
 class CrudModuloViewSet(viewsets.ModelViewSet):
     serializer_class = CrudModuloSerializer
     queryset = Modulo.objects.all()

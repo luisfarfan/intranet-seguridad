@@ -138,5 +138,23 @@ define(["require", "exports"], function (require, exports) {
         return objectForm;
     }
     exports.serializeForm = serializeForm;
+    function drawTable(data, campos, pk, options) {
+        if (pk === void 0) { pk = null; }
+        if (options === void 0) { options = null; }
+        var html = '';
+        data.map(function (value, key) {
+            html += "<tr>";
+            html += options.enumerar ? "<td>" + (key + 1) + "</td>" : '';
+            campos.map(function (val, pos) {
+                html += "<td>" + value[val] + "</td>";
+            });
+            if (options !== null) {
+                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n\t\t\t\t\t\t </ul></td>";
+            }
+            html += "</tr>";
+        });
+        $("#" + options.table_id).find('tbody').html(html);
+    }
+    exports.drawTable = drawTable;
 });
 //# sourceMappingURL=utils.js.map

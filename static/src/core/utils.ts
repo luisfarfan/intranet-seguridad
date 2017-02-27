@@ -150,4 +150,30 @@ export function serializeForm(id_form: string) {
 
     return objectForm;
 }
+interface optionsTable {
+    edit_name: string,
+    delete_name: string,
+    enumerar: boolean,
+    table_id: string
+}
+export function drawTable(data: Array<Object>, campos: Array<string>, pk: string = null, options: optionsTable = null) {
+    let html: string = '';
+    data.map((value: any, key: number)=> {
+        html += `<tr>`;
+
+        html += options.enumerar ? `<td>${key + 1}</td>` : '';
+        campos.map((val: any, pos: any)=> {
+            html += `<td>${value[val]}</td>`;
+        })
+        if (options !== null) {
+            html += `<td><ul class="icons-list">
+                            ${options.edit_name !== '' ? `<li name="${options.edit_name}" data-value=${value[pk]} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>` : ''}
+                            ${options.delete_name !== '' ? `<li name="${options.delete_name}" data-value=${value[pk]} class="text-danger-600"><a><i class="icon-trash"></i></a></li>` : ''}
+						 </ul></td>`;
+        }
+        html += `</tr>`;
+    })
+    $(`#${options.table_id}`).find('tbody').html(html);
+}
+
 

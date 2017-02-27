@@ -13,5 +13,7 @@ router_proyecto.register(r'sistemas_proyecto', SistemasbyProyectoViewSet)
 
 urlpatterns = [
     url(r'getProyectosSiga', ProyectosApi.getProyectosSiga),
+    url(r'get_proyecto_sistema/(?P<id_proyecto>.+)/(?P<id_sistema>.+)/$',
+        ReadProyectoSistemaViewSet.as_view()),
     url(r'saveProyectoSistema', ProyectosApi.saveProyectoSistema),
 ]

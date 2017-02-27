@@ -1,0 +1,178 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabbable tab-content-bordered">
+                <ul class="nav nav-tabs bg-primary-400 nav-tabs-component nav-justified">
+                    <li class="active"><a href="#colored-tab1" data-toggle="tab">Permisos Genericos</a></li>
+                    <li><a href="#colored-tab2" data-toggle="tab">Permisos por Proyecto y Sistema</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane has-padding active" id="colored-tab1">
+                        <div class="panel panel-primary panel-bordered">
+                            <div class="panel-heading">
+                                <h6 class="panel-title">Lista de Permisos</h6>
+                                <div class="heading-elements">
+                                    <div class="heading-btn">
+                                        <button type="button" id="btn_add_permiso" data-popup="tooltip"
+                                                title="Agregar Permiso"
+                                                class="btn btn-success btn-icon heading-btn legitRipple"><i
+                                                class="icon-plus3"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="table_permisos">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Código</th>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th>Sufijo DOM</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane has-padding" id="colored-tab2">
+                        <div class="panel panel-primary panel-bordered">
+                            <div class="panel-heading">
+                                <h6 class="panel-title">Lista de Permisos por Proyecto Sistema</h6>
+                                <div class="heading-elements">
+                                    <div class="heading-btn">
+                                        <button type="button" id="btn_add_permiso_proyecto_sistema" data-popup="tooltip"
+                                                title="Agregar Permiso"
+                                                class="btn btn-success btn-icon heading-btn legitRipple"><i
+                                                class="icon-plus3"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Seleccione el Proyecto:</label>
+                                            <select id="select_proyectos" class="bootstrap-select" data-width="100%">
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Seleccione el Sistema:</label>
+                                            <select id="select_sistemas" class="bootstrap-select" data-width="100%">
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="message_empty_permisos">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="table_permisos_proyecto_sistema">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Código</th>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th>Sufijo DOM</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_permiso" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h6 class="modal-title">Agregar y/o Editar Permiso</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form_permiso" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Nombre</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="nombre" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Descripción</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="descripcion" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Código</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="codigo" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Sufijo DOM</label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="dom_name_sufijo" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btn_save_permiso" class="btn btn-primary legitRipple">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/forms/selects/bootstrap_select.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/core.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/effects.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/interactions.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/extensions/cookie.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/switchery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/trees/fancytree_all.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/trees/fancytree_childcounter.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/seguridad/permisos/permisos.view.js" %}"></script>
+{% endblock %}

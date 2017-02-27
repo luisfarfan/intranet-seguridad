@@ -36,8 +36,9 @@ class ModuloAdmin(admin.ModelAdmin):
 class Permiso(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    codigo = models.CharField(max_length=8)
+    codigo = models.IntegerField()
     dom_name_sufijo = models.CharField(max_length=100)
+    proyectosistema = models.ForeignKey(ProyectoSistema, null=True, blank=True)
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
