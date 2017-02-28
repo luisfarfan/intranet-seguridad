@@ -62,9 +62,10 @@ class ReadModuloSerializerRecursive(generics.ListAPIView):
 
 
 class apiPermiso:
-    def getPermisosProyectoSistema(proyectosistema):
+    def getPermisosProyectoSistema(self, id_proyecto, id_sistema):
         generics_permiso = Permiso.objects.filter(proyectosistema__isnull=True).values()
-        proyectosistema_permiso = Permiso.objects.filter(proyectosistema=proyectosistema).values()
+        proyectosistema_permiso = Permiso.objects.filter(proyectosistema__proyectos_id=id_proyecto,
+                                                         proyectosistema__sistemas_id=id_sistema).values()
 
         return JsonResponse(list(generics_permiso | proyectosistema_permiso), safe=False)
 
@@ -79,7 +80,6 @@ class apiModuloRol:
             ModuloRol.objects.get(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i)).delete()
 
         for i in edited:
-            print(i)
             modulorol_edited = ModuloRol.objects.filter(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i))
             if modulorol_edited.count() == 0:
                 modulorol_added = ModuloRol(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i))

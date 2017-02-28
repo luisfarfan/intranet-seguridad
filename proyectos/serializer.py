@@ -23,7 +23,7 @@ class SistemasxProyectoSerializer(serializers.ModelSerializer):
 
 
 class ProyectosSistemasSerializer(serializers.ModelSerializer):
-    sistemas = SistemaSerializer(many=True, read_only=True)
+    sistemas = SistemaSerializer()
 
     class Meta:
         model = ProyectoSistema

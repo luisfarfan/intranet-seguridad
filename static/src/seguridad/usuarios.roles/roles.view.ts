@@ -270,7 +270,7 @@ var PermisosController: any = {
             // $('li[name="li_permiso_delete"]').on('click', (event: any) => {
             //     // getRolSelected($(event.currentTarget).data('value'));
             // });
-        }))
+        }));
     }
 }
 var moduloRolController = new ModuloRolController()

@@ -16,4 +16,5 @@ urlpatterns = [
 
     url(r'edit_modulorol/$', apiModuloRol.editModulosRol),
     url(r'permisos_genericos/$', ReadPermisoGenericosViewSet.as_view()),
+    url(r'permisos_proyectosistema/(?P<id_proyecto>.+)/(?P<id_sistema>.+)/$', apiPermiso.getPermisosProyectoSistema),
 ]
