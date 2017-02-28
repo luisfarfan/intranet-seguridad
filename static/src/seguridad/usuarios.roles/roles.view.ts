@@ -254,22 +254,7 @@ var PermisosController: any = {
         permisosService.get().done((data => {
             let html = '';
             permisos = data;
-            // permisos.map((value, key) => {
-            //     html += `<tr><td>${key + 1}</td><td>${value.nombre}</td><td>${value.descripcion}</td><td>${value.codigo}</td><td>${value.dom_name_sufijo}</td>
-            //             <td><ul class="icons-list">
-            //                 <li name="li_permiso_update" data-value=${value.id} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>
-            //                 <li name="li_permiso_delete" data-value=${value.id} class="text-danger-600"><a><i class="icon-trash"></i></a></li>
-            // 		</ul></td></tr>`
-            // })
-            // $('#table_permisos').find('tbody').html(html);
-            //
-            // $('li[name="li_permiso_update"]').on('click', (event: any) => {
-            //     // getRolSelected($(event.currentTarget).data('value'));
-            // });
-            //
-            // $('li[name="li_permiso_delete"]').on('click', (event: any) => {
-            //     // getRolSelected($(event.currentTarget).data('value'));
-            // });
+
         }));
     }
 }
