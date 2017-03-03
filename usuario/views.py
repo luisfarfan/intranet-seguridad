@@ -6,6 +6,7 @@ from .models import Usuario
 from usuario_modulo.models import Modulo, ModuloRolPermisos, ModuloRol
 from usuario_modulo.serializer import ReadModuloSerializer, ReadModuloRolSerializer
 from django.contrib.sessions.models import Session
+from usuario.utils import *
 
 
 class UserApi(object):
@@ -47,6 +48,15 @@ class UserApi(object):
                 return JsonResponse(session_return, safe=False)
 
             return JsonResponse({}, safe=False)
+
+    def getJsonbyRol(self, rol):
+        menu = ReadModuloSerializer(
+            instance=Modulo.objects.exclude(proyectosistema__isnull=True).filter(
+                proyectosistema__proyectos_id=1).distinct(),
+            many=True).data
+
+        id_modulos_rol = ModuloRol.objects.filter(rol=rol).values_list('modulo_id', flat=True)
+        return JsonResponse(getMenuRol(menu, id_modulos_rol), safe=False)
 
 
 class ModulosUsuarioViewSet(generics.ListAPIView):
