@@ -1,8 +1,23 @@
 /**
- * Created by lfarfan on 19/02/2017.
+ * Declarando la variable PNotify, plugin javascript para las alertas en modo popup.
  */
 declare var PNotify: any;
+/**
+ * Declarando la variable swal, plugin javascript para las alertas en modo popup.
+ */
 declare var swal: any;
+/**
+ * Declarando la variable $ de jQuery para poder usarla sin problemas
+ * cuando se quiere usar alguna funcion que no este en la interface del jQuery Typings de TypeScript
+ */
+declare var $: any;
+import {IModulo} from '../seguridad/menu/menu.interface'
+/**
+ * div alert de limitless para mostrar mensajes de estado (exito,error,info,warning)
+ * @param message Mensaje del div.
+ * @param type Tipo del div (error, success, info, danger, warning)
+ * @returns      <Div> HTMLElement String.
+ */
 export function showDivAlert(message: string, type: string): string {
     return `<div class="alert bg-${type} alert-styled-left">
                 <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
@@ -10,6 +25,12 @@ export function showDivAlert(message: string, type: string): string {
             </div>`;
 }
 
+/**
+ * Popup alert notify para mostrar mensajes de estado (exito,error,info,warning)
+ * @param message Mensaje del div.
+ * @param type Tipo del div (error, success, info, danger, warning)
+ * @returns      <Div> HTMLElement String.
+ */
 export function showSwalAlert(message: string, title: string, type: string) {
     new PNotify({
         title: title,
@@ -79,16 +100,11 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: Array<number> 
     return treejson;
 }
 
-interface MenuTree {
-    id: number,
-    descripcion: string,
-    icon: string,
-    modulos_hijos: MenuTree[],
-}
-export function jsonFormatFancyTreeSelecteds(menu_json: MenuTree[], rol_id_array: Array<number> = []) {
+
+export function jsonFormatFancyTreeSelecteds(menu_json: IModulo[], rol_id_array: Array<number> = []) {
     let treejson: Array<any> = [];
     let interface_node: any = {};
-    menu_json.map((value: MenuTree, key: any) => {
+    menu_json.map((value: IModulo, key: any) => {
         if (findChilds(value, rol_id_array)) {
             interface_node = {};
             interface_node['title'] = value.descripcion;
@@ -96,7 +112,7 @@ export function jsonFormatFancyTreeSelecteds(menu_json: MenuTree[], rol_id_array
             interface_node['icon'] = value.icon;
             interface_node['children'] = [];
             let children: Array<any> = [];
-            value.modulos_hijos.map((node_value: MenuTree, node_order: any) => {
+            value.modulos_hijos.map((node_value: IModulo, node_order: any) => {
                 if (findChilds(node_value, rol_id_array)) {
                     children.push({
                         'title': node_value.descripcion,
@@ -115,14 +131,14 @@ export function jsonFormatFancyTreeSelecteds(menu_json: MenuTree[], rol_id_array
     return treejson;
 }
 
-function findChilds(menu: MenuTree, rol_id_array: Array<number>): boolean {
+function findChilds(menu: IModulo, rol_id_array: Array<number>): boolean {
     let has_child: boolean = false;
     let count: number = 0;
     if (rol_id_array.indexOf(menu.id) != -1) {
         count++;
     } else {
         if (menu.modulos_hijos.length) {
-            menu.modulos_hijos.map((value: MenuTree, key: number) => {
+            menu.modulos_hijos.map((value: IModulo, key: number) => {
                 if (rol_id_array.indexOf(value.id) != -1) {
                     count++;
                 } else {
@@ -186,9 +202,14 @@ export function validateForm(rules: Object) {
         },
         validClass: "validation-valid-label",
         success: function (label: any) {
-            label.addClass("validation-valid-label").text("Success.")
+            label.addClass("validation-valid-label").text("Correcto!")
         },
         rules: {},
+        messages: {
+            custom: {
+                required: "El campo es requerido",
+            },
+        }
     };
 
     setOptions.rules = rules
@@ -232,4 +253,47 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
     $(`#${options.table_id}`).find('tbody').html(html);
 }
 
+interface CamposSelect {
+    id: string,
+    text: String[],
+}
+interface ExtraOptionsDrowdown {
+    id_element: string,
+    bootstrap_multiselect: boolean,
+    select2: boolean,
+}
+/**
+ * Componente que renderiza un element Dropdown.
+ * @param data Data a iterar, tiene que ser una lista de Object (Array<Object>)
+ * @param campos Vienen a ser las KEYS de cada objecto en la lista del parametro "data"
+ * @param extra Opciones extras.
+ * @returns      <Div> HTMLElement String.
+ */
+export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: ExtraOptionsDrowdown) {
+    let html = `<option value="-1">Seleccione</option>`;
+    data.map((value: any, key: number) => {
+        let value_concated: string = '';
+        campos.text.map((v: string, k: number) => {
+            value_concated += `${value[v]} `
+        });
+        html += `<option value="${value[campos.id]}">${value_concated}</option>`
+    });
+    $(`#${extra.id_element}`).html(html);
+    if (extra.bootstrap_multiselect) {
+        $(`#${extra.id_element}`).selectpicker('destroy')
+        $(`#${extra.id_element}`).selectpicker('render')
+    }
+    extra.select2 ? $(`#${extra.id_element}`).select2() : '';
+}
 
+export function formToObject(form: Array<Object>) {
+    let formObject: any = {};
+    form.map((value: any, key: any) => {
+        formObject[value.name] = value.value;
+    });
+    return formObject;
+}
+
+export function showInfo(message: String) {
+    swal(message);
+}

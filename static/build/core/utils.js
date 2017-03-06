@@ -1,9 +1,21 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
+    /**
+     * div alert de limitless para mostrar mensajes de estado (exito,error,info,warning)
+     * @param message Mensaje del div.
+     * @param type Tipo del div (error, success, info, danger, warning)
+     * @returns      <Div> HTMLElement String.
+     */
     function showDivAlert(message, type) {
         return "<div class=\"alert bg-" + type + " alert-styled-left\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span>\u00D7</span><span class=\"sr-only\">Close</span></button>\n                <span class=\"text-semibold\">" + message + "</span>\n            </div>";
     }
     exports.showDivAlert = showDivAlert;
+    /**
+     * Popup alert notify para mostrar mensajes de estado (exito,error,info,warning)
+     * @param message Mensaje del div.
+     * @param type Tipo del div (error, success, info, danger, warning)
+     * @returns      <Div> HTMLElement String.
+     */
     function showSwalAlert(message, title, type) {
         new PNotify({
             title: title,
@@ -170,9 +182,14 @@ define(["require", "exports"], function (require, exports) {
             },
             validClass: "validation-valid-label",
             success: function (label) {
-                label.addClass("validation-valid-label").text("Success.");
+                label.addClass("validation-valid-label").text("Correcto!");
             },
-            rules: {}
+            rules: {},
+            messages: {
+                custom: {
+                    required: "El campo es requerido"
+                }
+            }
         };
         setOptions.rules = rules;
         return setOptions;
@@ -207,5 +224,41 @@ define(["require", "exports"], function (require, exports) {
         $("#" + options.table_id).find('tbody').html(html);
     }
     exports.drawTable = drawTable;
+    /**
+     * Componente que renderiza un element Dropdown.
+     * @param data Data a iterar, tiene que ser una lista de Object (Array<Object>)
+     * @param campos Vienen a ser las KEYS de cada objecto en la lista del parametro "data"
+     * @param extra Opciones extras.
+     * @returns      <Div> HTMLElement String.
+     */
+    function setDropdown(data, campos, extra) {
+        var html = "<option value=\"-1\">Seleccione</option>";
+        data.map(function (value, key) {
+            var value_concated = '';
+            campos.text.map(function (v, k) {
+                value_concated += value[v] + " ";
+            });
+            html += "<option value=\"" + value[campos.id] + "\">" + value_concated + "</option>";
+        });
+        $("#" + extra.id_element).html(html);
+        if (extra.bootstrap_multiselect) {
+            $("#" + extra.id_element).selectpicker('destroy');
+            $("#" + extra.id_element).selectpicker('render');
+        }
+        extra.select2 ? $("#" + extra.id_element).select2() : '';
+    }
+    exports.setDropdown = setDropdown;
+    function formToObject(form) {
+        var formObject = {};
+        form.map(function (value, key) {
+            formObject[value.name] = value.value;
+        });
+        return formObject;
+    }
+    exports.formToObject = formToObject;
+    function showInfo(message) {
+        swal(message);
+    }
+    exports.showInfo = showInfo;
 });
 //# sourceMappingURL=utils.js.map

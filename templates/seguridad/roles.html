@@ -1,6 +1,57 @@
 {% extends 'base/base.html' %}
 {% load staticfiles %}
 
+{% block css %}
+    <style>
+        .material-switch > input[type="checkbox"] {
+            display: none;
+        }
+
+        .material-switch > label {
+            cursor: pointer;
+            height: 0px;
+            position: relative;
+            width: 40px;
+        }
+
+        .material-switch > label::before {
+            background: rgb(0, 0, 0);
+            box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            content: '';
+            height: 16px;
+            margin-top: -8px;
+            position: absolute;
+            opacity: 0.3;
+            transition: all 0.4s ease-in-out;
+            width: 40px;
+        }
+
+        .material-switch > label::after {
+            background: rgb(255, 255, 255);
+            border-radius: 16px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+            content: '';
+            height: 24px;
+            left: -4px;
+            margin-top: -8px;
+            position: absolute;
+            top: -4px;
+            transition: all 0.3s ease-in-out;
+            width: 24px;
+        }
+
+        .material-switch > input[type="checkbox"]:checked + label::before {
+            background: inherit;
+            opacity: 0.5;
+        }
+
+        .material-switch > input[type="checkbox"]:checked + label::after {
+            background: inherit;
+            left: 20px;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
     <div class="col-md-6">
@@ -35,14 +86,18 @@
     <div class="col-md-6">
         <div class="panel panel-flat">
             <div class="panel-heading">
-                <h5 class="panel-title">Detalle<a class="heading-elements-toggle"><i
-                        class="icon-more"></i></a>
+                <h5 class="panel-title">
+                    <label class="text-semibold">Proyecto: </label>
+                    <select id="select_proyectos" data-style="btn-primary" class="bootstrap-select" data-width="50%">
+
+                    </select>
+                    <a class="heading-elements-toggle"><i
+                            class="icon-more"></i></a>
                 </h5>
                 <div class="heading-elements">
                     <div class="heading-btn">
-                        <button type="button" id="btn_edit_modulo_rol_permiso" data-toggle="modal" data-popup="tooltip"
+                        <button type="button" id="btn_edit_modulo_rol_permiso" data-popup="tooltip"
                                 title="Agrega y/o Editar Permisos"
-                                data-target="#modal_permiso_form"
                                 class="btn btn-primary btn-icon heading-btn legitRipple"><i
                                 class="icon-unlocked2"></i></button>
                         <button type="button" id="btn_save_modulo_rol" data-toggle="modal" data-popup="tooltip"
@@ -70,8 +125,41 @@
                         </div>
 
                         <div class="tab-pane has-padding" id="colored-tab2">
+                            <div class="form-group">
+                                <label class="text-semibold">Sistemas: </label>
+                                <select id="select_sistemas" data-style="btn-primary" class="bootstrap-select"
+                                        data-width="50%">
+                                    <option value="-1">Seleccione</option>
+
+                                </select>
+                            </div>
                             <div id="tree_modulo_rol_permiso"
                                  class="tree-persistence well border-left-danger border-left-lg"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="panel panel-default">
+                                        <!-- Default panel contents -->
+                                        <div class="panel-heading">Permisos Genéricos</div>
+                                        <!-- List group -->
+                                        <ul class="list-group" id="ul_permisos_genericos">
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="panel panel-default">
+                                        <!-- Default panel contents -->
+                                        <div class="panel-heading">Permisos por Proyecto Sistema</div>
+
+                                        <!-- List group -->
+                                        <ul class="list-group" id="ul_permisos_proyectosistema">
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -115,59 +203,11 @@
             </div>
         </div>
     </div>
-
-    {#    <div id="modal_permiso" class="modal fade">#}
-    {#        <div class="modal-dialog">#}
-    {#            <div class="modal-content">#}
-    {#                <div class="modal-header bg-primary">#}
-    {#                    <button type="button" class="close" data-dismiss="modal">×</button>#}
-    {#                    <h6 class="modal-title">Agregar Rol</h6>#}
-    {#                </div>#}
-    {##}
-    {#                <div class="modal-body">#}
-    {#                    <form id="form_permiso" class="form-horizontal">#}
-    {#                        <div class="form-group">#}
-    {#                            <label class="control-label col-lg-2">Nombre</label>#}
-    {#                            <div class="col-lg-10">#}
-    {#                                <input type="text" required name="nombre" class="form-control">#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {##}
-    {#                        <div class="form-group">#}
-    {#                            <label class="control-label col-lg-2">Descripción</label>#}
-    {#                            <div class="col-lg-10">#}
-    {#                                <input type="text" required name="descripcion" class="form-control">#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {#                        <div class="form-group">#}
-    {#                            <label class="control-label col-lg-2">Código</label>#}
-    {#                            <div class="col-lg-10">#}
-    {#                                <input type="text" required name="codigo" class="form-control">#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {#                        <div class="form-group">#}
-    {#                            <label class="control-label col-lg-2">Sufijo DOM</label>#}
-    {#                            <div class="col-lg-10">#}
-    {#                                <input type="text" required name="dom_name_sufijo" class="form-control">#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {##}
-    {#                    </form>#}
-    {#                </div>#}
-    {##}
-    {#                <div class="modal-footer">#}
-    {#                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>#}
-    {#                    <button type="button" id="btn_submit_form" class="btn btn-primary legitRipple">Guardar</button>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
-
 {% endblock %}
 
 {% block js %}
     <script type="text/javascript"
-            src="{% static "assets/js/plugins/forms/selects/bootstrap_multiselect.js" %}"></script>
+            src="{% static "assets/js/plugins/forms/selects/bootstrap_select.min.js" %}"></script>
     <script type="text/javascript"
             src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery_ui/core.min.js" %}"></script>

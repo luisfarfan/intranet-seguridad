@@ -17,4 +17,8 @@ urlpatterns = [
     url(r'edit_modulorol/$', apiModuloRol.editModulosRol),
     url(r'permisos_genericos/$', ReadPermisoGenericosViewSet.as_view()),
     url(r'permisos_proyectosistema/(?P<id_proyecto>.+)/(?P<id_sistema>.+)/$', apiPermiso.getPermisosProyectoSistema),
+    url(r'menubyproject/(?P<id_proyecto>.+)/$', apiMenu.getMenubyProject),
+    url(r'menubyprojectsistema/(?P<id_proyecto>.+)/(?P<id_sistema>.+)/$', apiMenu.getMenubyProjectSistema),
+    url(r'permisos_modulorol/(?P<rol_id>.+)/(?P<modulo_id>.+)/$', ReadModulosRolbyRolModuloViewSet.as_view()),
+    url(r'save_permisos_modulorol/$', apiModuloRol.savePermisosModuloRol),
 ]

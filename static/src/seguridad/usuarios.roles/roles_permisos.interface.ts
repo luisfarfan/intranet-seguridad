@@ -2,13 +2,13 @@
  * Created by Administrador on 22/02/2017.
  */
 
-export interface IPermiso {
-    id: number,
-    nombre: string;
-    descripcion: string;
-    codigo: string;
-    dom_name_sufijo: string
-}
+import {IModulo} from '../menu/menu.interface';
+import {IPermiso} from '../permisos/permisos.interface'
 
-export interface IPermisos extends Array<IPermiso> {
+
+export interface IModuloRol {
+    id: number,
+    modulo: IModulo,
+    permisos: IPermiso[],
+    rol: number,
 }

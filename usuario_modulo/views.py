@@ -14,6 +14,15 @@ class ReadModulosRolViewSet(viewsets.ModelViewSet):
     queryset = Rol.objects.all()
 
 
+class ReadModulosRolbyRolModuloViewSet(generics.ListAPIView):
+    serializer_class = ReadModuloRolbymodulorolSerializer
+
+    def get_queryset(self):
+        id_rol = self.kwargs['rol_id']
+        modulo_id = self.kwargs['modulo_id']
+        return ModuloRol.objects.filter(rol_id=id_rol, modulo_id=modulo_id)
+
+
 class CrudPermisoViewSet(viewsets.ModelViewSet):
     serializer_class = CrudPermisoSerializer
     queryset = Permiso.objects.all()
@@ -69,8 +78,11 @@ class apiPermiso:
 
         return JsonResponse(list(generics_permiso | proyectosistema_permiso), safe=False)
 
+    def getPermisosbyRolModulo(self, rol, modulo):
+        pass
 
-class apiModuloRol:
+
+class apiModuloRol():
     def editModulosRol(request):
         id_rol = request.POST['id_rol']
         delete = request.POST.getlist('delete[]')
@@ -86,3 +98,34 @@ class apiModuloRol:
                 modulorol_added.save()
 
         return JsonResponse({'msg': 'Editado exitosamente'})
+
+    def savePermisosModuloRol(request):
+        print(request)
+        modulo_id = request.POST['modulo_id']
+        permisos = request.POST.getlist('permiso[]')
+        ModuloRolPermisos.objects.filter(modulorol_id=modulo_id).delete()
+        for permiso in permisos:
+            modulorolpermiso = ModuloRolPermisos()
+            modulorolpermiso.modulorol = ModuloRol.objects.get(pk=modulo_id)
+            modulorolpermiso.permisos = Permiso.objects.get(pk=permiso)
+            modulorolpermiso.save()
+
+        return JsonResponse({'msg': True})
+
+
+class apiMenu:
+    def getMenubyProject(self, id_proyecto):
+        menu = ReadModuloSerializer(
+            instance=Modulo.objects.exclude(proyectosistema__isnull=True).filter(
+                proyectosistema__proyectos_id=id_proyecto).distinct(),
+            many=True).data
+
+        return JsonResponse(list(menu), safe=False)
+
+    def getMenubyProjectSistema(self, id_proyecto, id_sistema):
+        menu = ReadModuloSerializer(
+            instance=Modulo.objects.exclude(proyectosistema__isnull=True).filter(
+                proyectosistema__proyectos_id=id_proyecto, proyectosistema__sistemas_id=id_sistema).distinct(),
+            many=True).data
+
+        return JsonResponse(list(menu), safe=False)

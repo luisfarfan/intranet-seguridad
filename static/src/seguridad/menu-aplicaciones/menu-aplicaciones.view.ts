@@ -129,9 +129,7 @@ var MenuAplicacionesController: any = {
                         data.node.toggleSelected();
                         return false;
                     }
-                },
-                cookieId: "fancytree-Cb3",
-                idPrefix: "fancytree-Cb3-"
+                }
             }
 
             $('#tree_modulos').fancytree(options_tree);

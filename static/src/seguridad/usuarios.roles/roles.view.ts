@@ -3,11 +3,16 @@
  */
 
 import RolesModel, {ModulosRolService} from './roles.service';
+import {ProyectosService} from '../proyectos/proyectos.service';
+import {MenuService} from '../menu/menu.service';
+import {IProyecto} from '../proyectos/proyectos.interface';
+import {ISistema} from '../sistemas/sistemas.interface';
+import {IModuloRol} from './roles_permisos.interface';
 import {PermisosService} from '../permisos/permisos.service';
+import {IModulo} from '../menu/menu.interface';
 import {ObjectHelper, SessionHelper} from '../../core/helper.inei';
 import {IPermiso, IPermisos} from '../permisos/permisos.interface'
 import * as util from '../../core/utils';
-import {jsonFormatFancyTree} from "../../core/utils";
 
 declare var $: any;
 interface RolSelected {
@@ -15,7 +20,8 @@ interface RolSelected {
     modulo_rol: Array<any>;
     nombre: string;
     descripcion: string;
-    codigo: string
+    codigo: string,
+    rol: number,
 }
 
 var objectHelper = new ObjectHelper();
@@ -49,37 +55,6 @@ var form_rol_validate = $('#form_rol').validate(util.validateForm(RolJsonRules.f
 
 var utils: any = {
     enabledDisabledButtonModuloRol: () => {
-        $('#tab_modulos_rol').click(() => {
-            if (rol_selected) {
-                $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
-                $('#btn_save_modulo_rol').prop('disabled', false);
-            } else {
-                $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
-                $('#btn_save_modulo_rol').prop('disabled', true);
-            }
-        });
-
-        $('#tab_modulos_rol_permisos').click(() => {
-            if (rol_selected) {
-                $('#btn_edit_modulo_rol_permiso').prop('disabled', false);
-                $('#btn_save_modulo_rol').prop('disabled', true);
-            } else {
-                $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
-                $('#btn_save_modulo_rol').prop('disabled', true);
-            }
-        });
-        if (rol_selected) {
-            if ($('#tab_modulos_rol').hasClass('active')) {
-                $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
-                $('#btn_save_modulo_rol').prop('disabled', false);
-            } else if ($('#tab_modulos_rol_permisos').hasClass('active')) {
-                $('#btn_edit_modulo_rol_permiso').prop('disabled', false);
-                $('#btn_save_modulo_rol').prop('disabled', true);
-            }
-        } else {
-            $('#btn_edit_modulo_rol_permiso').prop('disabled', true);
-            $('#btn_save_modulo_rol').prop('disabled', true);
-        }
 
     },
     diffDeletedAndEdited: () => {
@@ -88,15 +63,110 @@ var utils: any = {
     }
 }
 
-var RolesController: any = {
-    getRoles: (pk: number = null, rol_id_selected: number = null) => {
+
+class ModuloRolController {
+    private modulorolService = new ModulosRolService();
+    private proyectosService = new ProyectosService();
+    private menuService = new MenuService();
+    private menu: IModulo[];
+    private menuPermiso: IModulo[];
+    private proyectos: IProyecto[] = null;
+    private proyecto_selected: IProyecto = null;
+    private sistema_selected: ISistema = null;
+    private permisosService = new PermisosService();
+    private permiso_selected: IPermiso;
+    private permisos: IPermisos;
+    private permisosModuloRol: IModuloRol;
+
+    constructor() {
+        this.getProyectos();
+        this.setEvents();
+    }
+
+    setMenu() {
+        this.menuService.get(this.proyecto_selected.id).done((menu: IModulo[]) => {
+            this.menu = menu;
+        });
+    }
+
+    setMenuPermiso() {
+        this.menuService.getbyProyectoSistema(this.proyecto_selected.id, this.sistema_selected.id).done((menupermiso: IModulo[]) => {
+            this.menuPermiso = menupermiso;
+            this.drawMenuPermisos();
+        });
+    }
+
+    editModulosRol(objectData: Object) {
+        this.modulorolService.editModulosRol(objectData).done(() => {
+            this.getRoles(null, rol_selected.id);
+            util.showSwalAlert('Se ha editado con éxito!', 'Exito!', 'success');
+        }).fail((error: any) => {
+            console.log(error);
+        });
+    }
+
+    getProyectos() {
+        this.proyectosService.getSistemasProyecto().done((proyectos) => {
+            this.proyectos = proyectos;
+            util.setDropdown(this.proyectos, {id: 'id', text: ['nombre']}, {
+                id_element: 'select_proyectos',
+                bootstrap_multiselect: true,
+                select2: false
+            });
+        });
+    }
+
+    setEvents() {
+        $('#select_proyectos').on('change', (input: any) => {
+            this.setProyecto(input.target.value);
+
+            if (this.proyecto_selected !== null) {
+                this.setMenu()
+                util.setDropdown(this.proyecto_selected.sistemas, {id: 'id', text: ['nombre']}, {
+                    id_element: 'select_sistemas',
+                    bootstrap_multiselect: true,
+                    select2: false
+                });
+            }
+        });
+
+        $('#select_sistemas').on('change', (input: any) => {
+            this.setSistema(parseInt(input.target.value));
+            if (this.sistema_selected !== null) {
+                this.setMenuPermiso();
+                this.getPermisos();
+            }
+        });
+        $('#btn_edit_modulo_rol_permiso').click((event: JQueryEventObject) => {
+            this.savePermisosModuloRol();
+        });
+    }
+
+    setProyecto(id: any) {
+        if (id == "-1") {
+            this.proyecto_selected = null;
+        } else {
+            this.proyectos.filter(proyecto => proyecto.id == id ? this.proyecto_selected = proyecto : '');
+        }
+    }
+
+    setSistema(id: any) {
+        if (id == "-1") {
+            this.sistema_selected = null;
+        } else {
+            this.proyecto_selected.sistemas.filter(sistema => sistema.id == id ? this.sistema_selected = sistema : '');
+        }
+    }
+
+    getRoles(pk: number = null, rol_id_selected: number = null) {
         rolesModel.get().done((data) => {
             roles = data;
-            RolesController.drawRoles();
-            rol_id_selected ? RolesController.getRolSelected(rol_selected.id) : '';
+            this.drawRoles();
+            rol_id_selected ? this.getRolSelected(rol_selected.id) : '';
         })
-    },
-    drawRoles: () => {
+    }
+
+    drawRoles() {
         let html = '';
         roles.map((value: any, key: any) => {
             html += `<tr>
@@ -110,20 +180,106 @@ var RolesController: any = {
         });
         $('#table_roles').find('tbody').html(html);
         $('li[name="li_rol"]').on('click', (event: any) => {
-            RolesController.getRolSelected($(event.currentTarget).data('value'));
+            this.getRolSelected($(event.currentTarget).data('value'));
         });
-    },
-    getRolSelected: (id: number) => {
+    }
+
+    drawMenuPermisos() {
+        if (rol_selected.modulo_rol.length) {
+            rol_selected.modulo_rol.map((value, key) => {
+                keys_modulos_by_rol.push(value.modulo.id);
+            });
+            tree_menu_format_selecteds = util.jsonFormatFancyTreeSelecteds(this.menuPermiso, keys_modulos_by_rol);
+        }
+        utils.enabledDisabledButtonModuloRol();
+
+        const options_tree_selecteds = {
+            checkbox: false,
+            selectMode: 1,
+            source: tree_menu_format_selecteds,
+            beforeSelect: function (event: any, data: any) {
+                if (data.node.folder) {
+                    return false;
+                }
+            },
+            select: function (event: any, data: any) {
+                // Display list of selected nodes
+                var selNodes = data.tree.getSelectedNodes();
+                // convert to title/key array
+                selNodes.length == 0 ? key_tree_node_selected = null : '';
+                var selKeys = $.map(selNodes, function (node: any) {
+                    key_tree_node_selected = parseInt(node.key);
+                });
+
+                if (key_tree_node_selected != null) {
+                    moduloRolController.getPermisosModuloRol(key_tree_node_selected);
+                }
+            },
+            click: function (event: any, data: any) {
+                if (!data.node.folder) {
+                    data.node.toggleSelected();
+                }
+            },
+            dblclick: function (event: any, data: any) {
+                data.node.toggleExpanded();
+            },
+            keydown: function (event: any, data: any) {
+                if (event.which === 32) {
+                    data.node.toggleSelected();
+                    return false;
+                }
+            }
+        }
+
+        $('#tree_modulo_rol_permiso').fancytree(options_tree_selecteds);
+        $('#tree_modulo_rol_permiso').fancytree("destroy");
+        $('#tree_modulo_rol_permiso').fancytree(options_tree_selecteds);
+    }
+
+    getPermisosModuloRol(modulo_id: number) {
+        $("[id^='permiso_id']").prop('checked', false);
+        this.permisosService.getModuloRol(rol_selected.id, modulo_id).done((data: any) => {
+            this.permisosModuloRol = data[0];
+            if (this.permisosModuloRol !== undefined) {
+                this.permisosModuloRol.permisos.map((value: IPermiso, pos: number) => {
+                    $(`#permiso_id_${value.codigo}`).prop('checked', true);
+                });
+            }
+        });
+    }
+
+    savePermisosModuloRol() {
+        let permisos_checked: Array<number> = [];
+        $("[id^='permiso_id']").map((index: number, element: HTMLInputElement) => {
+            element.checked ? permisos_checked.push(parseInt(element.value)) : '';
+        });
+        if (this.permisosModuloRol != null) {
+            this.permisosService.savePermisosModuloRol({
+                modulo_id: this.permisosModuloRol.id,
+                permiso: permisos_checked
+            }).done(() => {
+                util.showSwalAlert('Los permisos han sido agregados al Modulo', 'Exito!', 'success');
+                this.getPermisosModuloRol(key_tree_node_selected);
+            }).fail(() => {
+                util.showSwalAlert('Ha ocurrido un error', 'Error', 'error');
+            })
+        }
+    }
+
+    getRolSelected(id: number) {
+        if (this.proyecto_selected === null) {
+            util.showInfo('Por favor Seleccione un proyecto!');
+            return false;
+        }
         rol_selected = objectHelper.findInArrayObject(roles, id, 'id');
         keys_modulos_by_rol = [];
         if (rol_selected.modulo_rol.length) {
             rol_selected.modulo_rol.map((value, key) => {
                 keys_modulos_by_rol.push(value.modulo.id);
             });
-            tree_menu_format = util.jsonFormatFancyTree(session.menu, keys_modulos_by_rol);
-            tree_menu_format_selecteds = util.jsonFormatFancyTreeSelecteds(session.menu, keys_modulos_by_rol);
+            tree_menu_format = util.jsonFormatFancyTree(this.menu, keys_modulos_by_rol);
         } else {
-            tree_menu_format = util.jsonFormatFancyTree(session.menu);
+            tree_menu_format = util.jsonFormatFancyTree(this.menu);
         }
         utils.enabledDisabledButtonModuloRol();
 
@@ -167,56 +323,18 @@ var RolesController: any = {
             cookieId: "fancytree-Cb3",
             idPrefix: "fancytree-Cb3-"
         }
-        let options_tree_selecteds = {
-            checkbox: false,
-            selectMode: 1,
-            source: tree_menu_format_selecteds,
-            beforeSelect: function (event: any, data: any) {
-                if (data.node.folder) {
-                    return false;
-                }
-            },
-            select: function (event: any, data: any) {
-                // Display list of selected nodes
-                var selNodes = data.tree.getSelectedNodes();
-                // convert to title/key array
-                selNodes.length == 0 ? key_tree_node_selected = null : '';
-                var selKeys = $.map(selNodes, function (node: any) {
-                    key_tree_node_selected = parseInt(node.key);
-                });
-            },
-            click: function (event: any, data: any) {
-                if (!data.node.folder) {
-                    data.node.toggleSelected();
-                }
-            },
-            dblclick: function (event: any, data: any) {
-                data.node.toggleExpanded();
-            },
-            keydown: function (event: any, data: any) {
-                if (event.which === 32) {
-                    data.node.toggleSelected();
-                    return false;
-                }
-            },
-            cookieId: "fancytree-Cb3",
-            idPrefix: "fancytree-Cb3-"
-        }
 
         $('#tree_menu_rol').fancytree(options_tree);
         $('#tree_menu_rol').fancytree("destroy");
         $('#tree_menu_rol').fancytree(options_tree);
+    }
 
-        $('#tree_modulo_rol_permiso').fancytree(options_tree_selecteds);
-        $('#tree_modulo_rol_permiso').fancytree("destroy");
-        $('#tree_modulo_rol_permiso').fancytree(options_tree_selecteds);
-    },
-    addRol: () => {
+    addRol() {
         if (form_rol_validate.valid()) {
             let valid_form = objectHelper.formToObject(util.serializeForm('form_rol'));
             rolesModel.add(valid_form).done((response) => {
                 util.showSwalAlert('Se ha agregado el Rol correctamente', 'Exito!', 'success');
-                RolesController.getRoles();
+                this.getRoles();
                 form_rol_validate.resetForm();
                 $('#modal_rol').modal('hide');
             }).fail((error: any) => {
@@ -225,44 +343,48 @@ var RolesController: any = {
         }
     }
 
-}
-
-class ModuloRolController {
-    private modulorolService = new ModulosRolService();
-    private rolesController = RolesController;
-
-    constructor() {
-
+    getPermisos() {
+        this.permisosService.getPermisosProyectoSistema(this.proyecto_selected.id, this.sistema_selected.id).done((permisos: IPermiso[]) => {
+            this.permisos = permisos;
+            this.drawPermisosCheckbox();
+        })
     }
 
-    editModulosRol(objectData: Object) {
-        this.modulorolService.editModulosRol(objectData).done(() => {
-            this.rolesController.getRoles(null, rol_selected.id);
-            util.showSwalAlert('Se ha editado con éxito!', 'Exito!', 'success');
-        }).fail((error: any) => {
-            console.log(error);
+    drawPermisosCheckbox() {
+        let html_genericos: string = '';
+        let html_proyectosistema: string = '';
+        this.permisos.map((value: IPermiso, pos: number) => {
+            if (value.proyectosistema_id === null) {
+                html_genericos += `<li class="list-group-item">
+                                        ${value.nombre}
+                                        <div class="material-switch pull-right">
+                                            <input id="permiso_id_${value.codigo}" value="${value.id}" name="permiso_name_${value.codigo}"
+                                                   type="checkbox"/>
+                                            <label for="permiso_id_${value.codigo}" class="label-success"></label>
+                                        </div>
+                                    </li>`;
+            } else {
+                html_proyectosistema += `<li class="list-group-item">
+                                            ${value.nombre}
+                                            <div class="material-switch pull-right">
+                                                <input id="permiso_id_${value.codigo}" value="${value.id}" name="permiso_name_${value.codigo}"
+                                                       type="checkbox"/>
+                                                <label for="permiso_id_${value.codigo}" class="label-success"></label>
+                                            </div>
+                                        </li>`;
+            }
         });
+        $('#ul_permisos_genericos').html(html_genericos);
+        $('#ul_permisos_proyectosistema').html(html_proyectosistema);
     }
 }
 
-
-var permisosService = new PermisosService();
-var permiso_selected: IPermiso;
-var permisos: IPermisos;
-var PermisosController: any = {
-    getPermisos: () => {
-        permisosService.get().done((data => {
-            let html = '';
-            permisos = data;
-
-        }));
-    }
-}
-var moduloRolController = new ModuloRolController()
+var moduloRolController = new ModuloRolController();
+var id_dropdowns: Array<string> = ['select_proyectos', 'select_sistemas'];
 var App: any = {
     init: () => {
         $('#btn_submit_form').on('click', (event: any) => {
-            RolesController.addRol();
+            moduloRolController.addRol();
         });
         $('#btn_save_modulo_rol').on('click', (event: any) => {
             util.alert_confirm(() => {
@@ -274,9 +396,11 @@ var App: any = {
                 })
             }, 'Esta seguro de guardar?', 'info')
         });
+        id_dropdowns.map((value: string, pos: number) => {
+            $(`#${value}`).selectpicker();
+        });
 
-        RolesController.getRoles();
-        PermisosController.getPermisos();
+        moduloRolController.getRoles();
         utils.enabledDisabledButtonModuloRol();
 
     }

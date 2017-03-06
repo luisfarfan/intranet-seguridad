@@ -6,7 +6,8 @@ export interface IPermiso {
     nombre: string;
     descripcion: string;
     codigo: string;
-    dom_name_sufijo: string
+    dom_name_sufijo: string,
+    proyectosistema_id: number,
 }
 
 export interface IPermisos extends Array<IPermiso> {

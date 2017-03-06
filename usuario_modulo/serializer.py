@@ -22,6 +22,12 @@ class ReadModuloSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
+class _ReadModuloSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Modulo
+        fields = ('__all__')
+
+
 class CrudPermisoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permiso
@@ -31,6 +37,15 @@ class CrudPermisoSerializer(serializers.ModelSerializer):
 class ReadModuloRolSerializer(serializers.ModelSerializer):
     # permisos = CrudPermisoSerializer(many=True, read_only=True)
     modulo = ReadModuloSerializer()
+
+    class Meta:
+        model = ModuloRol
+        fields = ('__all__')
+
+
+class ReadModuloRolbymodulorolSerializer(serializers.ModelSerializer):
+    modulo = _ReadModuloSerializer()
+    permisos = CrudPermisoSerializer(many=True, read_only=True)
 
     class Meta:
         model = ModuloRol
