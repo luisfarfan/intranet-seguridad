@@ -11,10 +11,10 @@ class Usuario(models.Model):
     ape_mat = models.CharField(max_length=50, blank=True, null=True)
     nombre = models.CharField(max_length=50, blank=True, null=True)
     tipousuario = models.ForeignKey('TipoUsuario')
-    fecha_contrato_inicio = models.DateField()
-    fecha_contrato_extended = models.DateField(null=True, blank=True)
-    fecha_contrato_fin = models.DateField()
-    fecha_nacimiento = models.DateField()
+    fecha_contrato_inicio = models.CharField(max_length=50, null=True, blank=True)
+    fecha_contrato_extended = models.CharField(max_length=50, null=True, blank=True)
+    fecha_contrato_fin = models.CharField(max_length=50, null=True, blank=True)
+    fecha_nacimiento = models.CharField(max_length=50, null=True, blank=True)
     email_inst = models.CharField(max_length=100, blank=True, null=True)
     email_personal = models.CharField(max_length=100, blank=True, null=True)
     usuario = models.CharField(max_length=50)
@@ -24,7 +24,8 @@ class Usuario(models.Model):
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
     fec_edicion = models.DateTimeField(blank=True, null=True)
     modulorolpermisousuario = models.ManyToManyField(ModuloRolPermisos, through='ModuloRolPermisosUsuario',
-                                                      related_name='modulorolpermisousuario')
+                                                     related_name='modulorolpermisousuario')
+    activo = models.IntegerField(default=1)
 
     def __unicode__(self):
         return '%s , %s' % (self.dni, self.nombre)
@@ -32,6 +33,7 @@ class Usuario(models.Model):
     class Meta:
         managed = True
         db_table = 'USUARIO'
+        unique_together = ('usuario',)
 
 
 @admin.register(Usuario)

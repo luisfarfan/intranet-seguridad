@@ -1,0 +1,231 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+    <style>
+        .material-switch > input[type="checkbox"] {
+            display: none;
+        }
+
+        .material-switch > label {
+            cursor: pointer;
+            height: 0px;
+            position: relative;
+            width: 40px;
+        }
+
+        .material-switch > label::before {
+            background: rgb(0, 0, 0);
+            box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            content: '';
+            height: 16px;
+            margin-top: -8px;
+            position: absolute;
+            opacity: 0.3;
+            transition: all 0.4s ease-in-out;
+            width: 40px;
+        }
+
+        .material-switch > label::after {
+            background: rgb(255, 255, 255);
+            border-radius: 16px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+            content: '';
+            height: 24px;
+            left: -4px;
+            margin-top: -8px;
+            position: absolute;
+            top: -4px;
+            transition: all 0.3s ease-in-out;
+            width: 24px;
+        }
+
+        .material-switch > input[type="checkbox"]:checked + label::before {
+            background: inherit;
+            opacity: 0.5;
+        }
+
+        .material-switch > input[type="checkbox"]:checked + label::after {
+            background: inherit;
+            left: 20px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="panel panel-primary panel-bordered">
+        <div class="panel-heading">
+            <h6 class="panel-title">Mantenimiento de Usuarios<a class="heading-elements-toggle"><i
+                    class="icon-more"></i></a></h6>
+            <div class="heading-elements">
+                <div class="heading-btn">
+                    <button type="button" id="btn_edit_usuario" data-toggle="modal" data-popup="tooltip"
+                            title="Editar usuario"
+                            data-target="#modal_usuario"
+                            class="btn btn-primary btn-icon heading-btn legitRipple"><i
+                            class="icon-pen6"></i></button>
+                    <button type="button" id="btn_add_usuario" data-toggle="modal"
+                            data-popup="tooltip"
+                            title="Agregar Usuario"
+                            data-target="#modal_usuario"
+                            class="btn btn-success btn-icon heading-btn legitRipple"><i
+                            class="icon-plus3"></i></button>
+                    <button type="button" id="btn_delete_usuario" data-toggle="modal"
+                            data-popup="tooltip"
+                            title="Eliminar Usuario"
+                            class="btn btn-danger btn-icon heading-btn legitRipple"><i
+                            class="icon-trash-alt"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table id="table_usuarios" class="table datatable-basic table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nombres y Apellidos</th>
+                        <th>Fec. Nacimiento</th>
+                        <th>Correo Electrónico</th>
+                        <th>Tipo Doc.</th>
+                        <th>N° Documento</th>
+                        <th>Estado</th>
+                        <th>Rol</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="modal_usuario" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h6 class="modal-title">Agregar y/o Editar Usuario</h6>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form_usuario" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Usuario: </label>
+                            <div class="col-lg-10">
+                                <input type="text" name="usuario" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">DNI: </label>
+                            <div class="col-lg-10">
+                                <input type="text" name="dni" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Clave: </label>
+                            <div class="col-lg-10">
+                                <input type="password" name="clave" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Apellido Paterno: </label>
+                            <div class="col-lg-10">
+                                <input type="text" name="ape_pat" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Apellido Materno: </label>
+                            <div class="col-lg-10">
+                                <input type="text" name="ape_mat" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Nombres: </label>
+                            <div class="col-lg-10">
+                                <input type="text" name="nombre" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Tipo de Contrato: </label>
+                            <div class="col-lg-10">
+                                <select name="tipousuario">
+                                    <option value="">Seleccione..</option>
+                                    <option value="1">Nombrado</option>
+                                    <option value="2">CAS</option>
+                                    <option value="3">Locación</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Fecha de contrato inicio: </label>
+                            <div class="col-lg-10">
+                                <input type="date" name="fecha_contrato_inicio" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Fecha de contrato Fin: </label>
+                            <div class="col-lg-10">
+                                <input type="date" name="fecha_contrato_fin" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Fecha de contrato Extendida: </label>
+                            <div class="col-lg-10">
+                                <input type="date" name="fecha_contrato_extended" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Correo institucional: </label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="email_inst" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Correo Personal: </label>
+                            <div class="col-lg-10">
+                                <input type="text" required name="email_personal" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <li class="list-group-item">
+                                <div class="material-switch pull-left">
+                                    <input id="activo" name="activo" type="checkbox"/>
+                                    <label for="activo" class="label-success"></label>
+                                </div>
+                                Activo
+                            </li>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btn_submit_form" class="btn btn-primary legitRipple">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/forms/selects/bootstrap_select.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/forms/selects/select2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/seguridad/gestion-de-usuarios/usuarios.view.js" %}"></script>
+{% endblock %}

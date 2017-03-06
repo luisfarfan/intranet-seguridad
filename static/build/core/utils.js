@@ -197,18 +197,29 @@ define(["require", "exports"], function (require, exports) {
     exports.validateForm = validateForm;
     function serializeForm(id_form) {
         var objectForm = $("#" + id_form).serializeArray();
-        var checkboxes = $('input:checkbox');
+        var checkboxes = $("#" + id_form + " input:checkbox");
+        // let datesinputs = $(`#${id_form} input[type="date"]`);
         if (checkboxes.length) {
             checkboxes.map(function (value, key) {
                 objectForm.push({ value: $(key).is(':checked') ? 1 : 0, name: key.name });
             });
         }
+        // if (datesinputs.length) {
+        //     datesinputs.map((index: number, domElement: any) => {
+        //         objectForm.push({value: new Date(domElement.value).toLocaleString(), name: domElement.name})
+        //     });
+        // }
         return objectForm;
     }
     exports.serializeForm = serializeForm;
     function drawTable(data, campos, pk, options) {
         if (pk === void 0) { pk = null; }
-        if (options === void 0) { options = null; }
+        if (options === void 0) { options = {
+            edit_name: null,
+            delete_name: null,
+            enumerar: null,
+            table_id: null
+        }; }
         var html = '';
         data.map(function (value, key) {
             html += "<tr>";
@@ -217,7 +228,9 @@ define(["require", "exports"], function (require, exports) {
                 html += "<td>" + value[val] + "</td>";
             });
             if (options !== null) {
-                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n\t\t\t\t\t\t </ul></td>";
+                if (options.edit_name !== null || options.delete_name !== null) {
+                    html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n\t\t\t\t\t\t </ul></td>";
+                }
             }
             html += "</tr>";
         });

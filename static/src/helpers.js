@@ -33,6 +33,7 @@ $.ajaxSetup({
     }
 });
 
+
 function setSelect_v2(id, json, keys = [], seleccione = false) {
     $('#' + id).find('option').remove();
     let html = '';
@@ -180,3 +181,45 @@ function diffSistemas(array, ids) {
 
     return {asignado: asignado, no_asignado: no_asignado};
 }
+
+$.extend($.fn.dataTable.defaults, {
+    autoWidth: false,
+    columnDefs: [{
+        orderable: false,
+        width: '100px',
+        targets: [5]
+    }],
+    dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+    language: {
+        search: '<span>Filter:</span> _INPUT_',
+        lengthMenu: '<span>Show:</span> _MENU_',
+        paginate: {'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;'}
+    },
+    "language": {
+        "sProcessing": "Procesando...",
+        lengthMenu: '<span>Mostrar:</span> _MENU_',
+        "sZeroRecords": "No se encontraron resultados",
+        "sEmptyTable": "Ningún dato disponible en esta tabla",
+        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix": "",
+        search: '<span>Buscar:</span> _INPUT_',
+        "sUrl": "",
+        "sInfoThousands": ",",
+        "sLoadingRecords": "Cargando...",
+        paginate: {'first': 'Primero', 'last': 'Ultimo', 'next': '&rarr;', 'previous': '&larr;'},
+        "oAria": {
+            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        }
+    },
+    drawCallback: function () {
+        $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+    },
+    preDrawCallback: function () {
+        $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+    }
+});
+$('.dataTables_filter input[type=search]').attr('placeholder', 'Type to filter...');
+

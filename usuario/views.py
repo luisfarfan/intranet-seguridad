@@ -69,6 +69,11 @@ class ModulosUsuarioViewSet(generics.ListAPIView):
             modulorol__modulorolpermisos__modulorolpermisosusuario__usuario__pk=usuario_id).distinct()
 
 
+class UsuarioViewset(viewsets.ModelViewSet):
+    serializer_class = UsuarioSerializer
+    queryset = Usuario.objects.all()
+
+
 from django.views.generic import TemplateView
 
 

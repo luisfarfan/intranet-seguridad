@@ -218,13 +218,18 @@ export function validateForm(rules: Object) {
 
 export function serializeForm(id_form: string) {
     let objectForm: Array<Object> = $(`#${id_form}`).serializeArray();
-    let checkboxes = $('input:checkbox');
+    let checkboxes = $(`#${id_form} input:checkbox`);
+    // let datesinputs = $(`#${id_form} input[type="date"]`);
     if (checkboxes.length) {
         checkboxes.map((value: any, key: any) => {
             objectForm.push({value: $(key).is(':checked') ? 1 : 0, name: key.name})
         });
     }
-
+    // if (datesinputs.length) {
+    //     datesinputs.map((index: number, domElement: any) => {
+    //         objectForm.push({value: new Date(domElement.value).toLocaleString(), name: domElement.name})
+    //     });
+    // }
     return objectForm;
 }
 interface optionsTable {
@@ -233,7 +238,12 @@ interface optionsTable {
     enumerar: boolean,
     table_id: string
 }
-export function drawTable(data: Array<Object>, campos: Array<string>, pk: string = null, options: optionsTable = null) {
+export function drawTable(data: Array<Object>, campos: Array<string>, pk: string = null, options: optionsTable = {
+    edit_name: null,
+    delete_name: null,
+    enumerar: null,
+    table_id: null
+}) {
     let html: string = '';
     data.map((value: any, key: number) => {
         html += `<tr>`;
@@ -243,10 +253,13 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
             html += `<td>${value[val]}</td>`;
         })
         if (options !== null) {
-            html += `<td><ul class="icons-list">
+            if (options.edit_name !== null || options.delete_name !== null) {
+                html += `<td><ul class="icons-list">
                             ${options.edit_name !== '' ? `<li name="${options.edit_name}" data-value=${value[pk]} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>` : ''}
                             ${options.delete_name !== '' ? `<li name="${options.delete_name}" data-value=${value[pk]} class="text-danger-600"><a><i class="icon-trash"></i></a></li>` : ''}
 						 </ul></td>`;
+            }
+
         }
         html += `</tr>`;
     })
