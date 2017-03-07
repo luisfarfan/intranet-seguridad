@@ -3,13 +3,18 @@
  */
 import {IUsuario} from './usuarios.interface';
 import {UsuarioService} from './usuarios.service';
+import RolesService from '../usuarios.roles/roles.service';
+import {IRol} from '../usuarios.roles/roles_permisos.interface';
 import * as utils from '../../core/utils';
 
 declare var $: any;
 class UsuarioController {
     private usuarios: IUsuario[];
     private usuario_selected: IUsuario = null;
+    private rolesService = new RolesService();
+    private roles: IRol[];
     private usuarioService = new UsuarioService();
+    private datatable_users: any;
     private usuario_formRules: Object = {
         dni: {
             number: true
@@ -62,7 +67,24 @@ class UsuarioController {
 
     constructor() {
         this.usuario_form = $('#form_usuario').validate(utils.validateForm(this.usuario_formRules));
+        this.datatable_users = $('#table_usuarios').DataTable();
+        $('#table_usuarios tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                usuarioController.usuario_selected = null;
+            }
+            else {
+                $('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+                usuarioController.setUsuario($(this).data('value'));
+            }
+        });
+        $('.dataTables_length select').select2({
+            minimumResultsForSearch: Infinity,
+            width: 'auto'
+        });
         this.getUsuarios();
+        this.getRoles();
         $('#btn_add_usuario').on('click', () => {
             this.setFormUsuario();
         });
@@ -72,6 +94,17 @@ class UsuarioController {
         $('#btn_submit_form').on('click', () => {
             this.saveUsuario();
         });
+    }
+
+    getRoles() {
+        this.rolesService.get().done((roles: IRol[]) => {
+            this.roles = roles;
+            utils.setDropdown(this.roles, {id: 'id', text: ['nombre']}, {
+                id_element: 'select_rol',
+                bootstrap_multiselect: false,
+                select2: true
+            });
+        }).fail()
     }
 
     getUsuarios() {
@@ -90,29 +123,15 @@ class UsuarioController {
                             <td></td>
                          </tr>`;
             });
-            $('#table_usuarios').find('tbody').html(html);
-            if (!$.fn.DataTable.isDataTable('#table_usuarios')) {
-                var table = $('#table_usuarios').DataTable();
-            } else {
-                $('#table_usuarios').DataTable().destroy();
-                var table = $('#table_usuarios').DataTable();
+            if ($.fn.DataTable.isDataTable('#table_usuarios')) {
+                this.datatable_users.destroy();
+                $('#table_usuarios').find('tbody').html(html);
+                this.datatable_users = $('#table_usuarios').DataTable();
+                $('.dataTables_length select').select2({
+                    minimumResultsForSearch: Infinity,
+                    width: 'auto'
+                });
             }
-
-            $('.dataTables_length select').select2({
-                minimumResultsForSearch: Infinity,
-                width: 'auto'
-            });
-            $('#table_usuarios tbody').on('click', 'tr', function () {
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                    usuarioController.usuario_selected = null;
-                }
-                else {
-                    table.$('tr.selected').removeClass('selected');
-                    $(this).addClass('selected');
-                    usuarioController.setUsuario($(this).data('value'));
-                }
-            });
         })
     }
 
@@ -124,11 +143,10 @@ class UsuarioController {
         let usuario_selected = <any>this.usuario_selected;
         if (this.usuario_selected !== null) {
             for (let key in usuario_selected) {
-                let input = $(`input[name="${key}"]`);
+                let input = $(`[name="${key}"]`);
                 if ($(`[name="${key}"]`).is(':checkbox')) {
                     usuario_selected[key] == 1 ? input.prop('checked', true) : '';
                 } else {
-                    console.log(usuario_selected[key])
                     input.val(usuario_selected[key]);
                 }
             }
@@ -142,18 +160,22 @@ class UsuarioController {
         if (this.usuario_form.valid()) {
             let data_form: IUsuario = utils.formToObject(utils.serializeForm('form_usuario'));
             if (this.usuario_selected === null) {
-                this.usuarioService.add(data_form).done(() => {
-                    utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
-                    this.getUsuarios();
-                    $('#modal_usuario').modal('hide')
+                this.usuarioService.add(data_form).done((response: IUsuario) => {
+                    this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(() => {
+                        utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
+                        this.getUsuarios();
+                        $('#modal_usuario').modal('hide');
+                    });
                 }).fail(() => {
                     utils.showSwalAlert('Error!', 'Exito!', 'error');
                 })
             } else {
-                this.usuarioService.update(this.usuario_selected.id, data_form).done(() => {
-                    utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
-                    this.getUsuarios();
-                    $('#modal_usuario').modal('hide')
+                this.usuarioService.update(this.usuario_selected.id, data_form).done((response: IUsuario) => {
+                    this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(() => {
+                        utils.showSwalAlert('Se edito el usuario correctamente!', 'Exito!', 'success');
+                        this.getUsuarios();
+                        $('#modal_usuario').modal('hide');
+                    });
                 }).fail(() => {
                     utils.showSwalAlert('Error!', 'Exito!', 'error');
                 });

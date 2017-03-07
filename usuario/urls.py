@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'usuario_modulos/(?P<usuario_id>.+)/$', ModulosUsuarioViewSet.as_view()),
     url(r'proyecto/(?P<slug>.+)/$', DemoView.as_view()),
     url(r'getUserJsonData/(?P<rol>.+)/$', UserApi.getJsonbyRol),
+    url(r'saveRol/$', UserApi.saveRol),
 ]

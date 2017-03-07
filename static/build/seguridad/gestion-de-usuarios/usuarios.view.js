@@ -1,9 +1,10 @@
-define(["require", "exports", "./usuarios.service", "../../core/utils"], function (require, exports, usuarios_service_1, utils) {
+define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.service", "../../core/utils"], function (require, exports, usuarios_service_1, roles_service_1, utils) {
     "use strict";
     var UsuarioController = (function () {
         function UsuarioController() {
             var _this = this;
             this.usuario_selected = null;
+            this.rolesService = new roles_service_1["default"]();
             this.usuarioService = new usuarios_service_1.UsuarioService();
             this.usuario_formRules = {
                 dni: {
@@ -54,7 +55,24 @@ define(["require", "exports", "./usuarios.service", "../../core/utils"], functio
                 }
             };
             this.usuario_form = $('#form_usuario').validate(utils.validateForm(this.usuario_formRules));
+            this.datatable_users = $('#table_usuarios').DataTable();
+            $('#table_usuarios tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                    usuarioController.usuario_selected = null;
+                }
+                else {
+                    $('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                    usuarioController.setUsuario($(this).data('value'));
+                }
+            });
+            $('.dataTables_length select').select2({
+                minimumResultsForSearch: Infinity,
+                width: 'auto'
+            });
             this.getUsuarios();
+            this.getRoles();
             $('#btn_add_usuario').on('click', function () {
                 _this.setFormUsuario();
             });
@@ -65,6 +83,17 @@ define(["require", "exports", "./usuarios.service", "../../core/utils"], functio
                 _this.saveUsuario();
             });
         }
+        UsuarioController.prototype.getRoles = function () {
+            var _this = this;
+            this.rolesService.get().done(function (roles) {
+                _this.roles = roles;
+                utils.setDropdown(_this.roles, { id: 'id', text: ['nombre'] }, {
+                    id_element: 'select_rol',
+                    bootstrap_multiselect: false,
+                    select2: true
+                });
+            }).fail();
+        };
         UsuarioController.prototype.getUsuarios = function () {
             var _this = this;
             this.usuarioService.get().done(function (usuarios) {
@@ -73,29 +102,15 @@ define(["require", "exports", "./usuarios.service", "../../core/utils"], functio
                 _this.usuarios.map(function (value, pos) {
                     html += "<tr data-value=\"" + value.id + "\">\n                            <td>" + value.usuario + "</td>\n                            <td>" + value.nombre + " " + value.ape_pat + " " + value.ape_mat + "</td>\n                            <td>" + value.fecha_contrato_fin + "</td>\n                            <td>" + value.email_inst + "</td>\n                            <td>DNI</td>\n                            <td>" + value.dni + "</td>\n                            <td>" + (value.activo === 1 ? '<span class="label label-success">Activo</span>' : '<span class="label label-danger">Inactivo</span>') + "</td>\n                            <td></td>\n                         </tr>";
                 });
-                $('#table_usuarios').find('tbody').html(html);
-                if (!$.fn.DataTable.isDataTable('#table_usuarios')) {
-                    var table = $('#table_usuarios').DataTable();
+                if ($.fn.DataTable.isDataTable('#table_usuarios')) {
+                    _this.datatable_users.destroy();
+                    $('#table_usuarios').find('tbody').html(html);
+                    _this.datatable_users = $('#table_usuarios').DataTable();
+                    $('.dataTables_length select').select2({
+                        minimumResultsForSearch: Infinity,
+                        width: 'auto'
+                    });
                 }
-                else {
-                    $('#table_usuarios').DataTable().destroy();
-                    var table = $('#table_usuarios').DataTable();
-                }
-                $('.dataTables_length select').select2({
-                    minimumResultsForSearch: Infinity,
-                    width: 'auto'
-                });
-                $('#table_usuarios tbody').on('click', 'tr', function () {
-                    if ($(this).hasClass('selected')) {
-                        $(this).removeClass('selected');
-                        usuarioController.usuario_selected = null;
-                    }
-                    else {
-                        table.$('tr.selected').removeClass('selected');
-                        $(this).addClass('selected');
-                        usuarioController.setUsuario($(this).data('value'));
-                    }
-                });
             });
         };
         UsuarioController.prototype.setUsuario = function (id) {
@@ -106,12 +121,11 @@ define(["require", "exports", "./usuarios.service", "../../core/utils"], functio
             var usuario_selected = this.usuario_selected;
             if (this.usuario_selected !== null) {
                 for (var key in usuario_selected) {
-                    var input = $("input[name=\"" + key + "\"]");
+                    var input = $("[name=\"" + key + "\"]");
                     if ($("[name=\"" + key + "\"]").is(':checkbox')) {
                         usuario_selected[key] == 1 ? input.prop('checked', true) : '';
                     }
                     else {
-                        console.log(usuario_selected[key]);
                         input.val(usuario_selected[key]);
                     }
                 }
@@ -126,19 +140,23 @@ define(["require", "exports", "./usuarios.service", "../../core/utils"], functio
             if (this.usuario_form.valid()) {
                 var data_form = utils.formToObject(utils.serializeForm('form_usuario'));
                 if (this.usuario_selected === null) {
-                    this.usuarioService.add(data_form).done(function () {
-                        utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
-                        _this.getUsuarios();
-                        $('#modal_usuario').modal('hide');
+                    this.usuarioService.add(data_form).done(function (response) {
+                        _this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(function () {
+                            utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
+                            _this.getUsuarios();
+                            $('#modal_usuario').modal('hide');
+                        });
                     }).fail(function () {
                         utils.showSwalAlert('Error!', 'Exito!', 'error');
                     });
                 }
                 else {
-                    this.usuarioService.update(this.usuario_selected.id, data_form).done(function () {
-                        utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
-                        _this.getUsuarios();
-                        $('#modal_usuario').modal('hide');
+                    this.usuarioService.update(this.usuario_selected.id, data_form).done(function (response) {
+                        _this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(function () {
+                            utils.showSwalAlert('Se edito el usuario correctamente!', 'Exito!', 'success');
+                            _this.getUsuarios();
+                            $('#modal_usuario').modal('hide');
+                        });
                     }).fail(function () {
                         utils.showSwalAlert('Error!', 'Exito!', 'error');
                     });

@@ -18,20 +18,7 @@ class UserApi(object):
 
             if user:
                 user_data = user.values()
-                for i in user_data:
-                    i['fecha_nacimiento'] = i['fecha_nacimiento'].strftime("%d/%m/%Y")
-                    i['fecha_contrato_inicio'] = i['fecha_contrato_inicio'].strftime("%d/%m/%Y")
-                    i['fecha_contrato_fin'] = i['fecha_contrato_fin'].strftime("%d/%m/%Y")
-                    if i['fecha_contrato_extended'] is not None:
-                        i['fecha_contrato_extended'] = i['fecha_contrato_extended'].strftime("%d/%m/%Y")
-
-                        # routes = Modulo.objects.exclude(proyectosistema__isnull=True).filter(
-                        #   modulorol__modulorolpermisos__modulorolpermisosusuario__usuario__pk=user[0].id).values('slug',
-                        #                                                                                         'template_html')
                 routes = Modulo.objects.filter(proyectosistema__isnull=True).values('slug', 'template_html')
-                # menu = ModuloSerializer(instance=Modulo.objects.exclude(proyectosistema__isnull=True).filter(
-                #   modulorol__modulorolpermisos__modulorolpermisosusuario__usuario__pk=user[0].id).distinct(),
-                #                      many=True).data
                 menu = ReadModuloSerializer(
                     instance=Modulo.objects.exclude(proyectosistema__isnull=True).distinct(),
                     many=True).data
@@ -57,6 +44,22 @@ class UserApi(object):
 
         id_modulos_rol = ModuloRol.objects.filter(rol=rol).values_list('modulo_id', flat=True)
         return JsonResponse(getMenuRol(menu, id_modulos_rol), safe=False)
+
+    def saveRol(request):
+        rol_id = request.POST['rol_id']
+        user_id = request.POST['user_id']
+        modulorolpermisosusuario = ModuloRolPermisosUsuario.objects.filter(usuario_id=user_id)
+        if modulorolpermisosusuario.count():
+            modulorolpermisosusuario.delete()
+
+        modulorolpermisos = ModuloRolPermisos.objects.filter(modulorol__rol_id=rol_id)
+        for i in modulorolpermisos:
+            _modulorolpermisosusuario = ModuloRolPermisosUsuario()
+            _modulorolpermisosusuario.modulorolpermisos_id = i.id
+            _modulorolpermisosusuario.usuario_id = user_id
+            _modulorolpermisosusuario.save()
+
+        return JsonResponse({'msg': True})
 
 
 class ModulosUsuarioViewSet(generics.ListAPIView):
