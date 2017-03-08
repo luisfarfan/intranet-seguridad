@@ -204,11 +204,6 @@ define(["require", "exports"], function (require, exports) {
                 objectForm.push({ value: $(key).is(':checked') ? 1 : 0, name: key.name });
             });
         }
-        // if (datesinputs.length) {
-        //     datesinputs.map((index: number, domElement: any) => {
-        //         objectForm.push({value: new Date(domElement.value).toLocaleString(), name: domElement.name})
-        //     });
-        // }
         return objectForm;
     }
     exports.serializeForm = serializeForm;

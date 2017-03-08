@@ -132,7 +132,10 @@ class UsuarioController {
                     width: 'auto'
                 });
             }
+        }).fail(() => {
+            utils.showInfo('ERROR AL CARGAR USUARIOS');
         })
+
     }
 
     setUsuario(id: number) {
@@ -147,7 +150,13 @@ class UsuarioController {
                 if ($(`[name="${key}"]`).is(':checkbox')) {
                     usuario_selected[key] == 1 ? input.prop('checked', true) : '';
                 } else {
-                    input.val(usuario_selected[key]);
+                    if (key == 'tipousuario') {
+                        input.val(usuario_selected.tipousuario.id);
+                    } else if (key == 'rol') {
+                        input.val(usuario_selected.rol.id).trigger('change');
+                    } else {
+                        input.val(usuario_selected[key]);
+                    }
                 }
             }
         } else {
@@ -161,21 +170,17 @@ class UsuarioController {
             let data_form: IUsuario = utils.formToObject(utils.serializeForm('form_usuario'));
             if (this.usuario_selected === null) {
                 this.usuarioService.add(data_form).done((response: IUsuario) => {
-                    this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(() => {
-                        utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
-                        this.getUsuarios();
-                        $('#modal_usuario').modal('hide');
-                    });
+                    utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
+                    this.getUsuarios();
+                    $('#modal_usuario').modal('hide');
                 }).fail(() => {
                     utils.showSwalAlert('Error!', 'Exito!', 'error');
                 })
             } else {
                 this.usuarioService.update(this.usuario_selected.id, data_form).done((response: IUsuario) => {
-                    this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(() => {
-                        utils.showSwalAlert('Se edito el usuario correctamente!', 'Exito!', 'success');
-                        this.getUsuarios();
-                        $('#modal_usuario').modal('hide');
-                    });
+                    utils.showSwalAlert('Se edito el usuario correctamente!', 'Exito!', 'success');
+                    this.getUsuarios();
+                    $('#modal_usuario').modal('hide');
                 }).fail(() => {
                     utils.showSwalAlert('Error!', 'Exito!', 'error');
                 });

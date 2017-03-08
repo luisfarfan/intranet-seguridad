@@ -111,6 +111,8 @@ define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.ser
                         width: 'auto'
                     });
                 }
+            }).fail(function () {
+                utils.showInfo('ERROR AL CARGAR USUARIOS');
             });
         };
         UsuarioController.prototype.setUsuario = function (id) {
@@ -126,7 +128,15 @@ define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.ser
                         usuario_selected[key] == 1 ? input.prop('checked', true) : '';
                     }
                     else {
-                        input.val(usuario_selected[key]);
+                        if (key == 'tipousuario') {
+                            input.val(usuario_selected.tipousuario.id);
+                        }
+                        else if (key == 'rol') {
+                            input.val(usuario_selected.rol.id).trigger('change');
+                        }
+                        else {
+                            input.val(usuario_selected[key]);
+                        }
                     }
                 }
             }
@@ -141,22 +151,18 @@ define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.ser
                 var data_form = utils.formToObject(utils.serializeForm('form_usuario'));
                 if (this.usuario_selected === null) {
                     this.usuarioService.add(data_form).done(function (response) {
-                        _this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(function () {
-                            utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
-                            _this.getUsuarios();
-                            $('#modal_usuario').modal('hide');
-                        });
+                        utils.showSwalAlert('Se agrego el usuario correctamente!', 'Exito!', 'success');
+                        _this.getUsuarios();
+                        $('#modal_usuario').modal('hide');
                     }).fail(function () {
                         utils.showSwalAlert('Error!', 'Exito!', 'error');
                     });
                 }
                 else {
                     this.usuarioService.update(this.usuario_selected.id, data_form).done(function (response) {
-                        _this.usuarioService.saveRol(parseInt($('#select_rol').val()), response.id).done(function () {
-                            utils.showSwalAlert('Se edito el usuario correctamente!', 'Exito!', 'success');
-                            _this.getUsuarios();
-                            $('#modal_usuario').modal('hide');
-                        });
+                        utils.showSwalAlert('Se edito el usuario correctamente!', 'Exito!', 'success');
+                        _this.getUsuarios();
+                        $('#modal_usuario').modal('hide');
                     }).fail(function () {
                         utils.showSwalAlert('Error!', 'Exito!', 'error');
                     });

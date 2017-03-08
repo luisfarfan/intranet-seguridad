@@ -78,9 +78,6 @@ class apiPermiso:
 
         return JsonResponse(list(generics_permiso | proyectosistema_permiso), safe=False)
 
-    def getPermisosbyRolModulo(self, rol, modulo):
-        pass
-
 
 class apiModuloRol():
     def editModulosRol(request):

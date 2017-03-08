@@ -45,22 +45,6 @@ class UserApi(object):
         id_modulos_rol = ModuloRol.objects.filter(rol=rol).values_list('modulo_id', flat=True)
         return JsonResponse(getMenuRol(menu, id_modulos_rol), safe=False)
 
-    def saveRol(request):
-        rol_id = request.POST['rol_id']
-        user_id = request.POST['user_id']
-        modulorolpermisosusuario = ModuloRolPermisosUsuario.objects.filter(usuario_id=user_id)
-        if modulorolpermisosusuario.count():
-            modulorolpermisosusuario.delete()
-
-        modulorolpermisos = ModuloRolPermisos.objects.filter(modulorol__rol_id=rol_id)
-        for i in modulorolpermisos:
-            _modulorolpermisosusuario = ModuloRolPermisosUsuario()
-            _modulorolpermisosusuario.modulorolpermisos_id = i.id
-            _modulorolpermisosusuario.usuario_id = user_id
-            _modulorolpermisosusuario.save()
-
-        return JsonResponse({'msg': True})
-
 
 class ModulosUsuarioViewSet(generics.ListAPIView):
     # queryset = Modulo.objects.all()

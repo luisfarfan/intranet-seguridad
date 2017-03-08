@@ -39,7 +39,8 @@ urlpatterns = [
     url(r'^usuario/', include('usuario.urls', namespace='usuario')),
     url(r'^rest_proyectos/', include('proyectos.urls', namespace='proyectos')),
     url(r'^rest_modulousuario/', include('usuario_modulo.urls', namespace='usuario_modulo')),
-    url(r'^login/', ensure_csrf_cookie(TemplateView.as_view(template_name='login.html')))
+    url(r'^login/', ensure_csrf_cookie(TemplateView.as_view(template_name='login.html'))),
+    url(r'^seguridad/', include('shared.urls', namespace='shared')),
 ]
 
 

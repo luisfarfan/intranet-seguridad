@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib import admin
-from usuario_modulo.models import ModuloRolPermisos
+from usuario_modulo.models import ModuloRolPermisos, Rol
 
 
 # Create your models here.
@@ -23,9 +23,11 @@ class Usuario(models.Model):
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
     fec_edicion = models.DateTimeField(blank=True, null=True)
-    modulorolpermisousuario = models.ManyToManyField(ModuloRolPermisos, through='ModuloRolPermisosUsuario',
-                                                     related_name='modulorolpermisousuario')
     activo = models.IntegerField(default=1)
+    rol = models.ForeignKey(Rol, default=1)
+
+    # modulorolpermisousuario = models.ManyToManyField(ModuloRolPermisos, through='ModuloRolPermisosUsuario',
+    #                                                  related_name='modulorolpermisousuario')
 
     def __unicode__(self):
         return '%s , %s' % (self.dni, self.nombre)
@@ -72,24 +74,23 @@ class UsuariosOnline(models.Model):
         managed = True
         db_table = 'USUARIO_ONLINE'
 
-
-class ModuloRolPermisosUsuario(models.Model):
-    usuario = models.ForeignKey(Usuario)
-    modulorolpermisos = models.ForeignKey(ModuloRolPermisos, null=True)
-    usr_creacion = models.CharField(max_length=100, blank=True, null=True)
-    fec_creacion = models.DateTimeField(blank=True, null=True)
-    usr_edicion = models.CharField(max_length=100, blank=True, null=True)
-    fec_edicion = models.DateTimeField(blank=True, null=True)
-
-    def __unicode__(self):
-        return '%s , %s' % (self.modulopermisorol, self.usuario)
-
-    class Meta:
-        managed = True
-        db_table = 'MODULO_ROL_PERMISOS_USUARIO'
-        unique_together = (('usuario', 'modulorolpermisos'))
-
-
-@admin.register(ModuloRolPermisosUsuario)
-class ModuloRolPermisosUsuarioAdmin(admin.ModelAdmin):
-    list_display = ('modulorolpermisos', 'usuario',)
+# class ModuloRolPermisosUsuario(models.Model):
+#     usuario = models.ForeignKey(Usuario)
+#     modulorolpermisos = models.ForeignKey(ModuloRolPermisos, null=True)
+#     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
+#     fec_creacion = models.DateTimeField(blank=True, null=True)
+#     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
+#     fec_edicion = models.DateTimeField(blank=True, null=True)
+#
+#     def __unicode__(self):
+#         return '%s , %s' % (self.modulopermisorol, self.usuario)
+#
+#     class Meta:
+#         managed = True
+#         db_table = 'MODULO_ROL_PERMISOS_USUARIO'
+#         unique_together = (('usuario', 'modulorolpermisos'))
+#
+#
+# @admin.register(ModuloRolPermisosUsuario)
+# class ModuloRolPermisosUsuarioAdmin(admin.ModelAdmin):
+#     list_display = ('modulorolpermisos', 'usuario',)
