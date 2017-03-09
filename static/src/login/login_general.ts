@@ -25,11 +25,10 @@ class Login {
         this.clave = $('#clave').val()
         this.loginService.validateSession(this.usuario, this.clave).done((response) => {
             if (response.session == true) {
-                console.log(response);
                 $('#div_error_message').html(showDivAlert('Bienvenido!', 'success'));
                 $('#iniciar_sesion').addClass('disabled');
                 setTimeout(() => {
-                    window.location.href = `http://localhost:8001/setSession/?key=${response.key}`;
+                    window.location.href = `http://192.168.200.123:8001/setSession/?key=${response.key}`;
                 }, 1000)
             } else {
                 $('#div_error_message').html(showDivAlert('Usuario o contraseña no validos', 'danger'))

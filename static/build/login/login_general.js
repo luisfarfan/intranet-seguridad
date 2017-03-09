@@ -4,7 +4,7 @@
 /**
  * Created by lfarfan on 19/02/2017.
  */
-define(["require", "exports", '../core/utils', './login.service'], function (require, exports, utils_1, login_service_1) {
+define(["require", "exports", "../core/utils", "./login.service"], function (require, exports, utils_1, login_service_1) {
     "use strict";
     var Login = (function () {
         function Login() {
@@ -19,11 +19,10 @@ define(["require", "exports", '../core/utils', './login.service'], function (req
             this.clave = $('#clave').val();
             this.loginService.validateSession(this.usuario, this.clave).done(function (response) {
                 if (response.session == true) {
-                    console.log(response);
                     $('#div_error_message').html(utils_1.showDivAlert('Bienvenido!', 'success'));
                     $('#iniciar_sesion').addClass('disabled');
                     setTimeout(function () {
-                        window.location.href = "http://localhost:8001/setSession/?key=" + response.key;
+                        window.location.href = "http://192.168.200.123:8001/setSession/?key=" + response.key;
                     }, 1000);
                 }
                 else {

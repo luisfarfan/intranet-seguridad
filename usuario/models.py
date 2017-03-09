@@ -28,7 +28,7 @@ class Usuario(models.Model):
     ccdd = models.CharField(max_length=2, null=True, blank=True)
     ccpp = models.CharField(max_length=2, null=True, blank=True)
     ccdi = models.CharField(max_length=2, null=True, blank=True)
-    zona = models.CharField(max_length=2, null=True, blank=True)
+    zona = models.CharField(max_length=5, null=True, blank=True)
 
     # modulorolpermisousuario = models.ManyToManyField(ModuloRolPermisos, through='ModuloRolPermisosUsuario',
     #                                                  related_name='modulorolpermisousuario')
