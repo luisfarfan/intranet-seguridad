@@ -2,57 +2,62 @@ from usuario_modulo.serializer import ReadModuloSerializer
 from usuario_modulo.models import Modulo
 
 
-def getMenubyProject(proyecto_id, modulos_id):
-    menuResultado = []
-    moduloTree = ReadModuloSerializer(
+def getRecursiveMenu(proyecto_id):
+    return ReadModuloSerializer(
         instance=Modulo.objects.exclude(proyectosistema__isnull=True).filter(
             proyectosistema__proyectos_id=proyecto_id).distinct(),
         many=True).data
-    for modulo in moduloTree:
+
+
+def getMenubyProject(recursiveMenu, modulos_id):
+    _moduloTree = recursiveMenu
+    for modulo in _moduloTree:
+        index = _moduloTree.index(modulo)
         if hasChild(modulo, modulos_id):
-            menuResultado.append({'id': modulo['id'], 'nombre': modulo['nombre'], 'descripcion': modulo['descripcion'],
-                                  'slug': modulo['slug'], 'codigo': modulo['codigo'], 'icon': modulo['icon'],
-                                  'is_padre': modulo['is_padre'], 'modulo_padre': modulo['modulo_padre'],
-                                  'modulos_hijos': []})
-            pos = len(menuResultado) - 1
-            if len(modulo['modulos_hijos']):
-                for child in modulo['modulos_hijos']:
-                    if hasChild(child,modulos_id):
-                        menuResultado[pos]['modulos_hijos'].append({})
+            for mod in modulo['modulos_hijos']:
+                index2 = _moduloTree[index]['modulos_hijos'].index(mod)
+                if hasChild(mod, modulos_id):
+                    getMenubyProject(mod['modulos_hijos'], modulos_id)
+                else:
+                    _moduloTree[index]['modulos_hijos'][index2] = []
+        else:
+            _moduloTree[index] = []
+
+    # return clearEmptyArrays(_moduloTree)
+    return _moduloTree
+
+
+def clearEmptyArrays(recursiveMenu):
+    hay = 0
+    nohay = 0
+    for index, modulo in enumerate(recursiveMenu):
+        if len(modulo) == 0:
+            recursiveMenu.remove(modulo)
+            nohay = nohay + 1
+        else:
+            if nohay > 0:
+                hay = hay + 1
+            index = hay
+            print(recursiveMenu['id'])
+            for ind, child in enumerate(recursiveMenu[index]['modulos_hijos']):
+                if len(recursiveMenu[index]['modulos_hijos'][ind]) == 0:
+                    recursiveMenu[index]['modulos_hijos'].remove(child)
+                else:
+                    clearEmptyArrays(recursiveMenu[index]['modulos_hijos'][ind])
+
+    return recursiveMenu
 
 
 def hasChild(moduloTree, modulos_id):
-    has_child = False
     count = 0
     if moduloTree['id'] in modulos_id:
         count = count + 1
     else:
         if len(moduloTree['modulos_hijos']):
-            for modulo in moduloTree:
-                has_child(modulo, modulos_id)
+            for modulo in moduloTree['modulos_hijos']:
+                if modulo['id'] in modulos_id:
+                    count = count + 1
+                else:
+                    hasChild(modulo, modulos_id)
 
     return count > 0
-
-
-"""
-function findChilds(menu: IModulo, rol_id_array: Array<number>): boolean {
-    let has_child: boolean = false;
-    let count: number = 0;
-    if (rol_id_array.indexOf(menu.id) != -1) {
-        count++;
-    } else {
-        if (menu.modulos_hijos.length) {
-            menu.modulos_hijos.map((value: IModulo, key: number) => {
-                if (rol_id_array.indexOf(value.id) != -1) {
-                    count++;
-                } else {
-                    findChilds(value, rol_id_array);
-                }
-            });
-        }
-    }
-
-    return has_child = count > 0;
-}
-
-"""

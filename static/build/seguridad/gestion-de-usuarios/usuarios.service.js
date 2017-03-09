@@ -7,13 +7,14 @@ define(["require", "exports"], function (require, exports) {
         function UsuarioService() {
             this.url = {
                 usuario: BASEURL + "/rest_usuario/usuario/",
+                usuario_detalle: BASEURL + "/rest_usuario/usuario_detalle/",
                 save_rol: BASEURL + "/usuario/saveRol/"
             };
         }
         UsuarioService.prototype.get = function (pk) {
             if (pk === void 0) { pk = null; }
             return $.ajax({
-                url: pk == null ? this.url.usuario : "" + this.url.usuario + pk + "/",
+                url: pk == null ? this.url.usuario_detalle : "" + this.url.usuario_detalle + pk + "/",
                 type: 'GET'
             });
         };
@@ -38,7 +39,7 @@ define(["require", "exports"], function (require, exports) {
                 data: { rol_id: rol, user_id: user_id }
             });
         };
-        UsuarioService.prototype["delete"] = function (pk) {
+        UsuarioService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.usuario + pk + "/",
                 type: 'DELETE'

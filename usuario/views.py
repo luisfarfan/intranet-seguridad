@@ -61,6 +61,11 @@ class UsuarioViewset(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
 
 
+class UsuarioDetalleViewSet(viewsets.ModelViewSet):
+    serializer_class = UsuarioDetalleSerializer
+    queryset = Usuario.objects.all()
+
+
 from django.views.generic import TemplateView
 
 

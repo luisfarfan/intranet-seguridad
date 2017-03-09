@@ -16,6 +16,12 @@ class TipoUsuarioSerializer(serializers.ModelSerializer):
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+
+
+class UsuarioDetalleSerializer(serializers.ModelSerializer):
     rol = CrudRolSerializer(read_only=True)
     tipousuario = TipoUsuarioSerializer(read_only=True)
 

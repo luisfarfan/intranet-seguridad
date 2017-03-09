@@ -5,18 +5,19 @@
 declare var BASEURL: string;
 interface UrlUsuario {
     usuario: string,
+    usuario_detalle: string,
     save_rol: string,
 }
-
 export class UsuarioService {
     private url: UrlUsuario = {
         usuario: `${BASEURL}/rest_usuario/usuario/`,
+        usuario_detalle: `${BASEURL}/rest_usuario/usuario_detalle/`,
         save_rol: `${BASEURL}/usuario/saveRol/`,
     };
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
-            url: pk == null ? this.url.usuario : `${this.url.usuario}${pk}/`,
+            url: pk == null ? this.url.usuario_detalle : `${this.url.usuario_detalle}${pk}/`,
             type: 'GET'
         });
     }

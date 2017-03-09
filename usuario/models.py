@@ -25,6 +25,10 @@ class Usuario(models.Model):
     fec_edicion = models.DateTimeField(blank=True, null=True)
     activo = models.IntegerField(default=1)
     rol = models.ForeignKey(Rol, default=1)
+    ccdd = models.CharField(max_length=2, null=True, blank=True)
+    ccpp = models.CharField(max_length=2, null=True, blank=True)
+    ccdi = models.CharField(max_length=2, null=True, blank=True)
+    zona = models.CharField(max_length=2, null=True, blank=True)
 
     # modulorolpermisousuario = models.ManyToManyField(ModuloRolPermisos, through='ModuloRolPermisosUsuario',
     #                                                  related_name='modulorolpermisousuario')

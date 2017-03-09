@@ -38,8 +38,6 @@ def recursiveMenu(menu, base_url, module_id):
                                         </i>{}</a>""".format(css_class, base_url + '/' + child['slug'] + '/',
                                                              child['icon'],
                                                              child['descripcion'])
-                print(child['modulos_hijos'])
-                print(html)
             html += """</ul>"""
         else:
             html += """<li {}><a href="{}">

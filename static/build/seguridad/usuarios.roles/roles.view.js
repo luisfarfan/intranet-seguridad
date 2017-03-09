@@ -1,7 +1,7 @@
 /**
  * Created by Administrador on 21/02/2017.
  */
-define(["require", "exports", "./roles.service", "../proyectos/proyectos.service", "../menu/menu.service", "../permisos/permisos.service", "../../core/helper.inei", "../../core/utils"], function (require, exports, roles_service_1, proyectos_service_1, menu_service_1, permisos_service_1, helper_inei_1, util) {
+define(["require", "exports", './roles.service', '../proyectos/proyectos.service', '../menu/menu.service', '../permisos/permisos.service', '../../core/helper.inei', '../../core/utils'], function (require, exports, roles_service_1, proyectos_service_1, menu_service_1, permisos_service_1, helper_inei_1, util) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();
@@ -332,7 +332,7 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
                     utils.diffDeletedAndEdited();
                     moduloRolController.editModulosRol({
                         id_rol: rol_selected.id,
-                        "delete": keys_modulos_deleted,
+                        delete: keys_modulos_deleted,
                         edited: keys_modulos_added_edited
                     });
                 }, 'Esta seguro de guardar?', 'info');

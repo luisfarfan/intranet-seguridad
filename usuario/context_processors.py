@@ -2,7 +2,6 @@
 from usuario.utils import *
 from usuario_modulo.serializer import ReadModuloSerializer, ReadModuloRolSerializer
 from usuario_modulo.models import *
-import json
 
 
 def recursive_menu(request):
