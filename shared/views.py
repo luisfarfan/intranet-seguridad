@@ -49,7 +49,11 @@ class Shared:
                 request.session['data'] = Shared.setSessionUserData(user.id)
                 if not request.session.session_key:
                     request.session.save()
-                return JsonResponse({'session': True, 'key': request.session.session_key})
+
+                if ModuloRol.objects.filter(rol_id=user.rol_id, modulo__proyectosistema__sistemas_id=2).count():
+                    return JsonResponse({'session': True, 'key': request.session.session_key, 'is_udra': True})
+                else:
+                    return JsonResponse({'session': True, 'key': request.session.session_key, 'is_udra': False})
             else:
                 return JsonResponse({'session': False})
         else:

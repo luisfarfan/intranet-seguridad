@@ -22,7 +22,12 @@ define(["require", "exports", "../core/utils", "./login.service"], function (req
                     $('#div_error_message').html(utils_1.showDivAlert('Bienvenido!', 'success'));
                     $('#iniciar_sesion').addClass('disabled');
                     setTimeout(function () {
-                        window.location.href = "http://192.168.200.123:8001/setSession/?key=" + response.key;
+                        if (response.is_udra) {
+                            window.location.href = "http://192.168.201.113:8000/?key=" + response.key;
+                        }
+                        else {
+                            window.location.href = "http://192.168.200.123:8001/setSession/?key=" + response.key;
+                        }
                     }, 1000);
                 }
                 else {
