@@ -33,7 +33,6 @@ class Login {
                     } else {
                         window.location.href = `http://cpv.inei.gob.pe:5050/setSession/?key=${response.key}`
                     }
-
                 }, 1000)
             } else {
                 $('#div_error_message').html(showDivAlert('Usuario o contraseña no validos', 'danger'))
