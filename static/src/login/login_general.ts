@@ -31,7 +31,7 @@ class Login {
                     if (response.is_udra) {
                         window.location.href = `http://192.168.201.113:8000/?key=${response.key}`
                     } else {
-                        window.location.href = `http://cpv.inei.gob.pe:5050/setSession/?key=${response.key}`
+                        window.location.href = `http://192.168.200.123:8001/setSession/?key=${response.key}`
                     }
                 }, 1000)
             } else {

@@ -11,34 +11,70 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
           type="text/css">
     <link href="{% static "assets/css/icons/icomoon/styles.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "assets/css/bootstrap.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "assets/css/core.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "assets/css/components.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "assets/css/colors.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/styles.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/bootstrap.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/core.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/components.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/colors.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/style2.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/index_files/demo.css" %}" rel="stylesheet" type="text/css">
+
     <!-- /global stylesheets -->
 
     <!-- Core JS files -->
-    <script type="text/javascript" src="{% static "assets/js/plugins/loaders/pace.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "assets/js/core/libraries/bootstrap.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "assets/js/plugins/loaders/blockui.min.js" %}"></script>
+
+    <script type="text/javascript" src="{% static "assets/index_files/pace.min.js.descarga" %}"></script>
+    <script type="text/javascript" src="{% static "assets/index_files/jquery.min.js.descarga" %}"></script>
+    <script type="text/javascript" src="{% static "assets/index_files/bootstrap.min.js.descarga" %}"></script>
+    <script type="text/javascript" src="{% static "assets/index_files/blockui.min.js.descarga" %}"></script>
     <!-- /core JS files -->
 
     <!-- Theme JS files -->
-    <script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/index_files/uniform.min.js.descarga" %}"></script>
 
-    <script type="text/javascript" src="{% static "assets/js/core/app.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/index_files/app.js.descarga" %}"></script>
 
 
-    <script type="text/javascript" src="{% static "assets/js/plugins/ui/ripple.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/index_files/ripple.min.js.descarga" %}"></script>
+    <!-- /theme JS files -->
+    <script type="text/javascript" src="{% static "assets/index_files/js/modernizr.custom.86080.js" %}"></script>
     <!-- /theme JS files -->
 
 </head>
+<body id="page" class="login-container bg-white pace-done">
+<ul class="cb-slideshow">
+    <li><span>Image 01</span>
+        <div><h3>Costa</h3></div>
+    </li>
+    <li><span>Image 02</span>
+        <div><h3>Sierra</h3></div>
+    </li>
+    <li><span>Image 03</span>
+        <div><h3>Selva</h3></div>
+    </li>
+    <li><span>Image 04</span>
+        <div><h3>Costa</h3></div>
+    </li>
+    <li><span>Image 05</span>
+        <div><h3>Sierra</h3></div>
+    </li>
+    <li><span>Image 06</span>
+        <div><h3>Selva</h3></div>
+    </li>
 
-<body class="login-container bg-primary-400">
+</ul>
+<div class="pace  pace-inactive">
+    <div class="pace-progress" data-progress-text="100%" data-progress="99"
+         style="transform: translate3d(100%, 0px, 0px);">
+
+        <div class="pace-progress-inner"></div>
+    </div>
+    <div class="pace-activity"></div>
+</div>
 
 <!-- Page container -->
-<div class="page-container">
+<div class="page-container" style="min-height:1085px">
 
     <!-- Page content -->
     <div class="page-content">
@@ -47,50 +83,52 @@
         <div class="content-wrapper">
 
             <!-- Content area -->
-            <div class="content">
+            <div class="content" style="padding: 15% 15% 15% 15%;">
 
                 <!-- Advanced login -->
                 <form method="POST">
                     <div style="display:none">
                         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     </div>
-                    <div class="panel panel-body login-form">
-                        <div class="text-center">
-                            <div class="icon-object border-warning-400 text-warning-400"><i class="icon-people"></i>
+                    <div class="panel panel-body login-form"
+                         style="border-radius: 20px;box-shadow: 0px 0px 10px 2px #2c2c2c;">
+                        <div>
+                            <div align="center" style="width: 100%">
+                                <div align="center" style="width: 80%">
+                                    <img src="{% static "assets/index_files/images/logoinei.png" %}"
+                                         style="width:44%; display: inline-block; float:left;">
+                                    <img src="{% static "assets/index_files/images/logo.png" %}"
+                                         style="width:36%; display: inline-block;float:right;">
+                                </div>
                             </div>
-                            <h5 class="content-group-lg">Inicio de Sesión
-                                <small class="display-block">Ingresa tus credenciales</small>
-                            </h5>
                         </div>
-
-                        <div class="form-group has-feedback has-feedback-left">
-                            <input type="text" id="usuario" class="form-control" placeholder="Username">
+                        <div align="center" style="width: 100%">
+                            <div align="center"
+                                 style="display: inline-table; width: 80%;border-top: 1px solid #334676;border-bottom: 1px solid #334676;padding: 5px 0px 5px 0px;">
+                                <h3 style="text-align:center; font-family:roboto; font-weight:900; font-size:25px;color:#334676;">
+                                    INTRANET</h3>
+                                <h3 style="text-align:center; font-family:roboto; font-weight:900; font-size:25px;color:#29B6F6;">
+                                    Sistemas de Información</h3>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left" style="width: 80%;margin: 0 auto;">
+                            <input type="text" id="usuario" class="form-control" placeholder="Usuario">
                             <div class="form-control-feedback">
                                 <i class="icon-user text-muted"></i>
                             </div>
                         </div>
 
-                        <div class="form-group has-feedback has-feedback-left">
-                            <input type="password" id="clave" class="form-control" placeholder="Password">
+                        <div class="form-group has-feedback has-feedback-left" style="width: 80%;margin: 0 auto;">
+                            <input type="password" id="clave" class="form-control" placeholder="Contraseña">
                             <div class="form-control-feedback">
                                 <i class="icon-lock2 text-muted"></i>
                             </div>
                         </div>
 
-                        <div class="form-group login-options">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox" class="styled" checked="checked">
-                                        Recordarme?
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="form-group">
-                            <button type="button" id="iniciar_sesion" class="btn bg-blue-400 btn-block">Ingresar <i
-                                    class="icon-circle-right2 position-right"></i></button>
+                            <button type="button" id="iniciar_sesion" class="btn bg-blue-400 btn-block legitRipple"
+                                    style="font-family:roboto;width: 80%;margin: 0 auto;">Ingresar
+                            </button>
                         </div>
                         <div id="div_error_message"></div>
                     </div>
@@ -108,6 +146,10 @@
 
 </div>
 <!-- /page container -->
+
+
+<script type="text/javascript" src="{% static "assets/index_files/helpers.js.descarga" %}"></script>
+<script type="text/javascript" src="{% static "assets/index_files/principal.js.descarga" %}"></script>
 
 </body>
 <script type="text/javascript">

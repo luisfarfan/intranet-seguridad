@@ -69,7 +69,6 @@ var MenuAplicacionesController: any = {
             sistema_selected = objectHelper.findInArrayObject(sistemas, $(event.currentTarget).data('value'), 'id');
             MenuAplicacionesController.getModuloRecursive();
         });
-
     },
     getSistemas: (byPk: string) => {
         sistemasService.getSistemas(byPk).done(data => {

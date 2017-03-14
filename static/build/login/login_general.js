@@ -4,7 +4,7 @@
 /**
  * Created by lfarfan on 19/02/2017.
  */
-define(["require", "exports", '../core/utils', './login.service'], function (require, exports, utils_1, login_service_1) {
+define(["require", "exports", "../core/utils", "./login.service"], function (require, exports, utils_1, login_service_1) {
     "use strict";
     var Login = (function () {
         function Login() {
@@ -26,7 +26,7 @@ define(["require", "exports", '../core/utils', './login.service'], function (req
                             window.location.href = "http://192.168.201.113:8000/?key=" + response.key;
                         }
                         else {
-                            window.location.href = "http://cpv.inei.gob.pe:5050/setSession/?key=" + response.key;
+                            window.location.href = "http://192.168.200.123:8001/setSession/?key=" + response.key;
                         }
                     }, 1000);
                 }
