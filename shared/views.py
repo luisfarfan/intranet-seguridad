@@ -5,7 +5,7 @@ from usuario_modulo.models import ModuloRol
 from usuario.serializer import *
 from usuario_modulo.utils import *
 from django.contrib.sessions.models import Session
-from django.shortcuts import redirect
+from proyectos.models import *
 
 
 class Shared:
@@ -58,3 +58,29 @@ class Shared:
                 return JsonResponse({'session': False})
         else:
             raise PermissionDenied
+
+
+def getUsuariosporProyectoSistema(request, proyecto, sistema):
+    proyectosistema = ProyectoSistema.objects.filter(sistemas__codigo=sistema, proyectos__sigla=proyecto)
+
+    if proyectosistema:
+        proyectoSistema = ProyectoSistema.objects.get(sistemas__codigo=sistema, proyectos__sigla=proyecto)
+        roles = Rol.objects.filter(modulo__proyectosistema_id=proyectoSistema.id).values_list('id', flat=True)
+        usuarios = Usuario.objects.filter(rol_id__in=roles).values()
+    else:
+        return JsonResponse({'msg': 'No existe'})
+
+    return JsonResponse(list(usuarios), safe=False)
+
+
+def getUsuariosporProyectoSistemaFilterRol(request, proyecto, sistema, rol_codigo):
+    proyectosistema = ProyectoSistema.objects.filter(sistemas__codigo=sistema, proyectos__sigla=proyecto)
+
+    if proyectosistema:
+        proyectoSistema = ProyectoSistema.objects.get(sistemas__codigo=sistema, proyectos__sigla=proyecto)
+        roles = Rol.objects.filter(modulo__proyectosistema_id=proyectoSistema.id).values_list('id', flat=True)
+        usuarios = Usuario.objects.filter(rol_id__in=roles).values()
+    else:
+        return JsonResponse({'msg': 'No existe'})
+
+    return JsonResponse(list(usuarios), safe=False)

@@ -11,12 +11,7 @@ def recursive_menu(request):
         scheme = 'http://'
 
     base_url = scheme + request.get_host()
-    menu = None
     modulo_id = None
-    if 'menu' in request.session:
-        menu = request.session['menu']
-    else:
-        menu = None
     if 'MODULO_ID' in request.session:
         modulo_id = request.session['MODULO_ID']
 
