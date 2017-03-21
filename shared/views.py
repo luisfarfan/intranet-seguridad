@@ -78,7 +78,8 @@ def getUsuariosporProyectoSistemaFilterRol(request, proyecto, sistema, rol_codig
 
     if proyectosistema:
         proyectoSistema = ProyectoSistema.objects.get(sistemas__codigo=sistema, proyectos__sigla=proyecto)
-        roles = Rol.objects.filter(modulo__proyectosistema_id=proyectoSistema.id).values_list('id', flat=True)
+        roles = Rol.objects.filter(modulo__proyectosistema_id=proyectoSistema.id, id=rol_codigo).values_list('id',
+                                                                                                             flat=True)
         usuarios = Usuario.objects.filter(rol_id__in=roles).values()
     else:
         return JsonResponse({'msg': 'No existe'})
