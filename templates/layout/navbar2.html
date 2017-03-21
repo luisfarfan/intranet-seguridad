@@ -1,0 +1,51 @@
+{% load staticfiles %}
+<div class="navbar navbar-inverse navbar-fixed-top navbar-lg bg-indigo-inei">
+
+    <div class="navbar-header">
+           <ul class="nav navbar-nav pull-right visible-xs-block">
+            <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+            <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+        </ul>
+    </div>
+
+    <div class="navbar-collapse collapse" id="navbar-mobile">
+        <ul class="nav navbar-nav">
+            <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a>
+            </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            {#            <li><a href="#">Text link</a></li>#}
+
+            {#            <li>#}
+            {#                <a href="#">#}
+            {#                    <i class="icon-cog3"></i>#}
+            {#                    <span class="visible-xs-inline-block position-right">Icon link</span>#}
+            {#                </a>#}
+            {#            </li>#}
+
+            <li class="dropdown dropdown-user">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <img src='{% static "assets/images/icon_male.jpg" %}' alt="">
+                    <span>{{ request.session.user_data.nombre }}</span>
+                    <i class="caret"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="#"><i class="icon-user-plus"></i> Mi perfil</a></li>
+                    <li><a href="#"><i class="icon-switch2"></i>Cerrar Sesión</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<div style="background-image: url(/static/assets/images/cabecera.jpg);background-position: center;background-size: cover;">
+  <img src="/static/assets/images/logo_inei.png" style="float:left; left:0; width:160px;margin-left: 20px;">
+  <img src="/static/assets/images/logo_censo.png" style="float:right; right:0;width:140px;margin-left: 20px;">
+  <div>
+
+  <div style="text-align:center; color:white; font-weight: bold; font-size: 30px;">Sistema de Capacitación</div>
+
+    <div style="text-align:center; color:orange; font-weight: bold; font-size: 25px;">Censos Nacionales 2017: XII de Población, VII de Vivienda y III de Comunidades Indígenas<br>(III de Comunidades de la Amazonia Peruana y I de Comunidades Campesinas)</div>
+    </div>
+    </div>
