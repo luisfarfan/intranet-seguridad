@@ -6,6 +6,8 @@ from usuario.serializer import *
 from usuario_modulo.utils import *
 from django.contrib.sessions.models import Session
 from proyectos.models import *
+from rest_framework import generics, viewsets
+from usuario.serializer import UsuarioDetalleSerializer
 
 
 class Shared:
@@ -60,17 +62,23 @@ class Shared:
             raise PermissionDenied
 
 
-def getUsuariosporProyectoSistema(request, proyecto, sistema):
+def getUsuariosporProyectoSistema(proyecto, sistema):
     proyectosistema = ProyectoSistema.objects.filter(sistemas__codigo=sistema, proyectos__sigla=proyecto)
 
     if proyectosistema:
         proyectoSistema = ProyectoSistema.objects.get(sistemas__codigo=sistema, proyectos__sigla=proyecto)
         roles = Rol.objects.filter(modulo__proyectosistema_id=proyectoSistema.id).values_list('id', flat=True)
-        usuarios = Usuario.objects.filter(rol_id__in=roles).values()
-    else:
-        return JsonResponse({'msg': 'No existe'})
+        usuarios = Usuario.objects.filter(rol_id__in=roles)
+    return usuarios
 
-    return JsonResponse(list(usuarios), safe=False)
+
+class PersonalPorProyectoSistemaViewSet(generics.ListAPIView):
+    serializer_class = UsuarioDetalleSerializer
+
+    def get_queryset(self):
+        proyecto = self.kwargs['proyecto']
+        sistema = self.kwargs['sistema']
+        return getUsuariosporProyectoSistema(proyecto, sistema)
 
 
 def getUsuariosporProyectoSistemaFilterRol(request, proyecto, sistema, rol_codigo):
