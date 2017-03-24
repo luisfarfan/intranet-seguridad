@@ -158,5 +158,6 @@ SESSION_SAVE_EVERY_REQUEST = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 CORS_ORIGIN_WHITELIST = (
-    '192.168.200.123:8001'
+    '192.168.200.123:8001',
+    'cpv.inei.gob.pe:5050'
 )
