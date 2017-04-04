@@ -61,11 +61,11 @@ class DinamicView(View):
         return HttpResponse(template.render(context, request))
 
 
-modulos_routes = Modulo.objects.all()
-
-for menu in modulos_routes:
-    if menu.is_padre == 0:
-        urlpatterns.append(
-            url(r'^' + menu.slug + '/',
-                ensure_csrf_cookie(DinamicView.as_view(template_name=menu.template_html, modulo_id=menu.id,
-                                                       breadcumbs=getBreadcumbs(menu.id)))))
+# modulos_routes = Modulo.objects.all()
+#
+# for menu in modulos_routes:
+#     if menu.is_padre == 0:
+#         urlpatterns.append(
+#             url(r'^' + menu.slug + '/',
+#                 ensure_csrf_cookie(DinamicView.as_view(template_name=menu.template_html, modulo_id=menu.id,
+#                                                        breadcumbs=getBreadcumbs(menu.id)))))

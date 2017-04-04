@@ -5,10 +5,10 @@ from django.contrib import admin
 
 # Create your models here.
 class Modulo(models.Model):
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField()
-    slug = models.CharField(max_length=50)
-    codigo = models.CharField(max_length=8)
+    nombre = models.CharField(max_length=255)
+    descripcion = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255)
+    codigo = models.CharField(max_length=100)
     proyectosistema = models.ForeignKey(ProyectoSistema, null=True, blank=True)
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
@@ -17,7 +17,7 @@ class Modulo(models.Model):
     modulo_padre = models.ForeignKey('self', related_name='modulos_hijos', null=True, blank=True)
     template_html = models.CharField(max_length=255, null=True)
     is_padre = models.IntegerField(default=0)
-    icon = models.CharField(max_length=100, default='icon-home4')
+    icon = models.CharField(max_length=255, default='icon-home4')
     roles = models.ManyToManyField('Rol', through='ModuloRol')
 
     def __unicode__(self):

@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-
+DBENV = 'PROD'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -80,10 +80,17 @@ WSGI_APPLICATION = 'intranetapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {
+BD_LOCAL = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'CPV2017_SEGURIDAD',
+        'USER': 'lfarfan',
+        'PASSWORD': 'lfarfan',
+        'HOST': '172.18.1.41',
+        'OPTIONS': {
+            'driver': 'SQL Server',
+            'unicode_results': True
+        },
     },
     'segmentacion': {
         'ENGINE': 'sql_server.pyodbc',
@@ -107,6 +114,45 @@ DATABASES = {
         },
     },
 }
+
+BD_PRODUCCION = {
+    'default': {
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'CPV2017_SEGURIDAD',
+        'USER': 'lfarfan',
+        'PASSWORD': 'lfarfan',
+        'HOST': '172.18.1.41',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 11 for SQL Server',
+            'unicode_results': True
+        },
+    },
+    'segmentacion': {
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'CPV_SEGMENTACION',
+        'USER': 'us_segmentacion_web',
+        'PASSWORD': 'u$s3g*mentaWeB',
+        'HOST': '172.18.1.41',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 11 for SQL Server',
+        },
+    },
+    'consecucion': {
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'INEI_BDRRHH_CONSECUCION',
+        'USER': 'rvila',
+        'PASSWORD': 'inei1202',
+        'HOST': '192.168.200.250',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 11 for SQL Server',
+            'unicode_results': True,
+        },
+    },
+}
+if DBENV == 'LOCAL':
+    DATABASES = BD_LOCAL
+elif DBENV == 'PROD':
+    DATABASES = BD_PRODUCCION
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -159,5 +205,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 CORS_ORIGIN_WHITELIST = (
     '192.168.200.123:8001',
-    'cpv.inei.gob.pe:5050'
+    'cpv.inei.gob.pe:5050',
+    'cpv.inei.gob.pe:85',
+    '172.16.2.205:8000'
 )

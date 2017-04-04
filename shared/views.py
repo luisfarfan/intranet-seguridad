@@ -41,6 +41,24 @@ class Shared:
         }
         return response
 
+    def getMenu(request):
+        if 'key' not in request.GET:
+            raise PermissionDenied
+        key = request.GET['key']
+        session = Session.objects.filter(pk=key)
+        if session.count():
+            session = Session.objects.get(pk=key)
+            data = session.get_decoded()
+        else:
+            return JsonResponse({'msg': 'Key no valida'}, safe=False)
+
+        response = {
+            'menu': data['data']['modulos']['CPV']['menu'],
+            'modulos_individuales': data['data']['modulos']['CPV']['modulos_individuales']
+        }
+
+        return JsonResponse(response, safe=False)
+
     def authentication(request):
         if request.method == 'POST':
             usuario = request.POST['usuario']

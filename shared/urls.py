@@ -8,4 +8,5 @@ urlpatterns = [
         PersonalPorProyectoSistemaViewSet.as_view()),
     url(r'proyectosistema_user/(?P<proyecto>[\w\-]+)/(?P<sistema>[\w\-]+)/(?P<rol_codigo>[\w\-]+)/$',
         getUsuariosporProyectoSistemaFilterRol),
+    url(r'getMenu/$', Shared.getMenu),
 ]
