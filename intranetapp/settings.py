@@ -27,7 +27,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-DBENV = 'PROD'
+
+# LOCAL | PROD
+DBENV = 'LOCAL'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
