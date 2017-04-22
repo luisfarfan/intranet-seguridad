@@ -41,8 +41,9 @@ urlpatterns = [
     url(r'^rest_modulousuario/', include('usuario_modulo.urls', namespace='usuario_modulo')),
     url(r'^login/', ensure_csrf_cookie(TemplateView.as_view(template_name='login.html'))),
     url(r'^Bienvenido/', ensure_csrf_cookie(TemplateView.as_view(template_name='intro.html'))),
-    url(r'^$', ensure_csrf_cookie(TemplateView.as_view(template_name='login_general.html'))),
+    url(r'^$', ensure_csrf_cookie(TemplateView.as_view(template_name='material/login.html'))),
     url(r'^seguridad/', include('shared.urls', namespace='shared')),
+    url(r'^services/', include('services.urls', namespace='services')),
 ]
 
 
