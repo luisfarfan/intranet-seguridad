@@ -5,6 +5,7 @@ declare var BASEURL: any;
 export default class RolesService {
     private url = `${BASEURL}/rest_modulousuario/rol/`;
     private url_rol_modulo = `${BASEURL}/rest_modulousuario/modulos_rol/`;
+    private url_modulosbyrol = `${BASEURL}/rest_modulousuario/modulosbyrol/`;
 
 
     get(pk: any = null) {
@@ -17,7 +18,7 @@ export default class RolesService {
     update(pk: any, obj: Array<Object>) {
         return $.ajax({
             url: `${this.url}${pk}/`,
-            type: 'PUT',
+            type: 'PATCH',
             data: obj
         });
     }
@@ -34,6 +35,12 @@ export default class RolesService {
         return $.ajax({
             url: `${this.url}${pk}/`,
             type: 'DELETE',
+        });
+    }
+
+    getModulos(pk: number) {
+        return $.ajax({
+            url: `${this.url_modulosbyrol}${pk}/`,
         });
     }
 }

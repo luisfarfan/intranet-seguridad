@@ -37,6 +37,13 @@ class ProyectoAdmin(admin.ModelAdmin):
 class ProyectoSistema(models.Model):
     proyectos = models.ForeignKey('Proyecto')
     sistemas = models.ForeignKey(Sistema)
+    url_base = models.CharField(max_length=100, blank=True, null=True)
+    codigo = models.CharField(max_length=20, blank=True, null=True)
+    servidor_bd = models.CharField(max_length=100, blank=True, null=True)
+    nombre_bd = models.CharField(max_length=100, blank=True, null=True)
+    url_receive = models.CharField(max_length=100, blank=True, null=True)
+    presentacion_icon = models.CharField(max_length=255, blank=True, null=True)
+    presentacion_nombre = models.CharField(max_length=100, blank=True, null=True)
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)

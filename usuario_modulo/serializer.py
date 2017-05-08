@@ -59,9 +59,7 @@ class CrudRolSerializer(serializers.ModelSerializer):
 
 
 class ReadRolSerializer(serializers.ModelSerializer):
-    # modulo_rol = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
-    modulo_rol = ReadModuloRolSerializer(many=True)
-
+    # modulo_rol = ReadModuloRolSerializer(many=True)
     class Meta:
         model = Rol
         fields = ('__all__')

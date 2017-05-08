@@ -28,7 +28,7 @@ var objectHelper = new ObjectHelper();
 var sessionHelper = new SessionHelper();
 var rolesModel = new RolesModel();
 var roles: Array<Object> = [];
-var rol_selected: RolSelected = null;
+var rol_selected: any = null;
 var session = sessionHelper.getSession();
 var tree_menu_format: Array<Object> = [];
 var tree_menu_format_selecteds: Array<Object> = [];
@@ -173,20 +173,81 @@ class ModuloRolController {
                     <td>${parseInt(key) + 1}</td>
                     <td>${value.nombre}</td>
                     <td><ul class="icons-list">
-                            <li name="li_rol" data-value=${value.id} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>
-                            <li class="text-danger-600"><a><i class="icon-trash"></i></a></li>
+                            <li name="li_editar_rol" data-value=${value.id} class="text-primary-600"><a><i class="icon-pencil4"></i></a></li>
+                            <li name="li_rol" data-value=${value.id} class="text-primary-600"><a><i class="icon-database"></i></a></li>
+                            <li name="li_delete_rol" data-value=${value.id} class="text-danger-600"><a><i class="icon-trash"></i></a></li>
 						</ul></td>
                 </tr>`;
         });
         $('#table_roles').find('tbody').html(html);
+        $('li[name="li_rol"]').off();
         $('li[name="li_rol"]').on('click', (event: any) => {
             this.getRolSelected($(event.currentTarget).data('value'));
         });
+        $('li[name="li_editar_rol"]').off();
+        $('li[name="li_editar_rol"]').on('click', (event: any) => {
+            rol_selected = objectHelper.findInArrayObject(roles, $(event.currentTarget).data('value'), 'id');
+            this.setFormularioRol();
+        });
+        $('li[name="li_delete_rol"]').off();
+        $('li[name="li_delete_rol"]').on('click', (event: any) => {
+            this.deleteRol($(event.currentTarget).data('value'));
+        });
+    }
+
+    setFormularioRol() {
+        if (rol_selected !== null) {
+            for (let key in rol_selected) {
+                let input = $(`[name="${key}"]`);
+                if ($(`[name="${key}"]`).is(':checkbox')) {
+                    rol_selected[key] == 1 ? input.prop('checked', true) : '';
+                } else {
+                    input.val(rol_selected[key]);
+                }
+            }
+        } else {
+            $('#form_rol')[0].reset();
+        }
+        $('#modal_rol').modal();
+    }
+
+    deleteRol(id: number) {
+        util.alert_confirm(() => {
+            rolesModel.delete(id).done(() => {
+                this.getRoles();
+                util.showSwalAlert('Se ha eliminado el Rol correctamente', 'Exito!', 'success')
+            });
+        }, 'Esta seguro de eliminar este Rol?', 'info')
+    }
+
+    saveRol() {
+        if (form_rol_validate.valid()) {
+            let valid_form = objectHelper.formToObject(util.serializeForm('form_rol'));
+            if (rol_selected !== null) {
+                rolesModel.update(rol_selected.id, valid_form).done((response) => {
+                    util.showSwalAlert('Se ha editado el Rol correctamente', 'Exito!', 'success');
+                    this.getRoles();
+                    form_rol_validate.resetForm();
+                    $('#modal_rol').modal('hide');
+                }).fail((error: any) => {
+                    util.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
+                })
+            } else {
+                rolesModel.add(valid_form).done((response) => {
+                    util.showSwalAlert('Se ha agregado el Rol correctamente', 'Exito!', 'success');
+                    this.getRoles();
+                    form_rol_validate.resetForm();
+                    $('#modal_rol').modal('hide');
+                }).fail((error: any) => {
+                    util.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
+                })
+            }
+        }
     }
 
     drawMenuPermisos() {
         if (rol_selected.modulo_rol.length) {
-            rol_selected.modulo_rol.map((value, key) => {
+            rol_selected.modulo_rol.map((value: any, key: number) => {
                 keys_modulos_by_rol.push(value.modulo.id);
             });
             tree_menu_format_selecteds = util.jsonFormatFancyTreeSelecteds(this.menuPermiso, keys_modulos_by_rol);
@@ -266,15 +327,10 @@ class ModuloRolController {
         }
     }
 
-    getRolSelected(id: number) {
-        if (this.proyecto_selected === null) {
-            util.showInfo('Por favor Seleccione un proyecto!');
-            return false;
-        }
-        rol_selected = objectHelper.findInArrayObject(roles, id, 'id');
-        keys_modulos_by_rol = [];
+    drawModulosTreeRecursive() {
         if (rol_selected.modulo_rol.length) {
-            rol_selected.modulo_rol.map((value, key) => {
+            keys_modulos_by_rol = []
+            rol_selected.modulo_rol.map((value: any, key: number) => {
                 keys_modulos_by_rol.push(value.modulo.id);
             });
             tree_menu_format = util.jsonFormatFancyTree(this.menu, keys_modulos_by_rol);
@@ -327,6 +383,18 @@ class ModuloRolController {
         $('#tree_menu_rol').fancytree(options_tree);
         $('#tree_menu_rol').fancytree("destroy");
         $('#tree_menu_rol').fancytree(options_tree);
+    }
+
+    getRolSelected(id: number) {
+        if (this.proyecto_selected === null) {
+            util.showInfo('Por favor Seleccione un proyecto!')
+            return false
+        }
+        rol_selected = objectHelper.findInArrayObject(roles, id, 'id');
+        rolesModel.getModulos(id).done((modulosrol) => {
+            rol_selected.modulo_rol = modulosrol;
+            this.drawModulosTreeRecursive();
+        });
     }
 
     addRol() {
@@ -384,7 +452,11 @@ var id_dropdowns: Array<string> = ['select_proyectos', 'select_sistemas'];
 var App: any = {
     init: () => {
         $('#btn_submit_form').on('click', (event: any) => {
-            moduloRolController.addRol();
+            moduloRolController.saveRol();
+        });
+        $('#btn_addrol').on('click', (event: any) => {
+            rol_selected = null;
+            moduloRolController.setFormularioRol();
         });
         $('#btn_save_modulo_rol').on('click', (event: any) => {
             util.alert_confirm(() => {

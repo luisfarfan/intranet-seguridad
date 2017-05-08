@@ -14,6 +14,14 @@ class ReadModulosRolViewSet(viewsets.ModelViewSet):
     queryset = Rol.objects.all()
 
 
+class ModulosRolFilter(generics.ListAPIView):
+    serializer_class = ReadModuloRolSerializer
+
+    def get_queryset(self):
+        id_rol = self.kwargs['id_rol']
+        return ModuloRol.objects.filter(rol_id=id_rol)
+
+
 class ReadModulosRolbyRolModuloViewSet(generics.ListAPIView):
     serializer_class = ReadModuloRolbymodulorolSerializer
 

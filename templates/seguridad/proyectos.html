@@ -131,8 +131,8 @@
     </div>
 
     <div id="modal_asignacion" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content modal-lg">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
                 <div class="modal-header bg-info">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Asignación de Sistema</h5>
@@ -169,6 +169,58 @@
                             </button>
                         </div>
                     </div>
+                    <br>
+                    <div class="row">
+                        <form action="">
+                            <fieldset class="content-group">
+                                <div class="col-md-4 col-lg-offset-1">
+                                    <div class="form-group">
+                                        <label>URL Base: </label>
+                                        <input type="text" class="form-control" name="url_base"
+                                               placeholder="BASE Url">
+                                        <span class="help-block">$999.99</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Código Único Identificador: </label>
+                                        <input type="text" class="form-control" name="codigo"
+                                               placeholder="Codigo unico identificador del Proyecto Sistema">
+                                        <span class="help-block">ej. cpvcapacitacion</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Servidor de Base Datos: </label>
+                                        <input type="text" class="form-control" name="servidor_bd"
+                                               placeholder="Servidor de Base de Datos">
+                                        <span class="help-block">ej. CENSOCPV</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Nombre de Base Datos: </label>
+                                        <input type="text" class="form-control" name="nombre_bd"
+                                               placeholder="Nombre de la Base de Datos">
+                                        <span class="help-block">ej. KAYARA</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-lg-offset-1">
+                                    <div class="form-group">
+                                        <label>Nombre Presentación</label>
+                                        <input type="text" class="form-control" name="presentacion_nombre"
+                                               placeholder="Nombre que saldra en la lista de sistemas">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>URL Principal</label>
+                                        <input type="text" class="form-control" name="url_receive"
+                                               placeholder="Url principal que recibira la key">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
                 </div>
 
                 <div class="modal-footer">
@@ -177,7 +229,6 @@
                         Guardar
                     </button>
                 </div>
-
             </div>
         </div>
     </div>

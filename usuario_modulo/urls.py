@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'menubyprojectsistema/(?P<id_proyecto>.+)/(?P<id_sistema>.+)/$', apiMenu.getMenubyProjectSistema),
     url(r'permisos_modulorol/(?P<rol_id>.+)/(?P<modulo_id>.+)/$', ReadModulosRolbyRolModuloViewSet.as_view()),
     url(r'save_permisos_modulorol/$', apiModuloRol.savePermisosModuloRol),
+    url(r'modulosbyrol/(?P<id_rol>.+)/$', ModulosRolFilter.as_view()),
 ]

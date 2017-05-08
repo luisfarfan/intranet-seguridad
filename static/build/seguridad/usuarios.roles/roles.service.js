@@ -4,6 +4,7 @@ define(["require", "exports"], function (require, exports) {
         function RolesService() {
             this.url = BASEURL + "/rest_modulousuario/rol/";
             this.url_rol_modulo = BASEURL + "/rest_modulousuario/modulos_rol/";
+            this.url_modulosbyrol = BASEURL + "/rest_modulousuario/modulosbyrol/";
         }
         RolesService.prototype.get = function (pk) {
             if (pk === void 0) { pk = null; }
@@ -15,7 +16,7 @@ define(["require", "exports"], function (require, exports) {
         RolesService.prototype.update = function (pk, obj) {
             return $.ajax({
                 url: "" + this.url + pk + "/",
-                type: 'PUT',
+                type: 'PATCH',
                 data: obj
             });
         };
@@ -26,10 +27,15 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        RolesService.prototype["delete"] = function (pk) {
+        RolesService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url + pk + "/",
                 type: 'DELETE'
+            });
+        };
+        RolesService.prototype.getModulos = function (pk) {
+            return $.ajax({
+                url: "" + this.url_modulosbyrol + pk + "/"
             });
         };
         return RolesService;
@@ -63,7 +69,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        PermisosService.prototype["delete"] = function (pk) {
+        PermisosService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.permisos + pk + "/",
                 type: 'DELETE'

@@ -28,8 +28,8 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
-# LOCAL | PROD
-DBENV = 'LOCAL'
+# LOCAL | PROD | SQLITE
+DBENV = 'SQLITE'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -156,6 +156,13 @@ if DBENV == 'LOCAL':
     DATABASES = BD_LOCAL
 elif DBENV == 'PROD':
     DATABASES = BD_PRODUCCION
+elif DBENV == 'SQLITE':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -210,5 +217,6 @@ CORS_ORIGIN_WHITELIST = (
     '192.168.200.123:8001',
     'cpv.inei.gob.pe:5050',
     'cpv.inei.gob.pe:85',
-    '172.16.2.205:8000'
+    '172.16.2.205:8000',
+    'localhost:8001'
 )

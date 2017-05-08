@@ -1,7 +1,7 @@
 /**
  * Created by Administrador on 21/02/2017.
  */
-define(["require", "exports", "./roles.service", "../proyectos/proyectos.service", "../menu/menu.service", "../permisos/permisos.service", "../../core/helper.inei", "../../core/utils"], function (require, exports, roles_service_1, proyectos_service_1, menu_service_1, permisos_service_1, helper_inei_1, util) {
+define(["require", "exports", './roles.service', '../proyectos/proyectos.service', '../menu/menu.service', '../permisos/permisos.service', '../../core/helper.inei', '../../core/utils'], function (require, exports, roles_service_1, proyectos_service_1, menu_service_1, permisos_service_1, helper_inei_1, util) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();
@@ -136,12 +136,74 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
             var _this = this;
             var html = '';
             roles.map(function (value, key) {
-                html += "<tr>\n                    <td>" + (parseInt(key) + 1) + "</td>\n                    <td>" + value.nombre + "</td>\n                    <td><ul class=\"icons-list\">\n                            <li name=\"li_rol\" data-value=" + value.id + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>\n                            <li class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>\n\t\t\t\t\t\t</ul></td>\n                </tr>";
+                html += "<tr>\n                    <td>" + (parseInt(key) + 1) + "</td>\n                    <td>" + value.nombre + "</td>\n                    <td><ul class=\"icons-list\">\n                            <li name=\"li_editar_rol\" data-value=" + value.id + " class=\"text-primary-600\"><a><i class=\"icon-pencil4\"></i></a></li>\n                            <li name=\"li_rol\" data-value=" + value.id + " class=\"text-primary-600\"><a><i class=\"icon-database\"></i></a></li>\n                            <li name=\"li_delete_rol\" data-value=" + value.id + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>\n\t\t\t\t\t\t</ul></td>\n                </tr>";
             });
             $('#table_roles').find('tbody').html(html);
+            $('li[name="li_rol"]').off();
             $('li[name="li_rol"]').on('click', function (event) {
                 _this.getRolSelected($(event.currentTarget).data('value'));
             });
+            $('li[name="li_editar_rol"]').off();
+            $('li[name="li_editar_rol"]').on('click', function (event) {
+                rol_selected = objectHelper.findInArrayObject(roles, $(event.currentTarget).data('value'), 'id');
+                _this.setFormularioRol();
+            });
+            $('li[name="li_delete_rol"]').off();
+            $('li[name="li_delete_rol"]').on('click', function (event) {
+                _this.deleteRol($(event.currentTarget).data('value'));
+            });
+        };
+        ModuloRolController.prototype.setFormularioRol = function () {
+            if (rol_selected !== null) {
+                for (var key in rol_selected) {
+                    var input = $("[name=\"" + key + "\"]");
+                    if ($("[name=\"" + key + "\"]").is(':checkbox')) {
+                        rol_selected[key] == 1 ? input.prop('checked', true) : '';
+                    }
+                    else {
+                        input.val(rol_selected[key]);
+                    }
+                }
+            }
+            else {
+                $('#form_rol')[0].reset();
+            }
+            $('#modal_rol').modal();
+        };
+        ModuloRolController.prototype.deleteRol = function (id) {
+            var _this = this;
+            util.alert_confirm(function () {
+                rolesModel.delete(id).done(function () {
+                    _this.getRoles();
+                    util.showSwalAlert('Se ha eliminado el Rol correctamente', 'Exito!', 'success');
+                });
+            }, 'Esta seguro de eliminar este Rol?', 'info');
+        };
+        ModuloRolController.prototype.saveRol = function () {
+            var _this = this;
+            if (form_rol_validate.valid()) {
+                var valid_form = objectHelper.formToObject(util.serializeForm('form_rol'));
+                if (rol_selected !== null) {
+                    rolesModel.update(rol_selected.id, valid_form).done(function (response) {
+                        util.showSwalAlert('Se ha editado el Rol correctamente', 'Exito!', 'success');
+                        _this.getRoles();
+                        form_rol_validate.resetForm();
+                        $('#modal_rol').modal('hide');
+                    }).fail(function (error) {
+                        util.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
+                    });
+                }
+                else {
+                    rolesModel.add(valid_form).done(function (response) {
+                        util.showSwalAlert('Se ha agregado el Rol correctamente', 'Exito!', 'success');
+                        _this.getRoles();
+                        form_rol_validate.resetForm();
+                        $('#modal_rol').modal('hide');
+                    }).fail(function (error) {
+                        util.showSwalAlert('Ha ocurrido un error, por favor intente nuevamente', 'Error!', 'error');
+                    });
+                }
+            }
         };
         ModuloRolController.prototype.drawMenuPermisos = function () {
             if (rol_selected.modulo_rol.length) {
@@ -221,14 +283,9 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
                 });
             }
         };
-        ModuloRolController.prototype.getRolSelected = function (id) {
-            if (this.proyecto_selected === null) {
-                util.showInfo('Por favor Seleccione un proyecto!');
-                return false;
-            }
-            rol_selected = objectHelper.findInArrayObject(roles, id, 'id');
-            keys_modulos_by_rol = [];
+        ModuloRolController.prototype.drawModulosTreeRecursive = function () {
             if (rol_selected.modulo_rol.length) {
+                keys_modulos_by_rol = [];
                 rol_selected.modulo_rol.map(function (value, key) {
                     keys_modulos_by_rol.push(value.modulo.id);
                 });
@@ -283,6 +340,18 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
             $('#tree_menu_rol').fancytree("destroy");
             $('#tree_menu_rol').fancytree(options_tree);
         };
+        ModuloRolController.prototype.getRolSelected = function (id) {
+            var _this = this;
+            if (this.proyecto_selected === null) {
+                util.showInfo('Por favor Seleccione un proyecto!');
+                return false;
+            }
+            rol_selected = objectHelper.findInArrayObject(roles, id, 'id');
+            rolesModel.getModulos(id).done(function (modulosrol) {
+                rol_selected.modulo_rol = modulosrol;
+                _this.drawModulosTreeRecursive();
+            });
+        };
         ModuloRolController.prototype.addRol = function () {
             var _this = this;
             if (form_rol_validate.valid()) {
@@ -325,14 +394,18 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
     var App = {
         init: function () {
             $('#btn_submit_form').on('click', function (event) {
-                moduloRolController.addRol();
+                moduloRolController.saveRol();
+            });
+            $('#btn_addrol').on('click', function (event) {
+                rol_selected = null;
+                moduloRolController.setFormularioRol();
             });
             $('#btn_save_modulo_rol').on('click', function (event) {
                 util.alert_confirm(function () {
                     utils.diffDeletedAndEdited();
                     moduloRolController.editModulosRol({
                         id_rol: rol_selected.id,
-                        "delete": keys_modulos_deleted,
+                        delete: keys_modulos_deleted,
                         edited: keys_modulos_added_edited
                     });
                 }, 'Esta seguro de guardar?', 'info');
