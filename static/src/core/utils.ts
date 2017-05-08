@@ -68,6 +68,7 @@ export function alert_confirm(callback: any, title = 'Está seguro de Guardar?',
  *
  **/
 export function jsonFormatFancyTree(menu_json: any, rol_id_array: Array<number> = []) {
+    console.log(menu_json);
     let treejson: Array<any> = [];
     let interface_node: any = {};
     menu_json.map((value: any, key: any) => {
@@ -97,6 +98,7 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: Array<number> 
             treejson.push(interface_node);
         }
     });
+    console.log(treejson);
     return treejson;
 }
 

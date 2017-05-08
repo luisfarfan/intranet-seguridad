@@ -1,4 +1,4 @@
-define(["require", "exports", './menu-aplicaciones.service', '../../core/utils', '../../core/helper.inei'], function (require, exports, menu_aplicaciones_service_1, utils, helper_inei_1) {
+define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils", "../../core/helper.inei"], function (require, exports, menu_aplicaciones_service_1, utils, helper_inei_1) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var proyectosService = new menu_aplicaciones_service_1.ProyectosService();
@@ -34,6 +34,7 @@ define(["require", "exports", './menu-aplicaciones.service', '../../core/utils',
     };
     var addModulo = false;
     var updateModulo = false;
+    var proyectosistema_id = null;
     var MenuAplicacionesController = {
         getProyectos: function (byPk) {
             proyectosService.getProyectos(byPk).done(function (data) {
@@ -72,6 +73,9 @@ define(["require", "exports", './menu-aplicaciones.service', '../../core/utils',
         },
         getModuloRecursive: function () {
             moduloService.getModulosRecursive(proyecto_selected.id, sistema_selected.id).done(function (data) {
+                proyectosService.getProyectoSistema(proyecto_selected.id, sistema_selected.id).done(function (data) {
+                    proyectosistema_id = data[0].id;
+                });
                 modulosRecursive = data;
                 var treeFormat = utils.jsonFormatFancyTree(data);
                 var options_tree = {
@@ -133,6 +137,7 @@ define(["require", "exports", './menu-aplicaciones.service', '../../core/utils',
             if (form_modulo_validate.valid()) {
                 var valid_form = objectHelper.formToObject(utils.serializeForm('form_modulo'));
                 valid_form.modulo_padre = modulo_selected.id;
+                valid_form.proyectosistema = proyectosistema_id;
                 moduloService.addModulo(valid_form).done(function (response) {
                     utils.showSwalAlert('Se ha agregado el Modulo correctamente', 'Exito!', 'success');
                     $('#modal_modulo_form').modal('hide');
@@ -146,6 +151,7 @@ define(["require", "exports", './menu-aplicaciones.service', '../../core/utils',
         updateModulo: function () {
             if (form_modulo_validate.valid()) {
                 var valid_form = objectHelper.formToObject(utils.serializeForm('form_modulo'));
+                valid_form.proyectosistema = proyectosistema_id;
                 moduloService.updateModulo(modulo_selected.id, valid_form).done(function (response) {
                     utils.showSwalAlert('Se ha editado el Modulo correctamente', 'Exito!', 'success');
                     $('#modal_modulo_form').modal('hide');

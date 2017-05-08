@@ -4,7 +4,8 @@ define(["require", "exports"], function (require, exports) {
         function ProyectosService() {
             this.url = {
                 proyectos: BASEURL + "/rest_proyectos/proyecto/",
-                sistemas_proyecto: BASEURL + "/rest_proyectos/sistemas_proyecto/"
+                sistemas_proyecto: BASEURL + "/rest_proyectos/sistemas_proyecto/",
+                proyecto_sistema: BASEURL + "/rest_proyectos/get_proyecto_sistema/"
             };
         }
         ProyectosService.prototype.getProyectos = function (pk) {
@@ -32,6 +33,12 @@ define(["require", "exports"], function (require, exports) {
             return $.ajax({
                 url: this.url.proyectos + "/" + pk,
                 type: 'DELETE'
+            });
+        };
+        ProyectosService.prototype.getProyectoSistema = function (id_proyecto, id_sistema) {
+            return $.ajax({
+                url: "" + this.url.proyecto_sistema + id_proyecto + "/" + id_sistema,
+                type: 'GET'
             });
         };
         return ProyectosService;

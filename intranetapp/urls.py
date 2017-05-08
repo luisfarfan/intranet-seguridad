@@ -19,6 +19,7 @@ from proyectos.urls import router_proyecto
 from sistemas.urls import router_sistema
 from usuario.urls import router_usuario
 from usuario_modulo.urls import router_modulo_usuario
+from webservices.urls import router_webservice
 from django.views.generic import TemplateView
 from usuario_modulo.models import Modulo
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -35,6 +36,7 @@ urlpatterns = [
     url(r'^rest_sistemas/', include(router_sistema.urls)),
     url(r'^rest_usuario/', include(router_usuario.urls)),
     url(r'^rest_modulousuario/', include(router_modulo_usuario.urls)),
+    url(r'^rest_webservices/', include(router_webservice.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^usuario/', include('usuario.urls', namespace='usuario')),
     url(r'^rest_proyectos/', include('proyectos.urls', namespace='proyectos')),

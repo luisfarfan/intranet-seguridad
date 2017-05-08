@@ -58,6 +58,7 @@ define(["require", "exports"], function (require, exports) {
      **/
     function jsonFormatFancyTree(menu_json, rol_id_array) {
         if (rol_id_array === void 0) { rol_id_array = []; }
+        console.log(menu_json);
         var treejson = [];
         var interface_node = {};
         menu_json.map(function (value, key) {
@@ -88,6 +89,7 @@ define(["require", "exports"], function (require, exports) {
                 treejson.push(interface_node);
             }
         });
+        console.log(treejson);
         return treejson;
     }
     exports.jsonFormatFancyTree = jsonFormatFancyTree;

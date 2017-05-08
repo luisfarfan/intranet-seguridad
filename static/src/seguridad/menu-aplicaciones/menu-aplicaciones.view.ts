@@ -39,6 +39,7 @@ var jsonRulesModuloForm: Object = {
 }
 var addModulo: boolean = false;
 var updateModulo: boolean = false;
+var proyectosistema_id: number = null;
 
 var MenuAplicacionesController: any = {
     getProyectos: (byPk: string) => {
@@ -79,6 +80,9 @@ var MenuAplicacionesController: any = {
     },
     getModuloRecursive: () => {
         moduloService.getModulosRecursive(proyecto_selected.id, sistema_selected.id).done(data => {
+            proyectosService.getProyectoSistema(proyecto_selected.id, sistema_selected.id).done((data) => {
+                proyectosistema_id = data[0].id
+            });
             modulosRecursive = data;
             let treeFormat = utils.jsonFormatFancyTree(data);
             let options_tree = {
@@ -140,6 +144,7 @@ var MenuAplicacionesController: any = {
         if (form_modulo_validate.valid()) {
             let valid_form: IModulo = objectHelper.formToObject(utils.serializeForm('form_modulo'));
             valid_form.modulo_padre = modulo_selected.id;
+            valid_form.proyectosistema = proyectosistema_id;
             moduloService.addModulo(valid_form).done((response) => {
                 utils.showSwalAlert('Se ha agregado el Modulo correctamente', 'Exito!', 'success');
                 $('#modal_modulo_form').modal('hide');
@@ -153,6 +158,7 @@ var MenuAplicacionesController: any = {
     updateModulo: () => {
         if (form_modulo_validate.valid()) {
             let valid_form: IModulo = objectHelper.formToObject(utils.serializeForm('form_modulo'));
+            valid_form.proyectosistema = proyectosistema_id;
             moduloService.updateModulo(modulo_selected.id, valid_form).done((response) => {
                 utils.showSwalAlert('Se ha editado el Modulo correctamente', 'Exito!', 'success');
                 $('#modal_modulo_form').modal('hide');

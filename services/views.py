@@ -56,3 +56,33 @@ class UserProfile(APIView):
             return JsonResponse({'message': 'Key no existe'})
 
         return JsonResponse({'message': 'Sessión finalizada'})
+
+
+class MenuProyectoSistema(APIView):
+    def get(self, request, codigoproyectosistema):
+        pass
+
+
+class MenuRolProyectoSistema(APIView):
+    def get(self, request, rol, codigoproyectosistema):
+        pass
+
+
+class InformacionUser(APIView):
+    def get(self, request, idusuario):
+        pass
+
+
+class UsersRolProyectoSistema(APIView):
+    def get(self, request, rol, codigoproyectosistema):
+        pass
+
+
+class UsersProyectoSistema(APIView):
+    def get(self, request, codigoproyectosistema):
+        pass
+
+
+class InformacionUserbyDNI(APIView):
+    def get(self, request, dni):
+        pass

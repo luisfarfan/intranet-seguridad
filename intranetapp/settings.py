@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'sistemas',
     'usuario',
     'usuario_modulo',
-    'services'
+    'services',
+    'webservices'
 ]
 
 MIDDLEWARE = [
