@@ -6,4 +6,8 @@ urlpatterns = [
     #     ReadProyectoSistemaViewSet.as_view()),
     # url(r'saveProyectoSistema', ProyectosApi.saveProyectoSistema),
     url(r'authenticate/$', Authenticate.as_view()),
+    url(r'menubyproyectosistema/(?P<codigoproyectosistema>.+)/$',
+        MenuProyectoSistema.as_view()),
+    url(r'menubyproyecto/(?P<proyecto_id>.+)/$',
+        MenuProyecto.as_view()),
 ]

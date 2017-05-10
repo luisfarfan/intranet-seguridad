@@ -12,5 +12,5 @@ export interface IModulo {
     icon: string;
     proyectosistema: number;
     modulo_padre: number;
-    modulos_hijos: IModulo[]
+    hijos: IModulo[]
 }

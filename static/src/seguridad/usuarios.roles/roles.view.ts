@@ -13,6 +13,7 @@ import {IModulo} from '../menu/menu.interface';
 import {ObjectHelper, SessionHelper} from '../../core/helper.inei';
 import {IPermiso, IPermisos} from '../permisos/permisos.interface'
 import * as util from '../../core/utils';
+import {ModuloService} from '../menu-aplicaciones/menu-aplicaciones.service'
 
 declare var $: any;
 interface RolSelected {
@@ -77,6 +78,7 @@ class ModuloRolController {
     private permiso_selected: IPermiso;
     private permisos: IPermisos;
     private permisosModuloRol: IModuloRol;
+    private menuaplicacionesService = new ModuloService();
 
     constructor() {
         this.getProyectos();
@@ -84,16 +86,19 @@ class ModuloRolController {
     }
 
     setMenu() {
-        this.menuService.get(this.proyecto_selected.id).done((menu: IModulo[]) => {
+        this.menuaplicacionesService.modulosbyProyectoRecursive(this.proyecto_selected.id).done((menu: IModulo[]) => {
             this.menu = menu;
         });
     }
 
     setMenuPermiso() {
-        this.menuService.getbyProyectoSistema(this.proyecto_selected.id, this.sistema_selected.id).done((menupermiso: IModulo[]) => {
-            this.menuPermiso = menupermiso;
-            this.drawMenuPermisos();
-        });
+        this.proyectosService.getProyectoSistema(this.proyecto_selected.id, this.sistema_selected.id).done((data) => {
+            this.menuaplicacionesService.modulosRecursive(data[0].codigo).done((menupermiso: IModulo[]) => {
+                this.menuPermiso = menupermiso;
+                this.drawMenuPermisos();
+            });
+        })
+
     }
 
     editModulosRol(objectData: Object) {
@@ -250,6 +255,7 @@ class ModuloRolController {
             rol_selected.modulo_rol.map((value: any, key: number) => {
                 keys_modulos_by_rol.push(value.modulo.id);
             });
+            console.log(this.menuPermiso)
             tree_menu_format_selecteds = util.jsonFormatFancyTreeSelecteds(this.menuPermiso, keys_modulos_by_rol);
         }
         utils.enabledDisabledButtonModuloRol();
@@ -333,9 +339,9 @@ class ModuloRolController {
             rol_selected.modulo_rol.map((value: any, key: number) => {
                 keys_modulos_by_rol.push(value.modulo.id);
             });
-            tree_menu_format = util.jsonFormatFancyTree(this.menu, keys_modulos_by_rol);
+            tree_menu_format = util.jsonFormatFancyTree2(this.menu, keys_modulos_by_rol);
         } else {
-            tree_menu_format = util.jsonFormatFancyTree(this.menu);
+            tree_menu_format = util.jsonFormatFancyTree2(this.menu);
         }
         utils.enabledDisabledButtonModuloRol();
 

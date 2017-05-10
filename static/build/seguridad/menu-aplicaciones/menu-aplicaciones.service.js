@@ -87,6 +87,8 @@ define(["require", "exports"], function (require, exports) {
                 modulo: BASEURL + "/rest_modulousuario/modulo/",
                 proyecto_sistema_modulos: BASEURL + "/rest_modulousuario/proyecto_sistema_modulos/"
             };
+            this.url_modulosRecursive = BASEURL + "/services/menubyproyectosistema/";
+            this.url_modulosProyectoRecursive = BASEURL + "/services/menubyproyecto/";
         }
         ModuloService.prototype.getModulos = function (pk) {
             if (pk === void 0) { pk = null; }
@@ -118,6 +120,18 @@ define(["require", "exports"], function (require, exports) {
         ModuloService.prototype.getModulosRecursive = function (id_proyecto, id_sistema) {
             return $.ajax({
                 url: "" + this.url.proyecto_sistema_modulos + id_proyecto + "/" + id_sistema + "/",
+                type: 'GET'
+            });
+        };
+        ModuloService.prototype.modulosRecursive = function (codigo) {
+            return $.ajax({
+                url: "" + this.url_modulosRecursive + codigo + "/",
+                type: 'GET'
+            });
+        };
+        ModuloService.prototype.modulosbyProyectoRecursive = function (pk) {
+            return $.ajax({
+                url: "" + this.url_modulosProyectoRecursive + pk + "/",
                 type: 'GET'
             });
         };

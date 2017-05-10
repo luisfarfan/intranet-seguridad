@@ -58,7 +58,6 @@ define(["require", "exports"], function (require, exports) {
      **/
     function jsonFormatFancyTree(menu_json, rol_id_array) {
         if (rol_id_array === void 0) { rol_id_array = []; }
-        console.log(menu_json);
         var treejson = [];
         var interface_node = {};
         menu_json.map(function (value, key) {
@@ -89,35 +88,74 @@ define(["require", "exports"], function (require, exports) {
                 treejson.push(interface_node);
             }
         });
-        console.log(treejson);
         return treejson;
     }
     exports.jsonFormatFancyTree = jsonFormatFancyTree;
-    function jsonFormatFancyTreeSelecteds(menu_json, rol_id_array) {
+    function jsonFormatFancyTree2(menu_json, rol_id_array) {
         if (rol_id_array === void 0) { rol_id_array = []; }
         var treejson = [];
         var interface_node = {};
         menu_json.map(function (value, key) {
-            if (findChilds(value, rol_id_array)) {
+            interface_node = {};
+            interface_node['title'] = value.descripcion;
+            interface_node['key'] = value.id;
+            interface_node['icon'] = value.icon;
+            if ('hijos' in value) {
+                interface_node['children'] = [];
+                var children_2 = [];
+                value.hijos.map(function (node_value, node_order) {
+                    children_2.push({
+                        'title': node_value.descripcion,
+                        'key': node_value.id,
+                        'children': ('hijos' in node_value) ? jsonFormatFancyTree2(node_value.hijos, rol_id_array) : [],
+                        'selected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
+                        'preselected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
+                        'icon': node_value.icon
+                    });
+                });
+                interface_node['children'] = children_2;
+                treejson.push(interface_node);
+            }
+            else {
+                interface_node['children'] = [];
+                interface_node['selected'] = rol_id_array.indexOf(value.id) != -1 ? true : false;
+                interface_node['preselected'] = rol_id_array.indexOf(value.id) != -1 ? true : false;
+                treejson.push(interface_node);
+            }
+        });
+        return treejson;
+    }
+    exports.jsonFormatFancyTree2 = jsonFormatFancyTree2;
+    function jsonFormatFancyTreeSelecteds(menu_json, rol_id_array) {
+        if (rol_id_array === void 0) { rol_id_array = []; }
+        var treejson = [];
+        var interface_node = {};
+        console.log(menu_json);
+        menu_json.map(function (value, key) {
+            console.log(value);
+            console.log(findChilds(value, rol_id_array));
+            if (findChilds(value, rol_id_array) > 0) {
                 interface_node = {};
                 interface_node['title'] = value.descripcion;
                 interface_node['key'] = value.id;
                 interface_node['icon'] = value.icon;
                 interface_node['children'] = [];
-                var children_2 = [];
-                value.modulos_hijos.map(function (node_value, node_order) {
-                    if (findChilds(node_value, rol_id_array)) {
-                        children_2.push({
-                            'title': node_value.descripcion,
-                            'key': node_value.id,
-                            'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTreeSelecteds(node_value.modulos_hijos, rol_id_array),
-                            'selected': false,
-                            'preselected': false,
-                            'icon': node_value.icon
-                        });
-                    }
-                });
-                interface_node['children'] = children_2;
+                var children_3 = [];
+                if ('hijos' in value) {
+                    value.hijos.map(function (node_value, node_order) {
+                        if (findChilds(node_value, rol_id_array) > 0) {
+                            children_3.push({
+                                'title': node_value.descripcion,
+                                'key': node_value.id,
+                                'children': !('hijos' in node_value) ? [] : jsonFormatFancyTreeSelecteds(node_value.hijos, rol_id_array),
+                                'selected': false,
+                                'preselected': false,
+                                'icon': node_value.icon
+                            });
+                        }
+                    });
+                }
+                interface_node['children'] = children_3;
                 treejson.push(interface_node);
             }
         });
@@ -125,14 +163,15 @@ define(["require", "exports"], function (require, exports) {
     }
     exports.jsonFormatFancyTreeSelecteds = jsonFormatFancyTreeSelecteds;
     function findChilds(menu, rol_id_array) {
-        var has_child = false;
+        //let has_child: boolean = false;
         var count = 0;
         if (rol_id_array.indexOf(menu.id) != -1) {
             count++;
         }
         else {
-            if (menu.modulos_hijos.length) {
-                menu.modulos_hijos.map(function (value, key) {
+            if ('hijos' in menu) {
+                debugger;
+                menu.hijos.map(function (value, key) {
                     if (rol_id_array.indexOf(value.id) != -1) {
                         count++;
                     }
@@ -142,7 +181,7 @@ define(["require", "exports"], function (require, exports) {
                 });
             }
         }
-        return has_child = count > 0;
+        return count;
     }
     function validateForm(rules) {
         var setOptions = {

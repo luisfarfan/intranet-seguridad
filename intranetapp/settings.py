@@ -163,6 +163,17 @@ elif DBENV == 'SQLITE':
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         },
+        'consecucion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'INEI_BDRRHH_CONSECUCION',
+            'USER': 'rvila',
+            'PASSWORD': 'inei1202',
+            'HOST': '192.168.200.250',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True,
+            },
+        },
     }
 
 # Password validation

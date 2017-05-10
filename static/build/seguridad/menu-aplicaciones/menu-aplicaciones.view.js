@@ -72,65 +72,69 @@ define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils",
             });
         },
         getModuloRecursive: function () {
-            moduloService.getModulosRecursive(proyecto_selected.id, sistema_selected.id).done(function (data) {
-                proyectosService.getProyectoSistema(proyecto_selected.id, sistema_selected.id).done(function (data) {
-                    proyectosistema_id = data[0].id;
-                });
-                modulosRecursive = data;
-                var treeFormat = utils.jsonFormatFancyTree(data);
-                var options_tree = {
-                    checkbox: false,
-                    selectMode: 1,
-                    source: treeFormat,
-                    beforeSelect: function (event, data) {
-                        if (data.node.folder) {
-                            return false;
-                        }
-                    },
-                    select: function (event, data) {
-                        // Display list of selected nodes
-                        var selNodes = data.tree.getSelectedNodes();
-                        // convert to title/key array
-                        selNodes.length == 0 ? key_tree_node_selected = null : '';
-                        var selKeys = $.map(selNodes, function (node) {
-                            key_tree_node_selected = parseInt(node.key);
-                        });
-                        if (key_tree_node_selected != null) {
-                            moduloService.getModulos(key_tree_node_selected).done(function (data) {
-                                modulo_selected = data;
-                                $('#btn_edit_modulo').prop('disabled', false);
-                                $('#btn_add_modulo').prop('disabled', false);
-                                $('#btn_delete_modulo').prop('disabled', false);
-                            }).fail(function (error) {
+            // moduloService.getModulosRecursive(proyecto_selected.id, sistema_selected.id).done(data => {
+            proyectosService.getProyectoSistema(proyecto_selected.id, sistema_selected.id).done(function (data) {
+                // proyectosService.getProyectoSistema(proyecto_selected.id, sistema_selected.id).done((data) => {
+                //     proyectosistema_id = data[0].id
+                // });
+                proyectosistema_id = data[0].id;
+                moduloService.modulosRecursive(data[0].codigo).done(function (data) {
+                    modulosRecursive = data;
+                    var treeFormat = utils.jsonFormatFancyTree2(data);
+                    var options_tree = {
+                        checkbox: false,
+                        selectMode: 1,
+                        source: treeFormat,
+                        beforeSelect: function (event, data) {
+                            if (data.node.folder) {
+                                return false;
+                            }
+                        },
+                        select: function (event, data) {
+                            // Display list of selected nodes
+                            var selNodes = data.tree.getSelectedNodes();
+                            // convert to title/key array
+                            selNodes.length == 0 ? key_tree_node_selected = null : '';
+                            var selKeys = $.map(selNodes, function (node) {
+                                key_tree_node_selected = parseInt(node.key);
+                            });
+                            if (key_tree_node_selected != null) {
+                                moduloService.getModulos(key_tree_node_selected).done(function (data) {
+                                    modulo_selected = data;
+                                    $('#btn_edit_modulo').prop('disabled', false);
+                                    $('#btn_add_modulo').prop('disabled', false);
+                                    $('#btn_delete_modulo').prop('disabled', false);
+                                }).fail(function (error) {
+                                    $('#btn_edit_modulo').prop('disabled', true);
+                                    $('#btn_add_modulo').prop('disabled', true);
+                                    $('#btn_delete_modulo').prop('disabled', true);
+                                });
+                            }
+                            else {
                                 $('#btn_edit_modulo').prop('disabled', true);
                                 $('#btn_add_modulo').prop('disabled', true);
                                 $('#btn_delete_modulo').prop('disabled', true);
-                            });
+                            }
+                        },
+                        click: function (event, data) {
+                            if (!data.node.folder) {
+                                data.node.toggleSelected();
+                            }
+                        },
+                        dblclick: function (event, data) {
+                            data.node.toggleExpanded();
+                        },
+                        keydown: function (event, data) {
+                            if (event.which === 32) {
+                                data.node.toggleSelected();
+                                return false;
+                            }
                         }
-                        else {
-                            $('#btn_edit_modulo').prop('disabled', true);
-                            $('#btn_add_modulo').prop('disabled', true);
-                            $('#btn_delete_modulo').prop('disabled', true);
-                        }
-                    },
-                    click: function (event, data) {
-                        if (!data.node.folder) {
-                            data.node.toggleSelected();
-                        }
-                    },
-                    dblclick: function (event, data) {
-                        data.node.toggleExpanded();
-                    },
-                    keydown: function (event, data) {
-                        if (event.which === 32) {
-                            data.node.toggleSelected();
-                            return false;
-                        }
-                    }
-                };
-                $('#tree_modulos').fancytree(options_tree);
-                $('#tree_modulos').fancytree("destroy");
-                $('#tree_modulos').fancytree(options_tree);
+                    };
+                    $('#tree_modulos').fancytree(options_tree);
+                    $('#tree_modulos').fancytree("destroy");
+                    $('#tree_modulos').fancytree(options_tree);
+                });
             });
         },
         addModulo: function () {

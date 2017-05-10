@@ -103,6 +103,8 @@ export class ModuloService {
         modulo: `${BASEURL}/rest_modulousuario/modulo/`,
         proyecto_sistema_modulos: `${BASEURL}/rest_modulousuario/proyecto_sistema_modulos/`,
     }
+    private url_modulosRecursive: string = `${BASEURL}/services/menubyproyectosistema/`;
+    private url_modulosProyectoRecursive: string = `${BASEURL}/services/menubyproyecto/`;
 
     getModulos(pk: number = null): JQueryXHR {
         return $.ajax({
@@ -137,6 +139,20 @@ export class ModuloService {
     getModulosRecursive(id_proyecto: number, id_sistema: number) {
         return $.ajax({
             url: `${this.url.proyecto_sistema_modulos}${id_proyecto}/${id_sistema}/`,
+            type: 'GET'
+        });
+    }
+
+    modulosRecursive(codigo: string) {
+        return $.ajax({
+            url: `${this.url_modulosRecursive}${codigo}/`,
+            type: 'GET'
+        });
+    }
+
+    modulosbyProyectoRecursive(pk: number) {
+        return $.ajax({
+            url: `${this.url_modulosProyectoRecursive}${pk}/`,
             type: 'GET'
         });
     }

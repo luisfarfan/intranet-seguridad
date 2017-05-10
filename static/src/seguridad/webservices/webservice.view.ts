@@ -57,7 +57,7 @@ class WebServiceView {
                             <div class="panel-body">
                             <div class="content-group">
 										<div class="list-group">
-										    <a href="http://${BASEURL}/services/${urlParameters}" target="_blank" class="list-group-item list-group-item-info"><span class="text-bold">SERVICIO DE EJEMPLO</span>
+										    <a href="${BASEURL}/services/${urlParameters}" target="_blank" class="list-group-item list-group-item-info"><span class="text-bold">SERVICIO DE EJEMPLO</span>
                                             ${BASEURL}/services/${urlParameters}</a>
 											<a href="#" class="list-group-item">
 												<h6 class="list-group-item-heading"><i class="icon-bus position-left"></i>Descripción</h6>

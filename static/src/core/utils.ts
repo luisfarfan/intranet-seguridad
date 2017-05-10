@@ -68,7 +68,6 @@ export function alert_confirm(callback: any, title = 'Está seguro de Guardar?',
  *
  **/
 export function jsonFormatFancyTree(menu_json: any, rol_id_array: Array<number> = []) {
-    console.log(menu_json);
     let treejson: Array<any> = [];
     let interface_node: any = {};
     menu_json.map((value: any, key: any) => {
@@ -98,34 +97,70 @@ export function jsonFormatFancyTree(menu_json: any, rol_id_array: Array<number> 
             treejson.push(interface_node);
         }
     });
-    console.log(treejson);
     return treejson;
 }
 
+export function jsonFormatFancyTree2(menu_json: any, rol_id_array: Array<number> = []) {
+    let treejson: Array<any> = [];
+    let interface_node: any = {};
+    menu_json.map((value: any, key: any) => {
+        interface_node = {};
+        interface_node['title'] = value.descripcion;
+        interface_node['key'] = value.id;
+        interface_node['icon'] = value.icon;
+        if ('hijos' in value) {
+            interface_node['children'] = [];
+            let children: Array<any> = [];
+            value.hijos.map((node_value: any, node_order: any) => {
+                children.push({
+                    'title': node_value.descripcion,
+                    'key': node_value.id,
+                    'children': ('hijos' in node_value) ? jsonFormatFancyTree2(node_value.hijos, rol_id_array) : [],
+                    'selected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
+                    'preselected': rol_id_array.indexOf(node_value.id) != -1 ? true : false,
+                    'icon': node_value.icon,
+                });
+            });
+            interface_node['children'] = children;
+            treejson.push(interface_node);
+        } else {
+            interface_node['children'] = [];
+            interface_node['selected'] = rol_id_array.indexOf(value.id) != -1 ? true : false;
+            interface_node['preselected'] = rol_id_array.indexOf(value.id) != -1 ? true : false;
+            treejson.push(interface_node);
+        }
+    });
+    return treejson;
+}
 
 export function jsonFormatFancyTreeSelecteds(menu_json: IModulo[], rol_id_array: Array<number> = []) {
     let treejson: Array<any> = [];
     let interface_node: any = {};
+    console.log(menu_json)
     menu_json.map((value: IModulo, key: any) => {
-        if (findChilds(value, rol_id_array)) {
+        console.log(value)
+        console.log(findChilds(value, rol_id_array))
+        if (findChilds(value, rol_id_array) > 0) {
             interface_node = {};
             interface_node['title'] = value.descripcion;
             interface_node['key'] = value.id;
             interface_node['icon'] = value.icon;
             interface_node['children'] = [];
             let children: Array<any> = [];
-            value.modulos_hijos.map((node_value: IModulo, node_order: any) => {
-                if (findChilds(node_value, rol_id_array)) {
-                    children.push({
-                        'title': node_value.descripcion,
-                        'key': node_value.id,
-                        'children': node_value.modulos_hijos.length == 0 ? [] : jsonFormatFancyTreeSelecteds(node_value.modulos_hijos, rol_id_array),
-                        'selected': false,
-                        'preselected': false,
-                        'icon': node_value.icon,
-                    });
-                }
-            });
+            if ('hijos' in value) {
+                value.hijos.map((node_value: IModulo, node_order: any) => {
+                    if (findChilds(node_value, rol_id_array) > 0) {
+                        children.push({
+                            'title': node_value.descripcion,
+                            'key': node_value.id,
+                            'children': !('hijos' in node_value) ? [] : jsonFormatFancyTreeSelecteds(node_value.hijos, rol_id_array),
+                            'selected': false,
+                            'preselected': false,
+                            'icon': node_value.icon,
+                        });
+                    }
+                });
+            }
             interface_node['children'] = children;
             treejson.push(interface_node);
         }
@@ -133,14 +168,15 @@ export function jsonFormatFancyTreeSelecteds(menu_json: IModulo[], rol_id_array:
     return treejson;
 }
 
-function findChilds(menu: IModulo, rol_id_array: Array<number>): boolean {
-    let has_child: boolean = false;
+function findChilds(menu: IModulo, rol_id_array: Array<number>): number {
+    //let has_child: boolean = false;
     let count: number = 0;
     if (rol_id_array.indexOf(menu.id) != -1) {
         count++;
     } else {
-        if (menu.modulos_hijos.length) {
-            menu.modulos_hijos.map((value: IModulo, key: number) => {
+        if ('hijos' in menu) {
+            debugger
+            menu.hijos.map((value: IModulo, key: number) => {
                 if (rol_id_array.indexOf(value.id) != -1) {
                     count++;
                 } else {
@@ -149,8 +185,7 @@ function findChilds(menu: IModulo, rol_id_array: Array<number>): boolean {
             });
         }
     }
-
-    return has_child = count > 0;
+    return count;
 }
 
 export function validateForm(rules: Object) {

@@ -1,7 +1,7 @@
 /**
  * Created by Administrador on 21/02/2017.
  */
-define(["require", "exports", "./roles.service", "../proyectos/proyectos.service", "../menu/menu.service", "../permisos/permisos.service", "../../core/helper.inei", "../../core/utils"], function (require, exports, roles_service_1, proyectos_service_1, menu_service_1, permisos_service_1, helper_inei_1, util) {
+define(["require", "exports", "./roles.service", "../proyectos/proyectos.service", "../menu/menu.service", "../permisos/permisos.service", "../../core/helper.inei", "../../core/utils", "../menu-aplicaciones/menu-aplicaciones.service"], function (require, exports, roles_service_1, proyectos_service_1, menu_service_1, permisos_service_1, helper_inei_1, util, menu_aplicaciones_service_1) {
     "use strict";
     var objectHelper = new helper_inei_1.ObjectHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();
@@ -44,20 +44,23 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
             this.proyecto_selected = null;
             this.sistema_selected = null;
             this.permisosService = new permisos_service_1.PermisosService();
+            this.menuaplicacionesService = new menu_aplicaciones_service_1.ModuloService();
             this.getProyectos();
             this.setEvents();
         }
         ModuloRolController.prototype.setMenu = function () {
             var _this = this;
-            this.menuService.get(this.proyecto_selected.id).done(function (menu) {
+            this.menuaplicacionesService.modulosbyProyectoRecursive(this.proyecto_selected.id).done(function (menu) {
                 _this.menu = menu;
             });
         };
         ModuloRolController.prototype.setMenuPermiso = function () {
             var _this = this;
-            this.menuService.getbyProyectoSistema(this.proyecto_selected.id, this.sistema_selected.id).done(function (menupermiso) {
-                _this.menuPermiso = menupermiso;
-                _this.drawMenuPermisos();
+            this.proyectosService.getProyectoSistema(this.proyecto_selected.id, this.sistema_selected.id).done(function (data) {
+                _this.menuaplicacionesService.modulosRecursive(data[0].codigo).done(function (menupermiso) {
+                    _this.menuPermiso = menupermiso;
+                    _this.drawMenuPermisos();
+                });
             });
         };
         ModuloRolController.prototype.editModulosRol = function (objectData) {
@@ -210,6 +213,7 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
                 rol_selected.modulo_rol.map(function (value, key) {
                     keys_modulos_by_rol.push(value.modulo.id);
                 });
+                console.log(this.menuPermiso);
                 tree_menu_format_selecteds = util.jsonFormatFancyTreeSelecteds(this.menuPermiso, keys_modulos_by_rol);
             }
             utils.enabledDisabledButtonModuloRol();
@@ -289,10 +293,10 @@ define(["require", "exports", "./roles.service", "../proyectos/proyectos.service
                 rol_selected.modulo_rol.map(function (value, key) {
                     keys_modulos_by_rol.push(value.modulo.id);
                 });
-                tree_menu_format = util.jsonFormatFancyTree(this.menu, keys_modulos_by_rol);
+                tree_menu_format = util.jsonFormatFancyTree2(this.menu, keys_modulos_by_rol);
             }
             else {
-                tree_menu_format = util.jsonFormatFancyTree(this.menu);
+                tree_menu_format = util.jsonFormatFancyTree2(this.menu);
             }
             utils.enabledDisabledButtonModuloRol();
             var options_tree = {
