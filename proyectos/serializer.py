@@ -28,3 +28,9 @@ class ProyectosSistemasSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProyectoSistema
         fields = ('__all__')
+
+
+class MYMProyectoSistemaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProyectoSistema
+        fields = ('__all__')

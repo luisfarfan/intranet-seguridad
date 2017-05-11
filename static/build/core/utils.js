@@ -170,13 +170,12 @@ define(["require", "exports"], function (require, exports) {
         }
         else {
             if ('hijos' in menu) {
-                debugger;
                 menu.hijos.map(function (value, key) {
                     if (rol_id_array.indexOf(value.id) != -1) {
                         count++;
                     }
                     else {
-                        findChilds(value, rol_id_array);
+                        count = count + findChilds(value, rol_id_array);
                     }
                 });
             }

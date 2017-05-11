@@ -2,6 +2,7 @@
 from usuario.utils import *
 from usuario_modulo.serializer import ReadModuloSerializer, ReadModuloRolSerializer
 from usuario_modulo.models import *
+from services.views import modulosTree
 
 
 def recursive_menu(request):
@@ -14,11 +15,7 @@ def recursive_menu(request):
     modulo_id = None
     if 'MODULO_ID' in request.session:
         modulo_id = request.session['MODULO_ID']
-
-    menu = ReadModuloSerializer(
-        instance=Modulo.objects.exclude(proyectosistema__isnull=True).filter(
-            proyectosistema__proyectos_id=1).distinct(),
-        many=True).data
+    menu = modulosTree(1)
     context = {
         "menu": drawSidebar(menu, base_url, modulo_id),
     }

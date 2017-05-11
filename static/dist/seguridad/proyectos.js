@@ -1,21 +1,57 @@
 /**
  * Created by LFarfan on 20/12/2016.
  */
-
-$(function () {
-    getProyectosSiga();
-    getProyectosSeguridad();
-});
-
-$('#proyectos_siga').select2({
-    containerCssClass: 'bg-primary-400'
-});
-
 var sistemas = [];
 var proyectos_siga = [];
 var proyectos_siga_selected = {};
 var proyectos_seguridad = [];
 var proyectos_seguridad_selected = [];
+
+var proyectosistema_selected = null;
+$(function () {
+    Dropzone.autoDiscover = false;
+    $("#dropzone_single").dropzone({
+        autoProcessQueue: false,
+        renameFilename: 'presentation_image',
+        maxFiles: 1,
+        init: function () {
+            var submitButton = document.querySelector("#btn_save_proyectosistema")
+            var myDropzone = this; // closure
+            submitButton.addEventListener("click", function () {
+                myDropzone.options.url = `${BASEURL}/rest_proyectos/prueba/${proyectosistema_selected.id}/`;
+                alert_confirm(() => {
+                    "use strict";
+                    myDropzone.processQueue();
+                });
+            });
+            myDropzone.on("sending", function (file, xhr, formData) {
+                let form = formToObject('frm_datos_proyectosistema')
+                for (let key in form) {
+                    formData.append(key, form[key])
+                }
+            });
+        }
+    });
+    getProyectosSiga();
+    getProyectosSeguridad();
+    $('#tbl_sistemas_asignados').on('click', '[name="a_editar"]', (ev) => {
+        "use strict";
+        let id_sistema = $(ev.currentTarget).data('value');
+        $.getJSON(`${BASEURL}/rest_proyectos/get_proyecto_sistema/${proyectos_seguridad_selected[0].id}/${id_sistema}/`, (proyectosistema) => {
+            $.getJSON(`${BASEURL}/rest_proyectos/sistemaproyecto/${proyectosistema[0].id}/`, (proyectosistema) => {
+                proyectosistema_selected = proyectosistema;
+                for (let key in proyectosistema) {
+                    $(`input[name=${key}]`).val(proyectosistema[key]);
+                }
+            })
+        });
+        $('#modal_proyecto_sistema').modal();
+    });
+});
+
+$('#proyectos_siga').select2({
+    containerCssClass: 'bg-primary-400'
+});
 
 $.getJSON(`${BASEURL}/rest_sistemas/sistema/`, response => sistemas = response);
 
@@ -34,7 +70,6 @@ function getProyectosSiga() {
 
 $('#proyectos_siga').on('change', event => {
     "use strict";
-
     proyectos_siga_selected = findInObject(proyectos_siga, 'id', event.target.value);
     setTable('tbl_proyecto_siga_selected', proyectos_siga_selected, ['id', 'desc_proyecto', 'codi_meta', 'CODI_DEPE_TDE', 'annio_meta']);
     if (proyectos_siga_selected.length > 0) {
@@ -95,6 +130,7 @@ function modal_asignarSistemas(id) {
     "use strict";
 
     proyectos_seguridad_selected = findInObject(proyectos_seguridad, 'id', id);
+    console.log(proyectos_seguridad_selected)
     setModal_asignarSistemas();
     $('#modal_asignacion').modal('show');
 }
@@ -103,26 +139,28 @@ function setModal_asignarSistemas() {
     "use strict";
 
     let diff_sistemas = diffSistemas(sistemas, proyectos_seguridad_selected[0].sistemas);
-    setSelect_v2('select_sistemas_no_asignados', diff_sistemas.no_asignado, ['id', 'nombre'], false);
+    setSelect_v2('select_sistemas_no_asignados', diff_sistemas.no_asignado, ['id', 'nombre'], true);
 
     $('.multiselect').multiselect('destroy');
 
-    var multiselect = $('.multiselect').multiselect({
-        onChange: function () {
-            $.uniform.update();
-        }
-    });
-
-    $(".styled, .multiselect-container input").uniform({radioClass: 'choice'});
+    // var multiselect = $('.multiselect').multiselect({
+    //     onChange: function () {
+    //         $.uniform.update();
+    //     }
+    // });
+    //
+    // $(".styled, .multiselect-container input").uniform({radioClass: 'choice'});
 
     let _html = '';
     $('#tbl_sistemas_asignados').find('tbody').empty();
     $.each(diff_sistemas.asignado, (key, val) => {
+        console.log(val);
         _html += `<tr>
                     <td>${val.nombre}</td>
                     <td>
                        <ul class="icons-list">
-                            <li><a data-popup="tooltip" title="" data-original-title="Desasignar Sistema"><i class="icon-trash"></i></a></li>
+                            <li><a name="a_eliminar" data-value="${val.id}" data-popup="tooltip" title="" data-original-title="Desasignar Sistema"><i class="icon-trash"></i></a></li>
+                            <li><a name="a_editar" data-value="${val.id}" data-popup="tooltip" title="" data-original-title="Desasignar Sistema"><i class="icon-pencil4"></i></a></li>
                         </ul>
                      </td>`;
         _html += `</tr>`;
@@ -190,30 +228,59 @@ $('#btn_save_proyecto_seguridad').on('click', event => {
 
 function saveProyectoSistema() {
     "use strict";
-
-    let url = `${BASEURL}/rest_proyectos/saveProyectoSistema/`;
-    let id_sistemas = $('#select_sistemas_no_asignados').val();
-    let id_proyecto = proyectos_seguridad_selected[0].id;
-    let data = {
-        id_sistemas: id_sistemas,
-        id_proyecto: id_proyecto
-    };
-    $.ajax({
+    if (proyectosistema_selected) {
+        datosProyectoSistema(proyectosistema_selected.id);
+    } else {
+        let url = `${BASEURL}/rest_proyectos/saveProyectoSistema/`;
+        let id_sistemas = $('#select_sistemas_no_asignados').val();
+        let id_proyecto = proyectos_seguridad_selected[0].id;
+        let data = {
+            id_sistemas: [id_sistemas],
+            id_proyecto: id_proyecto
+        };
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: response => {
+                getProyectosSeguridad();
+                $('#modal_asignacion').modal('hide');
+                datosProyectoSistema(response)
+            }
+        });
+    }
+}
+function datosProyectoSistema(response, file = null) {
+    let url = `${BASEURL}/rest_proyectos/sistemaproyecto/${response}/`;
+    let formData = formToObject('frm_datos_proyectosistema')
+    if (file) {
+        formData['file'] = file
+    }
+    let ajaxOptions = {
         url: url,
-        type: 'POST',
-        data: data,
+        type: 'PATCH',
+        data: formData,
         success: response => {
-            getProyectosSeguridad();
-            $('#modal_asignacion').modal('hide');
+            $('#modal_proyecto_sistema').modal('hide');
         }
-    });
+    }
+    $.ajax(ajaxOptions);
 }
 
 $('#btn_asignar_sistemas').on('click', () => {
     "use strict";
-
-    alert_confirm(saveProyectoSistema);
+    if ($('#select_sistemas_no_asignados').val() != "-1") {
+        proyectosistema_selected = null;
+        $('#frm_datos_proyectosistema')[0].reset();
+        $('#modal_proyecto_sistema').modal()
+    } else {
+        sweetAlert("", "No ha seleccionado ningun Sistema!", "error");
+    }
 });
+// $('#btn_save_proyectosistema').on('click', () => {
+//     "use strict";
+//     alert_confirm(saveProyectoSistema);
+// });
 
 $('#select_sistemas_no_asignados').change(event => {
     "use strict";
@@ -224,3 +291,24 @@ $('#select_sistemas_no_asignados').change(event => {
         $('#btn_asignar_sistemas').prop('disabled', false);
     }
 });
+
+
+function serializeForm(id_form) {
+    let objectForm = $(`#${id_form}`).serializeArray();
+    let checkboxes = $(`#${id_form} input:checkbox`);
+    // let datesinputs = $(`#${id_form} input[type="date"]`);
+    if (checkboxes.length) {
+        checkboxes.map((value, key) => {
+            objectForm.push({value: $(key).is(':checked') ? 1 : 0, name: key.name})
+        });
+    }
+    return objectForm;
+}
+
+function formToObject(form) {
+    let formObject = {};
+    form.map((value, key) => {
+        formObject[value.name] = value.value;
+    });
+    return formObject;
+}

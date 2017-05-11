@@ -77,18 +77,23 @@ class MenuProyectoSistema(APIView):
 
 class MenuProyecto(APIView):
     def get(self, request, proyecto_id):
-        modulopadres = Modulo.objects.filter(proyectosistema__proyectos_id=proyecto_id,
-                                             modulo_padre__isnull=True)
-        response = []
-        for modulopadre in modulopadres:
-            response.append({'id': modulopadre.id, 'nombre': modulopadre.nombre, 'descripcion': modulopadre.descripcion,
-                             'slug': modulopadre.slug,
-                             'codigo': modulopadre.codigo,
-                             'template_html': modulopadre.template_html,
-                             'is_padre': modulopadre.is_padre, 'icon': modulopadre.icon,
-                             'hijos': moduloRecursive(modulopadre.id),
-                             'modulo_padre_id': modulopadre.modulo_padre_id}, )
+        response = modulosTree(proyecto_id)
         return JsonResponse(response, safe=False)
+
+
+def modulosTree(proyecto_id):
+    modulopadres = Modulo.objects.filter(proyectosistema_id=proyecto_id,
+                                         modulo_padre__isnull=True)
+    response = []
+    for modulopadre in modulopadres:
+        response.append({'id': modulopadre.id, 'nombre': modulopadre.nombre, 'descripcion': modulopadre.descripcion,
+                         'slug': modulopadre.slug,
+                         'codigo': modulopadre.codigo,
+                         'template_html': modulopadre.template_html,
+                         'is_padre': modulopadre.is_padre, 'icon': modulopadre.icon,
+                         'hijos': moduloRecursive(modulopadre.id),
+                         'modulo_padre_id': modulopadre.modulo_padre_id}, )
+    return response
 
 
 def moduloRecursive(modulopadre_id):

@@ -9,12 +9,13 @@ class Modulo(models.Model):
     descripcion = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     codigo = models.CharField(max_length=100)
-    proyectosistema = models.ForeignKey(ProyectoSistema, null=True, blank=True)
+    proyectosistema = models.ForeignKey(ProyectoSistema, null=True, blank=True, on_delete=models.CASCADE)
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
     fec_edicion = models.DateTimeField(blank=True, null=True)
-    modulo_padre = models.ForeignKey('self', related_name='modulos_hijos', null=True, blank=True)
+    modulo_padre = models.ForeignKey('self', related_name='modulos_hijos', null=True, blank=True,
+                                     on_delete=models.CASCADE)
     template_html = models.CharField(max_length=255, null=True)
     is_padre = models.IntegerField(default=0)
     icon = models.CharField(max_length=255, default='icon-home4')
@@ -38,7 +39,7 @@ class Permiso(models.Model):
     descripcion = models.TextField()
     codigo = models.IntegerField()
     dom_name_sufijo = models.CharField(max_length=100)
-    proyectosistema = models.ForeignKey(ProyectoSistema, null=True, blank=True)
+    proyectosistema = models.ForeignKey(ProyectoSistema, null=True, blank=True, on_delete=models.CASCADE)
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
@@ -58,8 +59,8 @@ class PermisoAdmin(admin.ModelAdmin):
 
 
 class ModuloRol(models.Model):
-    rol = models.ForeignKey('Rol', related_name='modulo_rol')
-    modulo = models.ForeignKey('Modulo')
+    rol = models.ForeignKey('Rol', related_name='modulo_rol', on_delete=models.CASCADE)
+    modulo = models.ForeignKey('Modulo', on_delete=models.CASCADE)
     permisos = models.ManyToManyField('Permiso', through='ModuloRolPermisos')
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
@@ -103,8 +104,8 @@ class RolAdmin(admin.ModelAdmin):
 
 
 class ModuloRolPermisos(models.Model):
-    modulorol = models.ForeignKey('ModuloRol', null=True)
-    permisos = models.ForeignKey('Permiso', null=True)
+    modulorol = models.ForeignKey('ModuloRol', null=True, on_delete=models.CASCADE)
+    permisos = models.ForeignKey('Permiso', null=True, on_delete=models.CASCADE)
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)

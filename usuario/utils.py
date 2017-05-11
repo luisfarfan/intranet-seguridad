@@ -2,10 +2,9 @@ def drawSidebar(menu, base_url, module_id):
     if menu is None:
         return ''
     html = ''
-    html += """<li class="navigation-header"><span>Censo de Poblacion y Vivienda VIII</span>
+    html += """<li class="navigation-header"><span></span>
                  <i class="icon-menu" title="Main pages"></i></li>"""
     html += recursiveMenu(menu, base_url, module_id)
-    print(html)
     return html
 
 
@@ -13,7 +12,7 @@ def recursiveMenu(menu, base_url, module_id):
     html = ''
     css_class = ''
     for i in menu:
-        if len(i['modulos_hijos']):
+        if 'hijos' in i:
             if module_id == i['id']:
                 css_class = """class='active'"""
             else:
@@ -21,17 +20,17 @@ def recursiveMenu(menu, base_url, module_id):
 
             html += """<li {}><a href="#"><i class="{}"></i><span>{}</span></a><ul> """.format(css_class, i['icon'],
                                                                                                i['descripcion'])
-            for child in i['modulos_hijos']:
+            for child in i['hijos']:
                 if module_id == child['id']:
                     css_class = """class='active'"""
                 else:
                     css_class = ''
 
-                if len(child['modulos_hijos']):
+                if 'hijos' in child:
                     html += """<li {}><a href="{}"><i class ="{}">
                         </i>{}</a><ul>""".format(css_class, base_url + '/' + child['slug'] + '/', child['icon'],
                                                  child['descripcion'])
-                    html += recursiveMenu(child['modulos_hijos'], base_url, module_id)
+                    html += recursiveMenu(child['hijos'], base_url, module_id)
                     html += """</ul>"""
                 else:
                     html += """<li {}><a href="{}"><i class ="{}">

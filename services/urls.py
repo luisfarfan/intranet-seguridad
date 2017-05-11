@@ -10,4 +10,5 @@ urlpatterns = [
         MenuProyectoSistema.as_view()),
     url(r'menubyproyecto/(?P<proyecto_id>.+)/$',
         MenuProyecto.as_view()),
+
 ]

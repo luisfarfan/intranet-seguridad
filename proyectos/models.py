@@ -35,8 +35,8 @@ class ProyectoAdmin(admin.ModelAdmin):
 
 
 class ProyectoSistema(models.Model):
-    proyectos = models.ForeignKey('Proyecto')
-    sistemas = models.ForeignKey(Sistema)
+    proyectos = models.ForeignKey('Proyecto', on_delete=models.CASCADE)
+    sistemas = models.ForeignKey(Sistema, on_delete=models.CASCADE)
     url_base = models.CharField(max_length=100, blank=True, null=True)
     codigo = models.CharField(max_length=20, blank=True, null=True)
     servidor_bd = models.CharField(max_length=100, blank=True, null=True)
@@ -48,6 +48,7 @@ class ProyectoSistema(models.Model):
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
     fec_edicion = models.DateTimeField(blank=True, null=True)
+    presentation_image = models.FileField(blank=True, default='')
 
     # def save(self, *args, **kwargs):
     #     if self.pk is None:

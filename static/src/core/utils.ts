@@ -175,12 +175,11 @@ function findChilds(menu: IModulo, rol_id_array: Array<number>): number {
         count++;
     } else {
         if ('hijos' in menu) {
-            debugger
             menu.hijos.map((value: IModulo, key: number) => {
                 if (rol_id_array.indexOf(value.id) != -1) {
                     count++;
                 } else {
-                    findChilds(value, rol_id_array);
+                    count = count + findChilds(value, rol_id_array);
                 }
             });
         }
