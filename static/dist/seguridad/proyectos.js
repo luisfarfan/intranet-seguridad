@@ -18,17 +18,46 @@ $(function () {
             var submitButton = document.querySelector("#btn_save_proyectosistema")
             var myDropzone = this; // closure
             submitButton.addEventListener("click", function () {
-                myDropzone.options.url = `${BASEURL}/rest_proyectos/prueba/${proyectosistema_selected.id}/`;
                 alert_confirm(() => {
                     "use strict";
-                    myDropzone.processQueue();
+                    if (proyectosistema_selected) {
+                        let url = `${BASEURL}/rest_proyectos/sistemaproyecto/${proyectosistema_selected.id}/`;
+                        let formData = formToObject('frm_datos_proyectosistema')
+                        let ajaxOptions = {
+                            url: url,
+                            type: 'PATCH',
+                            data: formData,
+                            success: response => {
+                                myDropzone.options.url = `${BASEURL}/rest_proyectos/prueba/${proyectosistema_selected.id}/`;
+                                myDropzone.processQueue();
+                                //$('#modal_proyecto_sistema').modal('hide');
+                                location.reload();
+                            }
+                        }
+                        $.ajax(ajaxOptions);
+                    } else {
+                        let url = `${BASEURL}/rest_proyectos/saveProyectoSistema/`;
+                        let id_sistemas = $('#select_sistemas_no_asignados').val();
+                        let id_proyecto = proyectos_seguridad_selected[0].id;
+                        let data = {
+                            id_sistemas: [id_sistemas],
+                            id_proyecto: id_proyecto
+                        };
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: data,
+                            success: response => {
+                                getProyectosSeguridad();
+                                //$('#modal_asignacion').modal('hide');
+                                myDropzone.options.url = `${BASEURL}/rest_proyectos/prueba/${response}/`;
+                                datosProyectoSistema(response);
+                                myDropzone.processQueue();
+                                location.reload()
+                            }
+                        });
+                    }
                 });
-            });
-            myDropzone.on("sending", function (file, xhr, formData) {
-                let form = formToObject('frm_datos_proyectosistema')
-                for (let key in form) {
-                    formData.append(key, form[key])
-                }
             });
         }
     });
@@ -42,6 +71,12 @@ $(function () {
                 proyectosistema_selected = proyectosistema;
                 for (let key in proyectosistema) {
                     $(`input[name=${key}]`).val(proyectosistema[key]);
+                }
+                if (proyectosistema_selected['presentation_image'] != '') {
+                    $('#img_proyectosistema').attr('src', `${BASEURL}/media/${proyectosistema_selected['presentation_image']}`);
+                    $('#div_img_proyectosistema').show();
+                } else {
+                    $('#div_img_proyectosistema').hide();
                 }
             })
         });
@@ -273,6 +308,7 @@ $('#btn_asignar_sistemas').on('click', () => {
         proyectosistema_selected = null;
         $('#frm_datos_proyectosistema')[0].reset();
         $('#modal_proyecto_sistema').modal()
+        $('#div_img_proyectosistema').hide();
     } else {
         sweetAlert("", "No ha seleccionado ningun Sistema!", "error");
     }

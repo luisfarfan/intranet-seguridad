@@ -48,7 +48,7 @@ class ProyectoSistema(models.Model):
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
     fec_edicion = models.DateTimeField(blank=True, null=True)
-    presentation_image = models.FileField(blank=True, default='')
+    presentation_image = models.CharField(max_length=255, blank=True, null=True)
 
     # def save(self, *args, **kwargs):
     #     if self.pk is None:

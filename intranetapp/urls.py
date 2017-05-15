@@ -27,6 +27,8 @@ from django.views import View
 from django.http import HttpResponse
 from django.template import RequestContext, Template, loader
 from .utils import getBreadcumbs
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = []
 
@@ -48,6 +50,8 @@ urlpatterns = [
     url(r'^seguridad/', include('shared.urls', namespace='shared')),
     url(r'^services/', include('services.urls', namespace='services')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 class DinamicView(View):

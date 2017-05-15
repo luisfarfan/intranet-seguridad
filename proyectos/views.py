@@ -18,6 +18,8 @@ from django.shortcuts import get_object_or_404
 
 from django.views import View
 
+from django.core.files.storage import FileSystemStorage
+
 
 # Create your views here.
 class ProyectoViewSet(viewsets.ModelViewSet):
@@ -53,39 +55,20 @@ class MYMProyectoSistemaViewSet(viewsets.ModelViewSet):
     serializer_class = MYMProyectoSistemaSerializer
     queryset = ProyectoSistema.objects.all()
 
-    def pre_save(self, obj):
-        obj.presentation_image = self.request.FILES.get('file')
-
 
 class UploadView(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
         return super(UploadView, self).dispatch(*args, **kwargs)
 
-    def post(self, request):
-        form = ProyectoSistemaForm(self.request.POST, self.request.FILES)
-        if form.is_valid():
-            photo = form.save()
-            data = {'is_valid': True}
-        else:
-            data = {'is_valid': False}
-        return JsonResponse(data)
-
-    def post(self, request, id):
-        print(id, self.request.FILES, self.request.POST)
-        instance = get_object_or_404(ProyectoSistema, id=id)
-        form = ProyectoSistemaForm(self.request.POST or None, self.request.FILES, instance=instance)
-        if form.is_valid():
-            form.save()
+    def post(self, request, id=None):
+        myfile = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        pj = ProyectoSistema.objects.get(pk=id)
+        pj.presentation_image = filename
+        pj.save()
         return JsonResponse({'msg': True})
-
-
-@csrf_exempt
-def prueba(request, id):
-    print(request.FILES)
-    print(request.POST)
-
-    return JsonResponse({'msg': True})
 
 
 class ProyectosApi:
