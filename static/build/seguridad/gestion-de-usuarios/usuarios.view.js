@@ -1,4 +1,4 @@
-define(["require", "exports", './usuarios.service', '../usuarios.roles/roles.service', '../../core/utils'], function (require, exports, usuarios_service_1, roles_service_1, utils) {
+define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.service", "../../core/utils"], function (require, exports, usuarios_service_1, roles_service_1, utils) {
     "use strict";
     var UsuarioController = (function () {
         function UsuarioController() {
@@ -74,6 +74,10 @@ define(["require", "exports", './usuarios.service', '../usuarios.roles/roles.ser
             this.getUsuarios();
             this.getRoles();
             $('#btn_add_usuario').on('click', function () {
+                _this.usuario_selected = null;
+                _this.setFormUsuario();
+            });
+            $('#btn_edit_usuario').on('click', function () {
                 _this.setFormUsuario();
             });
             $("#btn_delete_usuario").on('click', function () {
@@ -98,9 +102,10 @@ define(["require", "exports", './usuarios.service', '../usuarios.roles/roles.ser
             var _this = this;
             this.usuarioService.get().done(function (usuarios) {
                 _this.usuarios = usuarios;
+                console.log(_this.usuarios);
                 var html = '';
                 _this.usuarios.map(function (value, pos) {
-                    html += "<tr data-value=\"" + value.id + "\">\n                            <td>" + value.usuario + "</td>\n                            <td>" + value.nombre + " " + value.ape_pat + " " + value.ape_mat + "</td>\n                            <td>" + value.fecha_contrato_fin + "</td>\n                            <td>" + value.email_inst + "</td>\n                            <td>DNI</td>\n                            <td>" + value.dni + "</td>\n                            <td>" + (value.activo === 1 ? '<span class="label label-success">Activo</span>' : '<span class="label label-danger">Inactivo</span>') + "</td>\n                            <td></td>\n                         </tr>";
+                    html += "<tr data-value=\"" + value.id + "\">\n                            <td>" + value.usuario + "</td>\n                            <td>" + value.nombre + " " + value.ape_pat + " " + value.ape_mat + "</td>\n                            <td>" + value.fecha_contrato_fin + "</td>\n                            <td>" + value.email_inst + "</td>\n                            <td>DNI</td>\n                            <td>" + value.dni + "</td>\n                            <td>" + (value.activo === 1 ? '<span class="label label-success">Activo</span>' : '<span class="label label-danger">Inactivo</span>') + "</td>\n                            <td>" + value.rol.nombre + "</td>\n                         </tr>";
                 });
                 if ($.fn.DataTable.isDataTable('#table_usuarios')) {
                     _this.datatable_users.destroy();
@@ -172,7 +177,7 @@ define(["require", "exports", './usuarios.service', '../usuarios.roles/roles.ser
         UsuarioController.prototype.deleteUsuario = function () {
             var _this = this;
             if (this.usuario_selected !== null) {
-                this.usuarioService.delete(this.usuario_selected.id).done(function () {
+                this.usuarioService["delete"](this.usuario_selected.id).done(function () {
                     utils.showSwalAlert('Se elimino el usuario correctamente!', 'Exito!', 'success');
                     _this.getUsuarios();
                 }).fail(function () {

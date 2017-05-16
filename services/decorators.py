@@ -17,7 +17,6 @@ def islogged(func):
 
         if sesion is None:
             return JsonResponse({'msg': 'Key invalida'}, status=status.HTTP_403_FORBIDDEN)
-
         return func(*args, **kwargs)
 
     return wrapper

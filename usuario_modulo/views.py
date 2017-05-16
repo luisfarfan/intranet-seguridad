@@ -92,9 +92,11 @@ class apiModuloRol():
         id_rol = request.POST['id_rol']
         delete = request.POST.getlist('delete[]')
         edited = request.POST.getlist('edited[]')
+        proyecto_id = request.POST['proyecto_id']
 
         for i in delete:
-            ModuloRol.objects.get(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i)).delete()
+            ModuloRol.objects.filter(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i),
+                                     modulo__proyectosistema__proyectos_id=proyecto_id).delete()
 
         for i in edited:
             modulorol_edited = ModuloRol.objects.filter(rol=Rol.objects.get(pk=id_rol), modulo=Modulo.objects.get(pk=i))

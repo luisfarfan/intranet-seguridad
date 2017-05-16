@@ -63,6 +63,8 @@ var utils: any = {
         keys_modulos_added_edited = node_keys_selected.filter(item => keys_modulos_deleted.indexOf(item) < 0);
     }
 }
+var proyecto_id: number = null;
+var sistema_id: number = null;
 
 
 class ModuloRolController {
@@ -98,7 +100,6 @@ class ModuloRolController {
                 this.drawMenuPermisos();
             });
         })
-
     }
 
     editModulosRol(objectData: Object) {
@@ -334,6 +335,7 @@ class ModuloRolController {
     }
 
     drawModulosTreeRecursive() {
+        console.log(this.menu)
         if (rol_selected.modulo_rol.length) {
             keys_modulos_by_rol = []
             rol_selected.modulo_rol.map((value: any, key: number) => {
@@ -470,7 +472,8 @@ var App: any = {
                 moduloRolController.editModulosRol({
                     id_rol: rol_selected.id,
                     delete: keys_modulos_deleted,
-                    edited: keys_modulos_added_edited
+                    edited: keys_modulos_added_edited,
+                    proyecto_id: $('#select_proyectos').val()
                 })
             }, 'Esta seguro de guardar?', 'info')
         });

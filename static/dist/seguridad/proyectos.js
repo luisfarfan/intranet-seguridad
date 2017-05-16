@@ -9,6 +9,10 @@ var proyectos_seguridad_selected = [];
 
 var proyectosistema_selected = null;
 $(function () {
+    $('[data-popup="lightbox"]').fancybox({
+        padding: 3
+    });
+
     Dropzone.autoDiscover = false;
     $("#dropzone_single").dropzone({
         autoProcessQueue: false,
@@ -74,6 +78,7 @@ $(function () {
                 }
                 if (proyectosistema_selected['presentation_image'] != '') {
                     $('#img_proyectosistema').attr('src', `${BASEURL}/media/${proyectosistema_selected['presentation_image']}`);
+                    $('#a_proyectosistema').attr('href', `${BASEURL}/media/${proyectosistema_selected['presentation_image']}`);
                     $('#div_img_proyectosistema').show();
                 } else {
                     $('#div_img_proyectosistema').hide();

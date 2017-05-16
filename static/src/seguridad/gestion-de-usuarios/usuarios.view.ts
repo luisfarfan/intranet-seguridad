@@ -86,6 +86,10 @@ class UsuarioController {
         this.getUsuarios();
         this.getRoles();
         $('#btn_add_usuario').on('click', () => {
+            this.usuario_selected = null;
+            this.setFormUsuario();
+        });
+        $('#btn_edit_usuario').on('click', () => {
             this.setFormUsuario();
         });
         $("#btn_delete_usuario").on('click', () => {
@@ -110,6 +114,7 @@ class UsuarioController {
     getUsuarios() {
         this.usuarioService.get().done((usuarios: IUsuario[]) => {
             this.usuarios = usuarios;
+            console.log(this.usuarios);
             let html: string = '';
             this.usuarios.map((value: IUsuario, pos: number) => {
                 html += `<tr data-value="${value.id}">
@@ -120,7 +125,7 @@ class UsuarioController {
                             <td>DNI</td>
                             <td>${value.dni}</td>
                             <td>${value.activo === 1 ? '<span class="label label-success">Activo</span>' : '<span class="label label-danger">Inactivo</span>'}</td>
-                            <td></td>
+                            <td>${value.rol.nombre}</td>
                          </tr>`;
             });
             if ($.fn.DataTable.isDataTable('#table_usuarios')) {
