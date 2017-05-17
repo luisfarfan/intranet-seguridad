@@ -29,6 +29,7 @@ from django.template import RequestContext, Template, loader
 from .utils import getBreadcumbs
 from django.conf import settings
 from django.conf.urls.static import static
+from webclient.views import IndexView
 
 urlpatterns = []
 
@@ -44,7 +45,7 @@ urlpatterns = [
     url(r'^rest_proyectos/', include('proyectos.urls', namespace='proyectos')),
     url(r'^rest_modulousuario/', include('usuario_modulo.urls', namespace='usuario_modulo')),
     url(r'^login/', ensure_csrf_cookie(TemplateView.as_view(template_name='login.html'))),
-    url(r'^Bienvenido/', ensure_csrf_cookie(TemplateView.as_view(template_name='intro.html'))),
+    url(r'^Bienvenido/', ensure_csrf_cookie(IndexView.as_view())),
     url(r'^$', ensure_csrf_cookie(TemplateView.as_view(template_name='login_general.html'))),
     # url(r'^$', ensure_csrf_cookie(TemplateView.as_view(template_name='material/login.html'))),
     url(r'^seguridad/', include('shared.urls', namespace='shared')),

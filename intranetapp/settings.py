@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'usuario',
     'usuario_modulo',
     'services',
-    'webservices'
+    'webservices',
+    'webclient'
 ]
 
 MIDDLEWARE = [
@@ -216,8 +217,8 @@ STATICFILES_DIRS = [
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/static/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

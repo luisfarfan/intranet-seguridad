@@ -17,7 +17,7 @@ export class AuthController {
     authenticate() {
         let credenciales = {usuario: $('input[name="usuario"]').val(), clave: $('input[name="clave"]').val()};
         this.loginService.Authenticate(credenciales).done((response) => {
-            console.log(response);
+            window.location.replace(Core.BASEURL);
         });
     }
 

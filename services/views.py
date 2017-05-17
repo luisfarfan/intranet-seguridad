@@ -4,8 +4,11 @@ from django.http import JsonResponse
 from django.contrib.sessions.backends.db import SessionStore
 from proyectos.models import *
 from usuario_modulo.models import *
+from usuario.serializer import *
 from django.contrib.sessions.models import Session
 from usuario.serializer import *
+from django.core import serializers
+from django.forms.models import model_to_dict
 
 
 # class LocalZonaViewSet(viewsets.ModelViewSet):
@@ -24,30 +27,20 @@ class Authenticate(APIView):
             user = Usuario.objects.get(usuario=usuario, clave=clave)
         except Usuario.DoesNotExist:
             user = None
-
         if user:
+            userData = UsuarioDetalleSerializer(instance=user).data
             s = SessionStore()
             # s['last_login'] = 1376587691
-            s['id_usuario'] = user.id
+            s['user'] = userData
             s.create()
-            request.session['id_usuario'] = user.id
-            session = Session.objects.get(pk=s.session_key)
-            return JsonResponse({'key': s.session_key, 'valid': True})
-        return JsonResponse({'key': 'invalid', 'valid': False})
+            return JsonResponse(
+                {'key': s.session_key, 'valid': True, 'user': userData})
+
+        return JsonResponse(
+            {'key': 'invalid', 'valid': False})
 
 
 class Logout(APIView):
-    def post(self, request):
-        key = request.data['key']
-        try:
-            Session.objects.get(pk=key).delete()
-        except Session.DoesNotExist:
-            return JsonResponse({'message': 'Key no existe'})
-
-        return JsonResponse({'message': 'Sessión finalizada'})
-
-
-class UserProfile(APIView):
     def post(self, request):
         key = request.data['key']
         try:
@@ -83,6 +76,59 @@ class MenuRolProyectoSistema(APIView):
     def get(self, request, codigoproyectosistema, rol):
         response = modulosbyRolTree(codigoproyectosistema, rol)
         return JsonResponse(response, safe=False)
+
+
+class InfoUser(generics.ListAPIView):
+    serializer_class = UsuarioDetalleSerializer
+
+    def get_queryset(self):
+        id_usuario = self.kwargs['id_usuario']
+        return Usuario.objects.filter(pk=id_usuario)
+
+
+class UsersRolProyectoSistema(generics.ListAPIView):
+    serializer_class = UsuarioDetalleSerializer
+
+    def get_queryset(self):
+        rol = self.kwargs['rol']
+        return Usuario.objects.filter(rol_id=rol)
+
+
+class UsersProyectoSistema(generics.ListAPIView):
+    serializer_class = UsuarioDetalleSerializer
+
+    def get_queryset(self):
+        codigoproyectosistema = self.kwargs['codigoproyectosistema']
+        roles = Rol.objects.filter(modulo__proyectosistema__codigo=codigoproyectosistema).values_list('id', flat=True)
+        return Usuario.objects.filter(rol__in=roles)
+
+
+class ProyectosList(generics.ListAPIView):
+    def get(self, request, id_usuario):
+        return JsonResponse(getProyectosList(id_usuario), safe=False)
+
+
+class SistemabyProyectosList(generics.ListAPIView):
+    def get(self, request, id_usuario, proyecto):
+        return JsonResponse(getSistemasbyProyectoList(id_usuario, proyecto), safe=False)
+
+
+def getSistemasbyProyectoList(id_usuario, proyecto):
+    usuario = Usuario.objects.get(pk=id_usuario)
+    proyectosistema = Modulo.objects.filter(roles=usuario.rol_id,
+                                            proyectosistema__proyectos_id=proyecto).values_list(
+        'proyectosistema__proyectos',
+        flat=True).distinct()
+    proyectosistemaList = ProyectoSistema.objects.filter(proyectos__in=proyectosistema).values()
+    return list(proyectosistemaList)
+
+
+def getProyectosList(id_usuario):
+    usuario = Usuario.objects.get(pk=id_usuario)
+    proyectos = Modulo.objects.filter(roles=usuario.rol_id).values_list('proyectosistema__proyectos',
+                                                                        flat=True).distinct()
+    proyectosList = Proyecto.objects.filter(id__in=proyectos).values()
+    return list(proyectosList)
 
 
 def modulosTree(proyecto_id):
@@ -162,48 +208,3 @@ def modulosbyRolRecursive(modulopadre_id, rol=None):
                 if len(moduloRecursive(response[nowindex]['id'])):
                     response[nowindex]['hijos'] = moduloRecursive(response[nowindex]['id'], rol)
     return response
-
-
-class InfoUser(generics.ListAPIView):
-    serializer_class = UsuarioDetalleSerializer
-
-    def get_queryset(self):
-        id_usuario = self.kwargs['id_usuario']
-        return Usuario.objects.filter(pk=id_usuario)
-
-
-class UsersRolProyectoSistema(generics.ListAPIView):
-    serializer_class = UsuarioDetalleSerializer
-
-    def get_queryset(self):
-        rol = self.kwargs['rol']
-        return Usuario.objects.filter(rol_id=rol)
-
-
-class UsersProyectoSistema(generics.ListAPIView):
-    serializer_class = UsuarioDetalleSerializer
-
-    def get_queryset(self):
-        codigoproyectosistema = self.kwargs['codigoproyectosistema']
-        roles = Rol.objects.filter(modulo__proyectosistema__codigo=codigoproyectosistema).values_list('id', flat=True)
-        return Usuario.objects.filter(rol__in=roles)
-
-
-class ProyectosList(generics.ListAPIView):
-    def get(self, request, id_usuario):
-        usuario = Usuario.objects.get(pk=id_usuario)
-        proyectos = Modulo.objects.filter(roles=usuario.rol_id).values_list('proyectosistema__proyectos',
-                                                                            flat=True).distinct()
-        proyectosList = Proyecto.objects.filter(id__in=proyectos).values()
-        return JsonResponse(list(proyectosList), safe=False)
-
-
-class SistemabyProyectosList(generics.ListAPIView):
-    def get(self, request, id_usuario, proyecto):
-        usuario = Usuario.objects.get(pk=id_usuario)
-        proyectosistema = Modulo.objects.filter(roles=usuario.rol_id,
-                                                proyectosistema__proyectos_id=proyecto).values_list(
-            'proyectosistema__proyectos',
-            flat=True).distinct()
-        proyectosistemaList = ProyectoSistema.objects.filter(proyectos__in=proyectosistema).values()
-        return JsonResponse(list(proyectosistemaList), safe=False)

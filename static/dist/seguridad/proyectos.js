@@ -77,13 +77,13 @@ $(function () {
                     $(`input[name=${key}]`).val(proyectosistema[key]);
                 }
                 if (proyectosistema_selected['presentation_image'] != '') {
-                    $('#img_proyectosistema').attr('src', `${BASEURL}/media/${proyectosistema_selected['presentation_image']}`);
-                    $('#a_proyectosistema').attr('href', `${BASEURL}/media/${proyectosistema_selected['presentation_image']}`);
+                    $('#img_proyectosistema').attr('src', `${BASEURL}/static/media/${proyectosistema_selected['presentation_image']}`);
+                    $('#a_proyectosistema').attr('href', `${BASEURL}/static/media/${proyectosistema_selected['presentation_image']}`);
                     $('#div_img_proyectosistema').show();
                 } else {
                     $('#div_img_proyectosistema').hide();
                 }
-            })
+            });
         });
         $('#modal_proyecto_sistema').modal();
     });

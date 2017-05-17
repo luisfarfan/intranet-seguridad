@@ -4,137 +4,32 @@
 {% block content %}
 
     <div class="main">
-
+        <div class="row">
+            <div class="col-md-4">
+                <select name="select_proyectos" id="select_proyectos" class="form-control">
+                    {% for proyecto in proyectos %}
+                        <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
         <!-- TENTH EXAMPLE -->
-
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon1.png"/>
-            <h3 class="titleicon">Dirección<br>y gerencia</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
+        {% for sistema in sistemas %}
+            <div class="col-md-2">
+                <div class="view view-tenth">
+                    {% with "media/"|add:sistema.presentation_image as imagen %}
+                        <img src="{% static imagen %}"/>
+                    {% endwith %}
+                    <h3 class="titleicon">{{ sistema.presentacion_nombre }}</h3>
+                    <div class="mask">
+                        <br>
+                        <br>
+                        <br>
+                        <a href="{{ sistema.url_receive }}" class="info">INGRESAR</a>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon2.png"/>
-            <h3 class="titleicon">Métodos<br>y documentos</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon3.png"/>
-            <h3 class="titleicon">Segmentación</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon4.png"/>
-            <h3 class="titleicon">Capacitación</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="http://localhost:8001/setSession/?key={{ request.GET.key }}" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon6.png"/>
-            <h3 class="titleicon">Promoción<br>censal</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
-            </div>
-        </div>
-
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon7.png"/>
-            <h3 class="titleicon">Logística<br>censal</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="http://udra.inei.gob.pe/?key={{ request.GET.key }}&code=logistic&project=CPV" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon7.png"/>
-            <h3 class="titleicon">Logística<br>Capacitación</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="http://udra.inei.gob.pe/?key={{ request.GET.key }}&code=logcapa" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/jefe-zonal.png"/>
-            <h3 class="titleicon">Empadronamiento de<br>jefes zonales</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/reclutamiento.png"/>
-            <h3 class="titleicon">Reclutamiento de personal</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon9.png"/>
-            <h3 class="titleicon">Sistema de<br>cobertura</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="http://vm-asp1/cobertura/CPV2017_COBERTURA_EXP/" target="_blank" class="info">INGRESAR</a>
-            </div>
-        </div>
-
-
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon11.png"/>
-            <h3 class="titleicon">Control de calidad<br>de las actividades<br>censales</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
-            </div>
-        </div>
-        <div class="view view-tenth">
-            <img src="/static/assets/images/icon12.png"/>
-            <h3 class="titleicon">Publicación<br>y resultados</h3>
-            <div class="mask">
-                <br>
-                <br>
-                <br>
-                <a href="#" class="info">INGRESAR</a>
-            </div>
-        </div>
-
-
+        {% endfor %}
     </div>
 
-
-
 {% endblock %}
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
