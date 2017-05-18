@@ -4,6 +4,12 @@
 
 import {LoginService} from 'auth.service';
 import {CoreConfig as Core} from '../core/core'
+
+interface AuthResponse {
+    key: string,
+    user: Object,
+    valid: boolean
+}
 export class AuthController {
     private loginService: LoginService = new LoginService();
 
@@ -16,8 +22,8 @@ export class AuthController {
 
     authenticate() {
         let credenciales = {usuario: $('input[name="usuario"]').val(), clave: $('input[name="clave"]').val()};
-        this.loginService.Authenticate(credenciales).done((response) => {
-            window.location.replace(Core.BASEURL);
+        this.loginService.Authenticate(credenciales).done((response: AuthResponse) => {
+            if (response.valid) window.location.replace(`${Core.BASEURL}/Bienvenido?key=${response.key}`);
         });
     }
 

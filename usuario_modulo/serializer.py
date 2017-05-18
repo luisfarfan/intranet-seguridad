@@ -1,4 +1,4 @@
-from .models import *
+from proyectos.models import Modulo, Permiso, ModuloRol, Rol, ModuloRolPermisos
 from rest_framework import serializers
 
 
@@ -83,3 +83,4 @@ class CrudModuloRolSerializer(serializers.ModelSerializer):
     class Meta:
         model = ModuloRol
         fields = ('__all__')
+

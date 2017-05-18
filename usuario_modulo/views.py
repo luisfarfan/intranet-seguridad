@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from .serializer import *
-from .models import Rol, Permiso, Modulo
+from proyectos.models import *
 from rest_framework import generics, viewsets
 
 

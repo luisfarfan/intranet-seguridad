@@ -21,7 +21,7 @@ from usuario.urls import router_usuario
 from usuario_modulo.urls import router_modulo_usuario
 from webservices.urls import router_webservice
 from django.views.generic import TemplateView
-from usuario_modulo.models import Modulo
+from proyectos.models import Modulo
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views import View
 from django.http import HttpResponse

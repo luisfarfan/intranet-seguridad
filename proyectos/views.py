@@ -3,7 +3,7 @@ from .serializer import *
 from rest_framework.views import APIView
 from rest_framework import generics, viewsets
 from .models import ProyectosSiga
-from usuario_modulo.models import Modulo
+from proyectos.models import Modulo
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.views import APIView

@@ -12,9 +12,10 @@ urlpatterns = [
     url(r'menubyrol_proyectosistema/(?P<codigoproyectosistema>.+)/(?P<rol>.+)/$',
         MenuRolProyectoSistema.as_view()),
     url(r'infouser/(?P<id_usuario>.+)/$', InfoUser.as_view()),
-    url(r'userbyrol/(?P<rol>.+)/$', UsersRolProyectoSistema.as_view()),
+    url(r'userbyrol/(?P<rol>.+)/$', UsersRol.as_view()),
     url(r'userbyproyectosistema/(?P<codigoproyectosistema>.+)/$', UsersProyectoSistema.as_view()),
     url(r'proyectoslist/(?P<id_usuario>.+)/$', ProyectosList.as_view()),
     url(r'sistemasbyproyectolist/(?P<id_usuario>.+)/(?P<proyecto>.+)/$', SistemabyProyectosList.as_view()),
     url(r'userbyproyectosistema/(?P<codigoproyectosistema>.+)/$', UsersProyectoSistema.as_view()),
+    url(r'filterusers/$', FilterUsers.as_view()),
 ]

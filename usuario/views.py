@@ -2,8 +2,8 @@ from django.http import JsonResponse
 from .serializer import *
 from rest_framework.views import APIView
 from rest_framework import generics, viewsets
-from .models import Usuario
-from usuario_modulo.models import Modulo, ModuloRolPermisos, ModuloRol
+from proyectos.models import Usuario
+from proyectos.models import Modulo, ModuloRolPermisos, ModuloRol
 from usuario_modulo.serializer import ReadModuloSerializer, ReadModuloRolSerializer
 from django.contrib.sessions.models import Session
 from usuario.utils import *

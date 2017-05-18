@@ -86,12 +86,12 @@ class InfoUser(generics.ListAPIView):
         return Usuario.objects.filter(pk=id_usuario)
 
 
-class UsersRolProyectoSistema(generics.ListAPIView):
+class UsersRol(generics.ListAPIView):
     serializer_class = UsuarioDetalleSerializer
 
     def get_queryset(self):
         rol = self.kwargs['rol']
-        return Usuario.objects.filter(rol_id=rol)
+        return Usuario.objects.filter(rol__codigo=rol)
 
 
 class UsersProyectoSistema(generics.ListAPIView):
@@ -111,6 +111,17 @@ class ProyectosList(generics.ListAPIView):
 class SistemabyProyectosList(generics.ListAPIView):
     def get(self, request, id_usuario, proyecto):
         return JsonResponse(getSistemasbyProyectoList(id_usuario, proyecto), safe=False)
+
+
+class FilterUsers(generics.ListAPIView):
+    def get(self, request):
+        filters = []
+        if 'q' in request.GET:
+            queryParameter = request.GET['q']
+            usuarios = Usuario.objects.filter(usuario__contains=queryParameter)
+            for user in usuarios:
+                filters.append({'id': user.id, 'text': '{} {} {}'.format(user.nombre, user.ape_pat, user.ape_mat)})
+        return JsonResponse({'items': filters})
 
 
 def getSistemasbyProyectoList(id_usuario, proyecto):

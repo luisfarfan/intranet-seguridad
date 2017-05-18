@@ -9,6 +9,17 @@ var proyectos_seguridad_selected = [];
 
 var proyectosistema_selected = null;
 $(function () {
+
+    $('#usuarios_encargados').select2({
+        ajax: {
+            url: `${BASEURL}/services/filterusers/`,
+            processResults: function (data) {
+                return {
+                    results: data.items
+                };
+            }
+        },
+    });
     $('[data-popup="lightbox"]').fancybox({
         padding: 3
     });
@@ -93,8 +104,10 @@ $('#proyectos_siga').select2({
     containerCssClass: 'bg-primary-400'
 });
 
+//yaesta
 $.getJSON(`${BASEURL}/rest_sistemas/sistema/`, response => sistemas = response);
 
+//yaesta
 function getProyectosSiga() {
     "use strict";
     $.ajax({
@@ -119,6 +132,7 @@ $('#proyectos_siga').on('change', event => {
     }
 });
 
+//yaesta
 function getProyectosSeguridad() {
     "use strict";
 
@@ -353,3 +367,4 @@ function formToObject(form) {
     });
     return formObject;
 }
+

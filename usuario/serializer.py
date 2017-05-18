@@ -1,4 +1,4 @@
-from .models import *
+from proyectos.models import TipoUsuario, Usuario, UsuariosOnline
 from rest_framework import serializers
 from usuario_modulo.serializer import CrudRolSerializer
 

@@ -1,5 +1,5 @@
 from usuario_modulo.serializer import ReadModuloSerializer
-from usuario_modulo.models import Modulo
+from proyectos.models import Modulo
 
 
 def getRecursiveMenu(proyecto_id):

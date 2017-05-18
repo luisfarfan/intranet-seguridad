@@ -1,4 +1,4 @@
-from usuario_modulo.models import Modulo
+from proyectos.models import Modulo
 
 
 def getBreadcumbs(id):
