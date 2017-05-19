@@ -6,15 +6,8 @@ from .models import ProyectosSiga
 from proyectos.models import Modulo
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from rest_framework import status
-from rest_framework.decorators import api_view
 from .forms import *
-from rest_framework.parsers import MultiPartParser, FormParser
-from django.shortcuts import get_object_or_404
+from django.utils.text import slugify
 
 from django.views import View
 
@@ -99,3 +92,17 @@ class ProyectosApi:
             modulo.save()
 
         return JsonResponse(lastps, safe=False)
+
+
+class AdminProyectoSistema(generics.ListAPIView):
+    def post(self, request, addordelete):
+        proyectosistema = request.POST['proyectosistema']
+        usuario = request.POST['usuario']
+        if addordelete == 1 or addordelete == '1':
+            pj = AdministradoresProyectoSistema(proyectosistema_id=proyectosistema, usuario_id=usuario)
+            pj.save()
+        elif addordelete == 2 or addordelete == '2':
+            AdministradoresProyectoSistema.objects.filter(proyectosistema_id=proyectosistema,
+                                                          usuario_id=usuario).delete()
+
+        return JsonResponse({'msg': 'Hecho'})

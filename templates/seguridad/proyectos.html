@@ -236,12 +236,6 @@
                                 <input type="text" placeholder="URL Principal" class="form-control" name="url_receive">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-3">Usuario(s) Encargados de la Administración</label>
-                            <div class="col-sm-9">
-                                <select id="usuarios_encargados" class="form-control"></select>
-                            </div>
-                        </div>
                     </form>
                     <div id="div_img_proyectosistema" class="row">
                         <div class="col-lg-3 col-sm-6">
@@ -273,6 +267,50 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cerrar</button>
                     <button type="button" id="btn_save_proyectosistema" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal_administradores_proyectosistema" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Administradores del Proyecto Sistema</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <select name="usuarios_administradores" id="usuarios_administradores" class="form-control">
+                                <option value="-1">Busqueda de Usuario Administrador</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" id="btn_addadm" class="btn btn-primary active legitRipple">Asignar
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="tabla_administradores_sistema">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Usuario</th>
+                                    <th>Nombres</th>
+                                    <th>Apellido Paterno</th>
+                                    <th>Apellido Materno</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'sistemasbyproyectolist/(?P<id_usuario>.+)/(?P<proyecto>.+)/$', SistemabyProyectosList.as_view()),
     url(r'userbyproyectosistema/(?P<codigoproyectosistema>.+)/$', UsersProyectoSistema.as_view()),
     url(r'filterusers/$', FilterUsers.as_view()),
+    url(r'filterusersadmin/(?P<proyectosistema>.+)/$', FilterUsersAdmins.as_view()),
 ]

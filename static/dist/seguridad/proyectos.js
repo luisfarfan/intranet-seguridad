@@ -8,6 +8,11 @@ var proyectos_seguridad = [];
 var proyectos_seguridad_selected = [];
 
 var proyectosistema_selected = null;
+
+var administradores = null;
+var administradoresLibres = null;
+var usuarioAdmSelected = null;
+var sistemaSelected = null;
 $(function () {
 
     $('#usuarios_encargados').select2({
@@ -98,7 +103,105 @@ $(function () {
         });
         $('#modal_proyecto_sistema').modal();
     });
+    $('#tbl_sistemas_asignados').on('click', '[name="a_administradores"]', (ev) => {
+        "use strict";
+        sistemaSelected = $(ev.currentTarget).data('value');
+        ProyectosUsers.getAdministradores()
+    });
+    $('#tabla_administradores_sistema').on('click', '[name="li_delete"]', (ev) => {
+        "use strict";
+        let administradorSelected = $(ev.currentTarget).data('value');
+        alert_confirm(() => {
+            ProyectosUsers.deleteAdministrador({
+                'usuario': administradorSelected,
+                'proyectosistema': proyectosistema_selected[0].id
+            });
+        }, 'Esta seguro de eliminar a este administador?');
+    });
+
+    $('#btn_addadm').on('click', () => {
+        "use strict";
+        let useradm_selected = $('#usuarios_administradores').val();
+        if (useradm_selected == "") {
+            swal('Seleccione un usuario de la lista desplegable', 'info')
+            return false;
+        } else {
+            alert_confirm(() => {
+                ProyectosUsers.addAdministrador({
+                    'usuario': useradm_selected,
+                    'proyectosistema': proyectosistema_selected[0].id
+                });
+            }, 'Esta seguro de agregar este administrador ?')
+        }
+    });
 });
+
+var ProyectosUsers = {
+    drawAdministradorProyecto: () => {
+        "use strict";
+        let html = '';
+        administradores.map((value, index) => {
+            html += `<tr>
+                        <td>${index + 1}</td>
+                        <td>${value.usuario}</td>
+                        <td>${value.nombre}</td>
+                        <td>${value.ape_pat}</td>
+                        <td>${value.ape_mat}</td>
+                        <td>
+                            <ul class="icons-list">
+                                <li name="li_delete" class="text-danger-600" data-value="${value.id}"><a href="#"><i class="icon-trash"></i></a></li>
+                            </ul>
+                        </td>
+                    </tr>`;
+        });
+        $('#tabla_administradores_sistema').find('tbody').html(html)
+    },
+    drawDropdownAdministradores: () => {
+        "use strict";
+        let html = '<option value="">Seleccione Administrador</option>';
+        administradoresLibres.map((value, index) => {
+            html += `<option value="${value.id}">${value.usuario} - <span class="text-bold">${value.nombre} ${value.ape_pat} ${value.ape_mat}</span></option>`;
+        });
+        $('#usuarios_administradores').html(html);
+        $('#usuarios_administradores').select2()
+    },
+    addAdministrador: (obj) => {
+        "use strict";
+        $.ajax({
+            url: `${BASEURL}/rest_proyectos/usuariosproyectosistema/1/`,
+            type: 'POST',
+            data: obj,
+            success: (response) => {
+                ProyectosUsers.getAdministradores();
+            }
+        })
+    },
+    deleteAdministrador: (obj) => {
+        "use strict";
+        $.ajax({
+            url: `${BASEURL}/rest_proyectos/usuariosproyectosistema/2/`,
+            type: 'POST',
+            data: obj,
+            success: (response) => {
+                ProyectosUsers.getAdministradores();
+            }
+        })
+    },
+    getAdministradores: () => {
+        "use strict";
+        $.getJSON(`${BASEURL}/rest_proyectos/get_proyecto_sistema/${proyectos_seguridad_selected[0].id}/${sistemaSelected}/`, (proyectosistema) => {
+            proyectosistema_selected = proyectosistema;
+            console.log(proyectosistema_selected)
+            $.getJSON(`${BASEURL}/services/filterusersadmin/${proyectosistema[0].id}/`, (usuarios) => {
+                administradores = usuarios.administradores;
+                administradoresLibres = usuarios.administradoresLibres
+                ProyectosUsers.drawAdministradorProyecto();
+                ProyectosUsers.drawDropdownAdministradores();
+                $('#modal_administradores_proyectosistema').modal();
+            });
+        });
+    }
+}
 
 $('#proyectos_siga').select2({
     containerCssClass: 'bg-primary-400'
@@ -208,13 +311,13 @@ function setModal_asignarSistemas() {
     let _html = '';
     $('#tbl_sistemas_asignados').find('tbody').empty();
     $.each(diff_sistemas.asignado, (key, val) => {
-        console.log(val);
         _html += `<tr>
                     <td>${val.nombre}</td>
                     <td>
                        <ul class="icons-list">
                             <li><a name="a_eliminar" data-value="${val.id}" data-popup="tooltip" title="" data-original-title="Desasignar Sistema"><i class="icon-trash"></i></a></li>
                             <li><a name="a_editar" data-value="${val.id}" data-popup="tooltip" title="" data-original-title="Desasignar Sistema"><i class="icon-pencil4"></i></a></li>
+                            <li><a name="a_administradores" data-value="${val.id}" data-popup="tooltip" title="" data-original-title="Gestión de Administradores del Sistema"><i class="icon-users"></i></a></li>
                         </ul>
                      </td>`;
         _html += `</tr>`;
@@ -368,3 +471,23 @@ function formToObject(form) {
     return formObject;
 }
 
+function alert_confirm(callback, title = 'Está seguro de Guardar?', type = 'success', callback2 = null) {
+    swal({
+        title: title,
+        text: '',
+        type: type,
+        showCancelButton: true,
+        confirmButtonColor: "#EF5350",
+        confirmButtonText: "Si!",
+        cancelButtonText: "No!",
+        closeOnConfirm: true,
+        closeOnCancel: true,
+        showLoaderOnConfirm: true
+    }, (confirm) => {
+        if (confirm) {
+            callback()
+        } else {
+            callback2 != null ? callback2 : '';
+        }
+    });
+}

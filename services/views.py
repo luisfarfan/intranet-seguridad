@@ -31,13 +31,24 @@ class Authenticate(APIView):
             userData = UsuarioDetalleSerializer(instance=user).data
             s = SessionStore()
             # s['last_login'] = 1376587691
-            s['user'] = userData
+            s['user'] = isAdmin(userData)
             s.create()
             return JsonResponse(
                 {'key': s.session_key, 'valid': True, 'user': userData})
 
         return JsonResponse(
             {'key': 'invalid', 'valid': False})
+
+
+def isAdmin(userData):
+    if userData['rol']['codigo'] == 'adm':
+        ps = AdministradoresProyectoSistema.objects.filter(usuario_id=userData['id']).values_list(
+            'proyectosistema', flat=True)
+        proyectosistemas = ProyectoSistema.objects.filter(pk__in=ps)
+        userData['administrador'] = {'proyectossistemas': list(proyectosistemas.values()),
+                                     'proyectos': list(proyectosistemas.values_list('proyectos', flat=True).distinct())}
+
+    return userData
 
 
 class Logout(APIView):
@@ -122,6 +133,15 @@ class FilterUsers(generics.ListAPIView):
             for user in usuarios:
                 filters.append({'id': user.id, 'text': '{} {} {}'.format(user.nombre, user.ape_pat, user.ape_mat)})
         return JsonResponse({'items': filters})
+
+
+class FilterUsersAdmins(generics.ListAPIView):
+    def get(self, request, proyectosistema):
+        usuariosnodisponibles = AdministradoresProyectoSistema.objects.filter(
+            proyectosistema_id=proyectosistema).values_list('usuario', flat=True)
+        usuarios = list(Usuario.objects.exclude(id__in=usuariosnodisponibles).filter(rol__codigo='adm').values())
+        usuariosProyectoSistema = list(Usuario.objects.filter(id__in=usuariosnodisponibles).values())
+        return JsonResponse({'administradores': usuariosProyectoSistema, 'administradoresLibres': usuarios}, safe=False)
 
 
 def getSistemasbyProyectoList(id_usuario, proyecto):

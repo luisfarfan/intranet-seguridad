@@ -48,6 +48,7 @@ class ProyectoSistema(models.Model):
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)
     fec_edicion = models.DateTimeField(blank=True, null=True)
     presentation_image = models.CharField(max_length=255, blank=True, null=True)
+    usuarios = models.ManyToManyField('Usuario', through='AdministradoresProyectoSistema')
 
     # def save(self, *args, **kwargs):
     #     if self.pk is None:
@@ -284,10 +285,10 @@ class UsuariosOnline(models.Model):
         db_table = 'USUARIO_ONLINE'
 
 
-# class AdministradoresProyectoSistema(models.Model):
-#     proyectosistema = models.ForeignKey(ProyectoSistema)
-#     usuario = models.ForeignKey(Usuario)
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'ADMIN_PROYECTOSISTEMA'
+class AdministradoresProyectoSistema(models.Model):
+    proyectosistema = models.ForeignKey(ProyectoSistema)
+    usuario = models.ForeignKey(Usuario)
+
+    class Meta:
+        managed = True
+        db_table = 'ADMIN_PROYECTOSISTEMA'
