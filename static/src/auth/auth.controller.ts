@@ -24,7 +24,7 @@ export class AuthController {
         let credenciales = {usuario: $('input[name="usuario"]').val(), clave: $('input[name="clave"]').val()};
         this.loginService.Authenticate(credenciales).done((response: AuthResponse) => {
             console.log(response);
-            //if (response.valid) window.location.replace(`${Core.BASEURL}/Bienvenido?key=${response.key}`);
+            if (response.valid) window.location.replace(`${Core.BASEURL}/Bienvenido?key=${response.key}`);
         });
     }
 

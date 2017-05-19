@@ -16,7 +16,8 @@ define(["require", "exports", "auth.service", "../core/core"], function (require
             var credenciales = { usuario: $('input[name="usuario"]').val(), clave: $('input[name="clave"]').val() };
             this.loginService.Authenticate(credenciales).done(function (response) {
                 console.log(response);
-                //if (response.valid) window.location.replace(`${Core.BASEURL}/Bienvenido?key=${response.key}`);
+                if (response.valid)
+                    window.location.replace(core_1.CoreConfig.BASEURL + "/Bienvenido?key=" + response.key);
             });
         };
         AuthController.prototype.logout = function () {
