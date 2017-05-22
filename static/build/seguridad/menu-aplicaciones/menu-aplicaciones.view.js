@@ -1,5 +1,6 @@
 define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils", "../../core/helper.inei"], function (require, exports, menu_aplicaciones_service_1, utils, helper_inei_1) {
     "use strict";
+    exports.__esModule = true;
     var objectHelper = new helper_inei_1.ObjectHelper();
     var proyectosService = new menu_aplicaciones_service_1.ProyectosService();
     var sistemasService = new menu_aplicaciones_service_1.SistemasService();
@@ -79,8 +80,9 @@ define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils",
                 // });
                 proyectosistema_id = data[0].id;
                 moduloService.modulosRecursive(data[0].codigo).done(function (data) {
-                    modulosRecursive = data;
-                    var treeFormat = utils.jsonFormatFancyTree2(data);
+                    modulosRecursive = [data['menuRecursive']];
+                    console.log(modulosRecursive);
+                    var treeFormat = utils.jsonFormatFancyTree2(modulosRecursive);
                     var options_tree = {
                         checkbox: false,
                         selectMode: 1,

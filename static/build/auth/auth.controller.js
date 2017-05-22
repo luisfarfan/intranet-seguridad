@@ -3,6 +3,7 @@
  */
 define(["require", "exports", "auth.service", "../core/core"], function (require, exports, auth_service_1, core_1) {
     "use strict";
+    exports.__esModule = true;
     var AuthController = (function () {
         function AuthController() {
             var _this = this;

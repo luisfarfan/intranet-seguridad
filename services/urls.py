@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'authenticate/$', Authenticate.as_view()),
     url(r'menubyproyectosistema/(?P<codigoproyectosistema>.+)/$',
         MenuProyectoSistema.as_view()),
+    url(r'getAuthData/$', GetAuthData.as_view()),
     url(r'menubyproyecto/(?P<proyecto_id>.+)/$', MenuProyecto.as_view()),
     url(r'menubyrol_proyectosistema/(?P<codigoproyectosistema>.+)/(?P<rol>.+)/$',
         MenuRolProyectoSistema.as_view()),

@@ -1,5 +1,6 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
+    exports.__esModule = true;
     var LoginService = (function () {
         function LoginService() {
             this.url = BASEURL + "/seguridad/authenticate/";
@@ -29,7 +30,6 @@ define(["require", "exports"], function (require, exports) {
         };
         return LoginService;
     }());
-    exports.__esModule = true;
     exports["default"] = LoginService;
 });
 //# sourceMappingURL=login.service.js.map

@@ -15,7 +15,6 @@ class IndexView(TemplateView):
             self.user = Session.objects.get(pk=key).get_decoded()
             self.user = self.user['user']
         except Session.DoesNotExist:
-            print(request.META['HTTP_HOST'])
             return redirect('http://{}'.format(request.META['HTTP_HOST']))
 
         return super(IndexView, self).get(request, *args, **kwargs)
@@ -31,5 +30,6 @@ class IndexView(TemplateView):
         context = {'key': self.request.GET['key'], 'proyectos': proyectos, 'sistemas': sistemas}
         if 'proyecto_id' in self.request.GET:
             context['proyecto_id'] = int(self.request.GET['proyecto_id'])
+        context['seguridadurl'] = 'http://{}'.format(self.request.META['HTTP_HOST'])
 
         return context

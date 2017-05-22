@@ -86,8 +86,9 @@ var MenuAplicacionesController: any = {
             // });
             proyectosistema_id = data[0].id
             moduloService.modulosRecursive(data[0].codigo).done(data => {
-                modulosRecursive = data;
-                let treeFormat = utils.jsonFormatFancyTree2(data);
+                modulosRecursive = [data['menuRecursive']];
+                console.log(modulosRecursive)
+                let treeFormat = utils.jsonFormatFancyTree2(modulosRecursive);
                 let options_tree = {
                     checkbox: false,
                     selectMode: 1,

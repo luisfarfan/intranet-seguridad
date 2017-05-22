@@ -1,5 +1,6 @@
 define(["require", "exports", "permisos.service", "../proyectos/proyectos.service", "../../core/utils", "../../core/helper.inei"], function (require, exports, permisos_service_1, proyectos_service_1, utils, helper_inei_1) {
     "use strict";
+    exports.__esModule = true;
     var objectHelper = new helper_inei_1.ObjectHelper();
     var PermisoController = (function () {
         function PermisoController() {

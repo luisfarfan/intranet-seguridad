@@ -31,7 +31,8 @@ class Authenticate(APIView):
             userData = UsuarioDetalleSerializer(instance=user).data
             s = SessionStore()
             # s['last_login'] = 1376587691
-            s['user'] = isAdmin(userData)
+            s['user'] = isAdmin(userData, request)
+            s['seguridadurl'] = 'http://{}'.format(request.META['HTTP_HOST'])
             s.create()
             return JsonResponse(
                 {'key': s.session_key, 'valid': True, 'user': userData})
@@ -40,7 +41,7 @@ class Authenticate(APIView):
             {'key': 'invalid', 'valid': False})
 
 
-def isAdmin(userData):
+def isAdmin(userData, request):
     if userData['rol']['codigo'] == 'adm':
         ps = AdministradoresProyectoSistema.objects.filter(usuario_id=userData['id']).values_list(
             'proyectosistema', flat=True)
@@ -62,18 +63,37 @@ class Logout(APIView):
         return JsonResponse({'message': 'Sessión finalizada'})
 
 
+class GetAuthData(APIView):
+    def get(self, request):
+        try:
+            userSesion = Session.objects.get(pk=request.GET['key']).get_decoded()
+        except Session.DoesNotExist:
+            userSesion = None
+
+        userSesion['valido'] = True
+        if userSesion:
+            return JsonResponse(userSesion, safe=False)
+
+        return JsonResponse({'valido': False, 'userData': []})
+
+
 class MenuProyectoSistema(APIView):
     def get(self, request, codigoproyectosistema):
+        modulos = Modulo.objects.filter(proyectosistema__codigo=codigoproyectosistema,
+                                        is_padre=0).values()
         modulopadre = Modulo.objects.filter(proyectosistema__codigo=codigoproyectosistema,
                                             modulo_padre__isnull=True)[0]
-        response = []
-        response.append({'id': modulopadre.id, 'nombre': modulopadre.nombre, 'descripcion': modulopadre.descripcion,
-                         'slug': modulopadre.slug,
-                         'codigo': modulopadre.codigo,
-                         'template_html': modulopadre.template_html,
-                         'is_padre': modulopadre.is_padre, 'icon': modulopadre.icon,
-                         'hijos': moduloRecursive(modulopadre.id),
-                         'modulo_padre_id': modulopadre.modulo_padre_id}, )
+        response = {}
+        response['menuRecursive'] = {'id': modulopadre.id, 'nombre': modulopadre.nombre,
+                                     'descripcion': modulopadre.descripcion,
+                                     'slug': modulopadre.slug,
+                                     'codigo': modulopadre.codigo,
+                                     'template_html': modulopadre.template_html,
+                                     'is_padre': modulopadre.is_padre, 'icon': modulopadre.icon,
+                                     'hijos': moduloRecursive(modulopadre.id),
+                                     'modulo_padre_id': modulopadre.modulo_padre_id}
+        response['routes'] = list(modulos)
+
         return JsonResponse(response, safe=False)
 
 
