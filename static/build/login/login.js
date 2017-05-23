@@ -1,6 +1,5 @@
 define(["require", "exports", "../core/helper.inei", "../core/utils"], function (require, exports, helper_inei_1, utils_1) {
     "use strict";
-    exports.__esModule = true;
     var sessionHelper = new helper_inei_1.SessionHelper();
     var objectHelper = new helper_inei_1.ObjectHelper();
     $('#iniciar_sesion').on('click', function (event) {

@@ -170,7 +170,7 @@ class ModuloRolAdmin(admin.ModelAdmin):
 class Rol(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    codigo = models.CharField(max_length=8, null=True, blank=True)
+    codigo = models.CharField(max_length=20, null=True, blank=True)
     usr_creacion = models.CharField(max_length=100, blank=True, null=True)
     fec_creacion = models.DateTimeField(blank=True, null=True)
     usr_edicion = models.CharField(max_length=100, blank=True, null=True)

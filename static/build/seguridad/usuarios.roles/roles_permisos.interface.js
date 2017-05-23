@@ -3,6 +3,5 @@
  */
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    exports.__esModule = true;
 });
 //# sourceMappingURL=roles_permisos.interface.js.map

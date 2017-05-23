@@ -1,6 +1,5 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    exports.__esModule = true;
     /**
      * div alert de limitless para mostrar mensajes de estado (exito,error,info,warning)
      * @param message Mensaje del div.

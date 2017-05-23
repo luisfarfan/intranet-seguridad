@@ -25,7 +25,7 @@ var jsonRulesModuloForm: Object = {
         maxlength: 255
     },
     slug: {
-        maxlength: 50
+        maxlength: 500
     },
     codigo: {
         maxlength: 8

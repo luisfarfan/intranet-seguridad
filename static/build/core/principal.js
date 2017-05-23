@@ -3,7 +3,6 @@
  */
 define(["require", "exports", "../core/helper.inei"], function (require, exports, helper_inei_1) {
     "use strict";
-    exports.__esModule = true;
     var menuHelper = new helper_inei_1.MenuHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();
     var sidebar_html = menuHelper.drawSidebar(sessionHelper.getSession().menu);

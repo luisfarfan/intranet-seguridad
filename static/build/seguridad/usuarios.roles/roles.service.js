@@ -1,6 +1,5 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    exports.__esModule = true;
     var RolesService = (function () {
         function RolesService() {
             this.url = BASEURL + "/rest_modulousuario/rol/";
@@ -41,6 +40,7 @@ define(["require", "exports"], function (require, exports) {
         };
         return RolesService;
     }());
+    exports.__esModule = true;
     exports["default"] = RolesService;
     var PermisosService = (function () {
         function PermisosService() {

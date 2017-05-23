@@ -1,6 +1,5 @@
 define(["require", "exports", "../core/core"], function (require, exports, core_1) {
     "use strict";
-    exports.__esModule = true;
     var LoginService = (function () {
         function LoginService() {
             this.url = core_1.CoreConfig.BASEURL + "/services/authenticate/";

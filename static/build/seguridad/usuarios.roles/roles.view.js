@@ -3,7 +3,6 @@
  */
 define(["require", "exports", "./roles.service", "../proyectos/proyectos.service", "../menu/menu.service", "../permisos/permisos.service", "../../core/helper.inei", "../../core/utils", "../menu-aplicaciones/menu-aplicaciones.service"], function (require, exports, roles_service_1, proyectos_service_1, menu_service_1, permisos_service_1, helper_inei_1, util, menu_aplicaciones_service_1) {
     "use strict";
-    exports.__esModule = true;
     var objectHelper = new helper_inei_1.ObjectHelper();
     var sessionHelper = new helper_inei_1.SessionHelper();
     var rolesModel = new roles_service_1["default"]();
