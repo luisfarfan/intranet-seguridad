@@ -10,6 +10,9 @@ define(["require", "exports"], function (require, exports) {
                 usuario_detalle: BASEURL + "/rest_usuario/usuario_detalle/",
                 save_rol: BASEURL + "/usuario/saveRol/"
             };
+            this.url_departamentos = "http://cpv.inei.gob.pe:85/ubigeo/departamentos/";
+            this.url_provincias = "http://cpv.inei.gob.pe:85/ubigeo/provincias/";
+            this.url_distritos = "http://cpv.inei.gob.pe:85/ubigeo/distritos/";
         }
         UsuarioService.prototype.get = function (pk) {
             if (pk === void 0) { pk = null; }
@@ -43,6 +46,25 @@ define(["require", "exports"], function (require, exports) {
             return $.ajax({
                 url: "" + this.url.usuario + pk + "/",
                 type: 'DELETE'
+            });
+        };
+        UsuarioService.prototype.getDepartamentos = function () {
+            return $.ajax({
+                async: false,
+                url: this.url_departamentos,
+                type: 'GET'
+            });
+        };
+        UsuarioService.prototype.getProvincias = function (ccdd) {
+            return $.ajax({
+                async: false,
+                url: "" + this.url_provincias + ccdd + "/"
+            });
+        };
+        UsuarioService.prototype.getDistritos = function (ccdd, ccpp) {
+            return $.ajax({
+                async: false,
+                url: "" + this.url_distritos + ccdd + "/" + ccpp + "/"
             });
         };
         return UsuarioService;

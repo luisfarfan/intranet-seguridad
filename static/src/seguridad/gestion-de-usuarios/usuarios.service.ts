@@ -14,6 +14,9 @@ export class UsuarioService {
         usuario_detalle: `${BASEURL}/rest_usuario/usuario_detalle/`,
         save_rol: `${BASEURL}/usuario/saveRol/`,
     };
+    private url_departamentos: string = `http://cpv.inei.gob.pe:85/ubigeo/departamentos/`;
+    private url_provincias: string = `http://cpv.inei.gob.pe:85/ubigeo/provincias/`;
+    private url_distritos: string = `http://cpv.inei.gob.pe:85/ubigeo/distritos/`;
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
@@ -50,6 +53,28 @@ export class UsuarioService {
         return $.ajax({
             url: `${this.url.usuario}${pk}/`,
             type: 'DELETE',
+        });
+    }
+
+    getDepartamentos(): JQueryXHR {
+        return $.ajax({
+            async: false,
+            url: this.url_departamentos,
+            type: 'GET'
+        });
+    }
+
+    getProvincias(ccdd: string): JQueryXHR {
+        return $.ajax({
+            async: false,
+            url: `${this.url_provincias}${ccdd}/`,
+        });
+    }
+
+    getDistritos(ccdd: string, ccpp: string): JQueryXHR {
+        return $.ajax({
+            async: false,
+            url: `${this.url_distritos}${ccdd}/${ccpp}/`,
         });
     }
 }

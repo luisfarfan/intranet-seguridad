@@ -86,6 +86,13 @@ define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.ser
             $('#btn_submit_form').on('click', function () {
                 _this.saveUsuario();
             });
+            this.setDepartamentos();
+            $('#departamentos').on('change', function (element) {
+                _this.setProvincias($('#departamentos').val());
+            });
+            $('#provincias').on('change', function (element) {
+                _this.setDistritos($('#departamentos').val(), $('#provincias').val());
+            });
         }
         UsuarioController.prototype.getRoles = function () {
             var _this = this;
@@ -131,6 +138,14 @@ define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.ser
                     var input = $("[name=\"" + key + "\"]");
                     if ($("[name=\"" + key + "\"]").is(':checkbox')) {
                         usuario_selected[key] == 1 ? input.prop('checked', true) : '';
+                    }
+                    else if (key == 'ccpp') {
+                        $('#departamentos').trigger('change');
+                        $('#provincias').val(usuario_selected['ccpp']);
+                    }
+                    else if (key == 'ccdi') {
+                        $('#provincias').trigger('change');
+                        $('#distritos').val(usuario_selected['ccdi']);
                     }
                     else {
                         if (key == 'tipousuario') {
@@ -187,6 +202,36 @@ define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.ser
             else {
                 utils.showInfo('Usted debe seleccionar algun usuario');
             }
+        };
+        UsuarioController.prototype.setDepartamentos = function () {
+            this.usuarioService.getDepartamentos().done(function (departamentos) {
+                var html = '';
+                html += "<option selected value=\"\">Seleccione</option>";
+                departamentos.map(function (value, index) {
+                    html += "<option value=\"" + value.ccdd + "\">" + value.departamento + "</option>";
+                });
+                $('#departamentos').html(html);
+            });
+        };
+        UsuarioController.prototype.setProvincias = function (ccdd) {
+            this.usuarioService.getProvincias(ccdd).done(function (provincias) {
+                var html = '';
+                html += "<option selected value=\"\">Seleccione</option>";
+                provincias.map(function (value, index) {
+                    html += "<option value=\"" + value.ccpp + "\">" + value.provincia + "</option>";
+                });
+                $('#provincias').html(html);
+            });
+        };
+        UsuarioController.prototype.setDistritos = function (ccdd, ccpp) {
+            this.usuarioService.getDistritos(ccdd, ccpp).done(function (distritos) {
+                var html = '';
+                html += "<option selected value=\"\">Seleccione</option>";
+                distritos.map(function (value, index) {
+                    html += "<option value=\"" + value.ccdi + "\">" + value.distrito + "</option>";
+                });
+                $('#distritos').html(html);
+            });
         };
         return UsuarioController;
     }());

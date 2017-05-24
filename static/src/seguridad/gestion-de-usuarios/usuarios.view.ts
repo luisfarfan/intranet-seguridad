@@ -98,6 +98,14 @@ class UsuarioController {
         $('#btn_submit_form').on('click', () => {
             this.saveUsuario();
         });
+        this.setDepartamentos();
+        $('#departamentos').on('change', (element: JQueryEventObject) => {
+            this.setProvincias($('#departamentos').val());
+        });
+
+        $('#provincias').on('change', (element: JQueryEventObject) => {
+            this.setDistritos($('#departamentos').val(), $('#provincias').val());
+        });
     }
 
     getRoles() {
@@ -154,6 +162,12 @@ class UsuarioController {
                 let input = $(`[name="${key}"]`);
                 if ($(`[name="${key}"]`).is(':checkbox')) {
                     usuario_selected[key] == 1 ? input.prop('checked', true) : '';
+                } else if (key == 'ccpp') {
+                    $('#departamentos').trigger('change');
+                    $('#provincias').val(usuario_selected['ccpp']);
+                } else if (key == 'ccdi') {
+                    $('#provincias').trigger('change');
+                    $('#distritos').val(usuario_selected['ccdi']);
                 } else {
                     if (key == 'tipousuario') {
                         input.val(usuario_selected.tipousuario.id);
@@ -205,6 +219,41 @@ class UsuarioController {
             utils.showInfo('Usted debe seleccionar algun usuario');
         }
     }
+
+    setDepartamentos() {
+        this.usuarioService.getDepartamentos().done((departamentos) => {
+            let html = '';
+            html += `<option selected value="">Seleccione</option>`
+            departamentos.map((value: any, index: number) => {
+                html += `<option value="${value.ccdd}">${value.departamento}</option>`
+            })
+            $('#departamentos').html(html);
+        });
+    }
+
+    setProvincias(ccdd: string) {
+        this.usuarioService.getProvincias(ccdd).done((provincias) => {
+            let html = '';
+            html += `<option selected value="">Seleccione</option>`
+            provincias.map((value: any, index: number) => {
+                html += `<option value="${value.ccpp}">${value.provincia}</option>`
+            })
+            $('#provincias').html(html);
+        });
+    }
+
+    setDistritos(ccdd: string, ccpp: string) {
+        this.usuarioService.getDistritos(ccdd, ccpp).done((distritos) => {
+            let html = '';
+            html += `<option selected value="">Seleccione</option>`
+            distritos.map((value: any, index: number) => {
+                html += `<option value="${value.ccdi}">${value.distrito}</option>`
+            })
+            $('#distritos').html(html);
+        });
+    }
+
+
 }
 
 let usuarioController = new UsuarioController();
