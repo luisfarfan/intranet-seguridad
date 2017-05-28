@@ -250,7 +250,7 @@ function getProyectosSeguridad() {
                 _html += `<tr>
                             <td>${val.sigla}</td>
                             <td>${val.anio}</td>
-                            <td>${val.descripcion == null ? '' : val.descripcion}</td>
+                            <td>${val.nombre == null ? '' : val.nombre}</td>
                             <td>${val.cod_meta}</td>
                             <td>${val.estado == 1 ? '<span class="label label-success">Activo</span>' : '<span class="label label-danger">Inactivo</span>'}</td>
                             <td>
