@@ -168,9 +168,9 @@ def getSistemasbyProyectoList(id_usuario, proyecto):
     usuario = Usuario.objects.get(pk=id_usuario)
     proyectosistema = Modulo.objects.filter(roles=usuario.rol_id,
                                             proyectosistema__proyectos_id=proyecto).values_list(
-        'proyectosistema__proyectos',
+        'proyectosistema__sistemas',
         flat=True).distinct()
-    proyectosistemaList = ProyectoSistema.objects.filter(proyectos__in=proyectosistema).values()
+    proyectosistemaList = ProyectoSistema.objects.filter(sistemas__in=proyectosistema).values()
     return list(proyectosistemaList)
 
 
@@ -234,6 +234,8 @@ def modulosbyRolRecursive(modulopadre_id, rol=None):
     modulos = Modulo.objects.filter(modulo_padre_id=modulopadre_id)
     if rol:
         rolesmodulos = Modulo.objects.filter(roles__codigo=rol, is_padre=0).values_list('id', flat=True)
+        rolesmodulosPadres = Modulo.objects.filter(roles__codigo=rol, is_padre=0).values_list('modulo_padre_id',
+                                                                                              flat=True)
     if modulos.count():
         for modulo in modulos:
             if modulo.is_padre == 0 and modulo.id in rolesmodulos:
@@ -244,11 +246,9 @@ def modulosbyRolRecursive(modulopadre_id, rol=None):
                                  'is_padre': modulo.is_padre, 'icon': modulo.icon,
                                  'modulo_padre_id': modulo.modulo_padre_id})
                 nowindex = len(response) - 1
-                if len(moduloRecursive(response[nowindex]['id'])):
-                    response[nowindex]['hijos'] = moduloRecursive(response[nowindex]['id'], rol)
-            elif modulo.is_padre == 0 and modulo.id not in rolesmodulos:
-                pass
-            else:
+                if len(modulosbyRolRecursive(response[nowindex]['id'], rol)):
+                    response[nowindex]['hijos'] = modulosbyRolRecursive(response[nowindex]['id'], rol)
+            elif modulo.is_padre == 1 and modulo.id in rolesmodulosPadres:
                 response.append({'id': modulo.id, 'nombre': modulo.nombre, 'descripcion': modulo.descripcion,
                                  'slug': modulo.slug,
                                  'codigo': modulo.codigo,
@@ -256,6 +256,7 @@ def modulosbyRolRecursive(modulopadre_id, rol=None):
                                  'is_padre': modulo.is_padre, 'icon': modulo.icon,
                                  'modulo_padre_id': modulo.modulo_padre_id})
                 nowindex = len(response) - 1
-                if len(moduloRecursive(response[nowindex]['id'])):
-                    response[nowindex]['hijos'] = moduloRecursive(response[nowindex]['id'], rol)
+                if len(moduloRecursive(response[nowindex]['id'], rol)):
+                    response[nowindex]['hijos'] = modulosbyRolRecursive(response[nowindex]['id'], rol)
+
     return response

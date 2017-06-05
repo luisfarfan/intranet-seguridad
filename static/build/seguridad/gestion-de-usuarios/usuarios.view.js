@@ -1,5 +1,6 @@
 define(["require", "exports", "./usuarios.service", "../usuarios.roles/roles.service", "../../core/utils"], function (require, exports, usuarios_service_1, roles_service_1, utils) {
     "use strict";
+    exports.__esModule = true;
     var UsuarioController = (function () {
         function UsuarioController() {
             var _this = this;

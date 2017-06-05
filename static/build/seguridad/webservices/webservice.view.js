@@ -1,5 +1,6 @@
 define(["require", "exports", "../webservices/webservice.service"], function (require, exports, webservice_service_1) {
     "use strict";
+    exports.__esModule = true;
     var WebServiceView = (function () {
         function WebServiceView() {
             this.webservices = null;

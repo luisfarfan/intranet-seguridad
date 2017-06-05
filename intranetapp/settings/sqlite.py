@@ -1,5 +1,12 @@
 from .base import *
 
+SECRET_KEY = 'mthmsr2i5ddl9i44)&=91fn2kjgzr9&kl$$m)12d9lhja_$!_g'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = ['*']
+
 SO = 'LINUX'  # WINDOWS | LINUX
 if SO == 'LINUX':
     DRIVER = 'ODBC Driver 11 for SQL Server'

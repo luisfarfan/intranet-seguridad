@@ -106,6 +106,7 @@ class Modulo(models.Model):
     is_padre = models.IntegerField(default=0)
     icon = models.CharField(max_length=255, default='icon-home4')
     roles = models.ManyToManyField('Rol', through='ModuloRol')
+    order = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return '%s , %s' % (self.codigo, self.nombre)

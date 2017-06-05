@@ -3,6 +3,7 @@
  */
 define(["require", "exports"], function (require, exports) {
     "use strict";
+    exports.__esModule = true;
     var UsuarioService = (function () {
         function UsuarioService() {
             this.url = {

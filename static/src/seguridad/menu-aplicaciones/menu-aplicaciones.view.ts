@@ -90,6 +90,60 @@ var MenuAplicacionesController: any = {
                 console.log(modulosRecursive)
                 let treeFormat = utils.jsonFormatFancyTree2(modulosRecursive);
                 let options_tree = {
+                    extensions: ["dnd"],
+                    dnd: {
+                        autoExpandMS: 400,
+                        draggable: { // modify default jQuery draggable options
+                            zIndex: 1000,
+                            scroll: false,
+                            containment: "parent",
+                            revert: "invalid"
+                        },
+                        preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+                        preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+
+                        dragStart: function (node: any, data: any) {
+                            // This function MUST be defined to enable dragging for the tree.
+                            // Return false to cancel dragging of node.
+//    if( data.originalEvent.shiftKey ) ...
+//    if( node.isFolder() ) { return false; }
+                            return true;
+                        },
+                        dragEnter: function (node: any, data: any) {
+                            /* data.otherNode may be null for non-fancytree droppables.
+                             * Return false to disallow dropping on node. In this case
+                             * dragOver and dragLeave are not called.
+                             * Return 'over', 'before, or 'after' to force a hitMode.
+                             * Return ['before', 'after'] to restrict available hitModes.
+                             * Any other return value will calc the hitMode from the cursor position.
+                             */
+                            // Prevent dropping a parent below another parent (only sort
+                            // nodes under the same parent):
+//    if(node.parent !== data.otherNode.parent){
+//      return false;
+//    }
+                            // Don't allow dropping *over* a node (would create a child). Just
+                            // allow changing the order:
+//    return ["before", "after"];
+                            // Accept everything:
+                            return true;
+                        },
+                        dragExpand: function (node: any, data: any) {
+                            // return false to prevent auto-expanding data.node on hover
+                        },
+                        dragOver: function (node: any, data: any) {
+                        },
+                        dragLeave: function (node: any, data: any) {
+                        },
+                        dragStop: function (node: any, data: any) {
+                        },
+                        dragDrop: function (node: any, data: any) {
+                            // This function MUST be defined to enable dropping of items on the tree.
+                            // data.hitMode is 'before', 'after', or 'over'.
+                            // We could for example move the source to the new target:
+                            data.otherNode.moveTo(node, data.hitMode);
+                        },
+                    },
                     checkbox: false,
                     selectMode: 1,
                     source: treeFormat,

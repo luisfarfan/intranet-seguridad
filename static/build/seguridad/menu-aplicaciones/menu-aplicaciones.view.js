@@ -1,5 +1,6 @@
 define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils", "../../core/helper.inei"], function (require, exports, menu_aplicaciones_service_1, utils, helper_inei_1) {
     "use strict";
+    exports.__esModule = true;
     var objectHelper = new helper_inei_1.ObjectHelper();
     var proyectosService = new menu_aplicaciones_service_1.ProyectosService();
     var sistemasService = new menu_aplicaciones_service_1.SistemasService();
@@ -83,6 +84,59 @@ define(["require", "exports", "./menu-aplicaciones.service", "../../core/utils",
                     console.log(modulosRecursive);
                     var treeFormat = utils.jsonFormatFancyTree2(modulosRecursive);
                     var options_tree = {
+                        extensions: ["dnd"],
+                        dnd: {
+                            autoExpandMS: 400,
+                            draggable: {
+                                zIndex: 1000,
+                                scroll: false,
+                                containment: "parent",
+                                revert: "invalid"
+                            },
+                            preventRecursiveMoves: true,
+                            preventVoidMoves: true,
+                            dragStart: function (node, data) {
+                                // This function MUST be defined to enable dragging for the tree.
+                                // Return false to cancel dragging of node.
+                                //    if( data.originalEvent.shiftKey ) ...
+                                //    if( node.isFolder() ) { return false; }
+                                return true;
+                            },
+                            dragEnter: function (node, data) {
+                                /* data.otherNode may be null for non-fancytree droppables.
+                                 * Return false to disallow dropping on node. In this case
+                                 * dragOver and dragLeave are not called.
+                                 * Return 'over', 'before, or 'after' to force a hitMode.
+                                 * Return ['before', 'after'] to restrict available hitModes.
+                                 * Any other return value will calc the hitMode from the cursor position.
+                                 */
+                                // Prevent dropping a parent below another parent (only sort
+                                // nodes under the same parent):
+                                //    if(node.parent !== data.otherNode.parent){
+                                //      return false;
+                                //    }
+                                // Don't allow dropping *over* a node (would create a child). Just
+                                // allow changing the order:
+                                //    return ["before", "after"];
+                                // Accept everything:
+                                return true;
+                            },
+                            dragExpand: function (node, data) {
+                                // return false to prevent auto-expanding data.node on hover
+                            },
+                            dragOver: function (node, data) {
+                            },
+                            dragLeave: function (node, data) {
+                            },
+                            dragStop: function (node, data) {
+                            },
+                            dragDrop: function (node, data) {
+                                // This function MUST be defined to enable dropping of items on the tree.
+                                // data.hitMode is 'before', 'after', or 'over'.
+                                // We could for example move the source to the new target:
+                                data.otherNode.moveTo(node, data.hitMode);
+                            }
+                        },
                         checkbox: false,
                         selectMode: 1,
                         source: treeFormat,

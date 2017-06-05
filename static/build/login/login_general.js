@@ -6,6 +6,7 @@
  */
 define(["require", "exports", "../core/utils", "./login.service"], function (require, exports, utils_1, login_service_1) {
     "use strict";
+    exports.__esModule = true;
     var Login = (function () {
         function Login() {
             var _this = this;
